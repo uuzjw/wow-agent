@@ -6,7 +6,6 @@ import time
 from pathlib import Path
 
 import openai
-from openai import OpenAI
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import FileHistory
@@ -95,8 +94,7 @@ def _provider_name():
 
 
 def new_client():
-    return OpenAI(api_key=config.API_KEY or "none",
-                  base_url=config.BASE_URL)
+    return agent.make_client()
 
 
 def _fmt_tok(n):

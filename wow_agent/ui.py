@@ -254,17 +254,28 @@ class UI:
 
     def text_delta(self, s):
         if self._live is None:
+            # transient=True：Live 停止时擦掉自己画的全部帧，
+            # 这样流式中途断线重试时半截输出不会残留在屏幕上
             self._live = Live(console=self.console, refresh_per_second=12,
-                              vertical_overflow="visible")
+                              vertical_overflow="visible", transient=True)
             self._live.start()
         self._buf.append(s)
         self._refresh_frame()
 
     def text_end(self):
         if self._live is not None:
-            self._live.update(Markdown("".join(self._buf)))
             self._live.stop()
             self._live = None
+        if self._buf:
+            self.console.print(Markdown("".join(self._buf)))
+        self._buf = []
+
+    def text_discard(self):
+        """丢弃未完成的流式输出（上游断线/空回复重试时用），不留残留。"""
+        if self._live is not None:
+            self._live.stop()
+            self._live = None
+        self._buf = []
 
     def abort(self):
         self.think_end()

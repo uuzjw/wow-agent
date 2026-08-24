@@ -5,6 +5,7 @@ import time
 from datetime import date
 from pathlib import Path
 
+import httpx
 import openai
 from openai import OpenAI
 
@@ -18,6 +19,17 @@ FILE_TOOLS = ("write_file", "edit_file")
 # 401/403 属于 key 配错，重试无意义，直接报给用户。
 TRANSIENT_ERRORS = (openai.APIConnectionError, openai.RateLimitError,
                     openai.InternalServerError)
+
+
+def make_client():
+    """统一客户端：关掉 SDK 内部重试（退避由 run_turn 控制），缩短超时快速失败，
+    避免免费档上游卡死时一次调用就挂几分钟。"""
+    return OpenAI(
+        api_key=config.API_KEY or "none",
+        base_url=config.BASE_URL,
+        timeout=httpx.Timeout(connect=10.0, read=90.0, write=30.0, pool=10.0),
+        max_retries=0,
+    )
 
 
 class EmptyReplyError(RuntimeError):
@@ -125,7 +137,7 @@ def _stream_assistant(client, messages, ui, tools_schema=None, label=None):
                 finish = choice.finish_reason
     finally:
         ui.think_end()
-    if not content_parts and not tool_calls:
+    if not tool_calls and not any(p.strip() for p in content_parts):
         raise EmptyReplyError(
             f"模型返回空回复（finish_reason={finish}），"
             "该模型可能不支持工具调用；可 /model 切换到 "
@@ -198,20 +210,23 @@ def run_turn(client, messages, ui, on_progress=None):
         msg = None
         for attempt in range(6):
             ui.text_begin()
+            ok = False
             try:
                 msg = _stream_assistant(client, messages, ui)
+                ok = True
                 break
             except (EmptyReplyError,) + TRANSIENT_ERRORS as e:
-                wait = min(1 + attempt, 4)
+                wait = min(2 ** attempt, 8)
                 if attempt < 5:
                     if isinstance(e, EmptyReplyError):
-                        reason = str(e)
+                        reason, kind = str(e), "空回复"
                     else:
                         reason = f"{type(e).__name__}: {str(e)[:100]}"
+                        kind = "上游错误"
                     ui.console.print(
                         f"[yellow]{reason}[/yellow]\n"
-                        f"[yellow]· 上游波动，{wait}s 后自动重试 "
-                        f"{attempt + 1}/5…[/yellow]")
+                        f"[yellow]· {kind}，{wait}s 后自动重试 "
+                        f"{attempt + 1}/5…（半截输出已丢弃）[/yellow]")
                     time.sleep(wait)
                 else:
                     if isinstance(e, EmptyReplyError):
@@ -224,7 +239,10 @@ def run_turn(client, messages, ui, on_progress=None):
                                    "elapsed": time.perf_counter() - t0,
                                    "empty": True}
             finally:
-                ui.text_end()
+                if ok:
+                    ui.text_end()
+                else:
+                    ui.text_discard()
         if callable(on_progress):
             on_progress()
         calls = msg.get("tool_calls")

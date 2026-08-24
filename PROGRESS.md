@@ -1,13 +1,31 @@
 # wow-agent 开发进度存档
 
-> 更新时间: 2026-08-24 | 状态: v0.5.0 UI 重构（opencode 式输入框）
+> 更新时间: 2026-08-24 | 状态: v0.5.2 ox alpha 兼容性强化
 > 恢复方式: 对 AI 说「继续对话」，让它读本文件了解上下文
 
 ## 项目定位
 对标 Claude Code / opencode 的终端编码 agent，运行在 Jetson Orin NX (ARM64)。
 Python 3.10+ / uv 管理；依赖 openai / httpx[socks] / prompt_toolkit / rich。
+GitHub: https://github.com/uuzjw/wow-agent（MIT）
 
-## v0.5.0 新增（UI 重构版）
+## v0.5.2 新增（ox alpha 兼容性 + 上手体验）
+1. **半截输出不残留**：Live 改 transient 渲染，流式中途断线重试时自动丢弃
+   半截回答（text_discard），不再出现"半截+完整"两份重复内容
+2. **SDK 隐形重试收编**：make_client 统一构造 OpenAI 客户端，max_retries=0 +
+   超时收紧（connect 10s / read 90s），退避完全由 run_turn 控制并带指数回退
+   （1/2/4/8s），免费档上游卡死不再一次调用挂几分钟；cli/subagent 共用
+3. **纯空白回复修复**：模型返回全空白 content 也按空回复处理重试，
+   不再静默"成功"
+4. **401 根因防线**：/model 向导把服务商说明提到输 key 之前；已知前缀
+   key 归属校验（OpenRouter/OpenAI/Groq/Gemini/Anthropic 填错家会拦下确认）；
+   fetch_models 在线验 key，失败明确告警"key 可能无效"；401 报错给出去哪拿
+   正确 key 的指引（Zen → opencode.ai/auth）
+5. **断网沙盒回归**：v0.3 的 unshare -n / 代理黑洞沙盒曾在重构中丢失导致
+   /safe 必崩，已恢复；/safe 现为安全模式总开关（沙盒+外传批准一起切）
+6. **UI 修复**：tool_result 双重打印 bug（每次工具输出渲染两遍）
+7. **README + LICENSE(MIT) + GitHub 发布**：uv 一条命令安装路径已实测
+
+## v0.5.0 已有 ✅
 1. **圆角输入框**：`╭─ wow · 服务商/模型 ─╮ │ ❯ ╰─ 模式·任务·/help ─╯`，
    自绘边框（prompt_toolkit bottom_toolbar 在部分环境不渲染，弃用）；
    盒子随提交留在滚动记录里形成对话气泡

@@ -2,8 +2,6 @@
 
 import json
 
-from openai import OpenAI
-
 from . import config
 from .tools import TOOLS_SCHEMA, execute
 
@@ -24,10 +22,9 @@ SUB_SYSTEM = (
 
 
 def run(prompt, ui, description=""):
-    from .agent import _stream_assistant
+    from .agent import _stream_assistant, make_client
 
-    client = OpenAI(api_key=config.API_KEY or "none",
-                    base_url=config.BASE_URL)
+    client = make_client()
     messages = [{"role": "system", "content": SUB_SYSTEM},
                 {"role": "user", "content": prompt}]
     head = " ".join((description or prompt).split())[:60]
