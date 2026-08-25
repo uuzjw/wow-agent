@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """冒烟测试：python3 tests_smoke.py（不需要网络和 API key）。"""
 
 import os

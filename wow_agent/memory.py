@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """长期记忆：跨目录跨会话的经验摘要存档，任何目录启动 wow 都能 /mem 调用。"""
 
 import json

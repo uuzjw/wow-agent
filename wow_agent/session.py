@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """会话保存与恢复：每轮对话后自动存档，/resume 恢复继续聊。"""
 
 import json

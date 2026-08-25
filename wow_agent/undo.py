@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """改动快照：磁盘持久化，跨重启也能 /undo 逐步还原 AI 的文件修改。"""
 
 import json

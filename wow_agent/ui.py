@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """终端 UI：流式 Markdown 渲染、思考 spinner、工具卡片、彩色 diff、状态行、任务树面板。"""
 
 import os

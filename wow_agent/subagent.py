@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """只读子代理：全新干净上下文 + 受限只读工具，调研后只把结论带回主对话。"""
 
 import json

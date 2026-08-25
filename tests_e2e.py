@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """端到端模拟：假 LLM 流式返回 → todo_write → task(打桩) → 最终回答。"""
 
 import os

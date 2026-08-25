@@ -1,5 +1,10 @@
 # wow-agent
 
+> **Copyright © 2026 uuzjw** · [MIT License](LICENSE) · 项目地址：https://github.com/uuzjw/wow-agent
+
+> **声明：本项目为作者 uuzjw 独立开发的终端编码 Agent，与任何同名同姓的开源项目无关。**
+> 反馈问题请到[本仓库](https://github.com/uuzjw/wow-agent/issues)提 Issue，避免跑错仓库。
+
 终端里的编码 agent —— 对标 Claude Code / opencode 的开源实现。跑在本地终端，
 接任意 OpenAI 兼容大模型 API，能读写文件、执行 shell、自建任务计划、派子代理调研代码。
 

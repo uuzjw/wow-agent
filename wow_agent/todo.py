@@ -1,3 +1,6 @@
+# Copyright (c) 2026 uuzjw. MIT License.
+# wow-agent - 独立开发的终端编码 Agent · https://github.com/uuzjw/wow-agent
+
 """任务清单：todo_write 维护带状态/优先级/父子结构的计划树，实时持久化。"""
 
 import json
