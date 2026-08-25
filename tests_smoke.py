@@ -6,6 +6,7 @@
 import os
 import sys
 import tempfile
+from pathlib import Path
 
 os.environ["WOW_AGENT_HOME"] = tempfile.mkdtemp(prefix="wow-test-")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -97,6 +98,32 @@ check("记忆保存/读取", row and row["title"] == "标题X")
 check("记忆列表", any(d["summary"] == "测试摘要内容" for d in mem.listing()))
 mem.delete(mid)
 check("记忆删除", all(d["id"] != mid for d in mem.listing()))
+
+base = [mem.save(f"s{i}", title=f"c{i}") for i in range(mem.MAX_MEMS)]
+mem.save("旧的多余项", title="extra-old")
+mem.save("新的多余项", title="extra-new")
+removed = mem.enforce_cap()
+check("记忆超限自动清理最旧",
+      removed == 2 and len(mem.listing()) == mem.MAX_MEMS
+      and all(d["id"] != base[0] for d in mem.listing()))
+check("同名记忆可定位去重",
+      mem.find_title("extra-new") is not None
+      and mem.find_title("") is None)
+for d in mem.listing():
+    mem.delete(d["id"])
+
+big = Path(tempfile.mkdtemp(prefix="wow-read-")) / "big.txt"
+big.write_text("\n".join(f"line{i}" for i in range(1, 5001)), encoding="utf-8")
+r1 = tools.execute("read_file", {"path": str(big)})
+check("read_file 默认截断并提示续读",
+      "共 5000 行" in r1 and "显示第 1-2000 行" in r1 and "offset=2001" in r1)
+r2 = tools.execute("read_file",
+                   {"path": str(big), "offset": 2001, "limit": 100})
+check("read_file 分块读取",
+      r2.splitlines()[1] == "line2001" and "显示第 2001-2100 行" in r2)
+r3 = tools.execute("read_file", {"path": str(big), "offset": 4999, "limit": 99})
+check("read_file 越界截到末尾不炸",
+      "显示第 4999-5000 行" in r3 and "续读" not in r3)
 
 sid = sess.new_id()
 sess.save(sid, [{"role": "user", "content": "hi"}], {}, todos=[{"content": "a"}])

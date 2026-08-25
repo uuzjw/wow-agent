@@ -62,10 +62,19 @@ TOOLS_SCHEMA = [
         "type": "function",
         "function": {
             "name": "read_file",
-            "description": "读取文本文件内容。",
+            "description": (
+                "读取文本文件内容，返回头部元信息（总行数/当前区间/续读 offset）。"
+                "大文件先用默认调用看前 2000 行，再用 offset+limit 分块续读，"
+                "不要试图一次吞下整个文件。"),
             "parameters": {
                 "type": "object",
-                "properties": {"path": {"type": "string", "description": "文件路径"}},
+                "properties": {
+                    "path": {"type": "string", "description": "文件路径"},
+                    "offset": {"type": "integer",
+                               "description": "起始行号（从 1 开始），默认 1"},
+                    "limit": {"type": "integer",
+                              "description": "本次读取的行数，默认 2000"},
+                },
                 "required": ["path"],
             },
         },
@@ -262,15 +271,24 @@ def _run_bash(command, timeout=60):
         return f"[错误] 命令超过 {timeout}s 未完成，已终止"
 
 
-def _read_file(path):
+def _read_file(path, offset=1, limit=0):
+    """分块读取：头部带总行数/当前区间/续读 offset，大文件不再一次吞爆上下文。"""
     p = Path(path).expanduser()
     if not p.exists():
         return f"[错误] 文件不存在: {p}"
-    data = p.read_text(encoding="utf-8", errors="replace")
-    lines = data.splitlines()
-    if len(lines) > 2000:
-        data = "\n".join(lines[:2000]) + "\n...[仅显示前 2000 行]"
-    return _truncate(data)
+    lines = p.read_text(encoding="utf-8", errors="replace").splitlines()
+    total = len(lines)
+    start = min(max(int(offset), 1), max(total, 1)) - 1
+    n = int(limit) if int(limit) > 0 else 2000
+    chunk = lines[start:start + n]
+    if not total:
+        head = f"[{p.name} 空文件]"
+    else:
+        head = (f"[{p.name} 共 {total} 行 · "
+                f"显示第 {start + 1}-{start + len(chunk)} 行]")
+        if start + len(chunk) < total:
+            head += f" · 续读 offset={start + len(chunk) + 1}"
+    return _truncate(f"{head}\n" + "\n".join(chunk))
 
 
 def _write_file(path, content):
@@ -330,7 +348,8 @@ def _grep_search(pattern, path=".", include=None):
 
 EXECUTORS = {
     "run_bash": lambda a: _run_bash(a["command"], int(a.get("timeout", 60))),
-    "read_file": lambda a: _read_file(a["path"]),
+    "read_file": lambda a: _read_file(a["path"], int(a.get("offset", 1)),
+                                      int(a.get("limit", 0))),
     "write_file": lambda a: _write_file(a["path"], a["content"]),
     "edit_file": lambda a: _edit_file(a["path"], a["old_string"], a["new_string"]),
     "glob_files": lambda a: _glob_files(a["pattern"], a.get("path", ".")),

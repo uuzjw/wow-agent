@@ -22,7 +22,8 @@ Linux x86_64 / ARM64（Jetson Orin NX 实测）为主场。
 - **长期记忆**：`/mem save` 把对话压缩成经验摘要，任何目录 `/mem use` 随时调用
 - **安全防线**：断网沙盒执行 shell（unshare -n / 代理黑洞）、上传外发命令强制批准、
   高危命令二次确认、AI 改动可 `/undo` 撤销
-- **上下文管理**：流式 Markdown 渲染、超长历史自动 LLM 压缩、会话持久化与 `/resume`
+- **上下文管理**：流式 Markdown 渲染、超长历史自动 LLM 压缩、大文件 offset/limit
+  分块读取、会话持久化与 `/resume`；同调用连刷 3 次自动警告防死循环
 - **opencode 式 UI**：圆角输入框、工具调用卡片、彩色 diff、思考过程计数
 
 ## 安装

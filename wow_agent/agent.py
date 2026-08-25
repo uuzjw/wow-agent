@@ -53,7 +53,12 @@ def system_prompt(cwd):
         "- 完成用户请求即停止，不做多余动作\n"
         "- 每次只做用户要求的事，未经允许不 commit、不删除文件\n"
         "- 联网查资料、下载、装包都可以；但严禁未经用户批准把本地文件、代码、"
-        "密钥等数据上传到网络（git push、scp、curl POST 等都会被拦截确认）\n\n"
+        "密钥等数据上传到网络（git push、scp、curl POST 等都会被拦截确认）\n"
+        "- 工具调用失败时：先分析报错根因（路径不对？依赖缺失？权限不足？），"
+        "修复后再试；同一做法连败两次就换别的方案，禁止原样硬试\n"
+        "- 声称完成之前必须验证：write/edit 之后回读改动处确认生效，"
+        "代码改动要跑测试或 import 冒烟检查；验证不过就继续修，"
+        "绝不凭空宣称已完成\n\n"
         "协作机制:\n"
         "- 收到多步骤任务，先 todo_write 拆解成带 priority 的计划（大任务用 parent "
         "拆子任务），随后每完成一步立即 todo_write 更新状态和 note；单步小任务不必用\n"
@@ -205,9 +210,21 @@ def _execute_tool(call, ui):
     return result, elapsed
 
 
+def _call_sig(call):
+    """规范化工具调用签名（参数键排序），用于识别原地打转的重复调用。"""
+    raw = call["function"].get("arguments") or "{}"
+    try:
+        args = json.dumps(json.loads(raw), sort_keys=True, ensure_ascii=False)
+    except json.JSONDecodeError:
+        args = raw
+    return (call["function"]["name"], args)
+
+
 def run_turn(client, messages, ui, on_progress=None):
     turns = 0
     t0 = time.perf_counter()
+    last_sig = None
+    repeat_n = 0
     for _ in range(config.MAX_ITER):
         turns += 1
         msg = None
@@ -257,10 +274,20 @@ def run_turn(client, messages, ui, on_progress=None):
             ui.tool_start(name, call["function"]["arguments"])
             result, dt = _execute_tool(call, ui)
             ui.tool_result(name, result, dt)
+            content = result[:20000]
+            sig = _call_sig(call)
+            repeat_n = repeat_n + 1 if sig == last_sig else 0
+            last_sig = sig
+            if repeat_n >= 2:
+                content += (
+                    "\n[系统警告] 同一工具调用已连续 3 次得到相同结果，"
+                    "禁止再原样重试：先分析失败或无进展的根因，换一种做法，"
+                    "或直接向用户说明障碍请求决策。")
+                repeat_n = 0
             messages.append({
                 "role": "tool",
                 "tool_call_id": call["id"],
-                "content": result[:20000],
+                "content": content,
             })
             if callable(on_progress):
                 on_progress()

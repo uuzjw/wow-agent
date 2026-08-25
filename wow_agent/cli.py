@@ -493,8 +493,17 @@ def cmd_mem(line, messages, state, ui):
                     break
         mid = mem.save(summary, title=title, cwd=str(Path.cwd()),
                        model=config.MODEL)
+        dup = mem.find_title(title)
+        if dup and dup["id"] != mid:
+            mem.delete(dup["id"])
+        pruned = mem.enforce_cap()
+        note = ""
+        if dup and dup["id"] != mid:
+            note = " · 同名旧记忆已更新"
+        if pruned:
+            note += f" · 超 {mem.MAX_MEMS} 条已自动清理最旧 {pruned} 条"
         console.print(f"[green]✓ 记忆已保存[/green] [cyan]{mid}[/cyan] "
-                      f"[dim]{title} · 任何目录 /mem use 可调用[/dim]")
+                      f"[dim]{title}{note} · 任何目录 /mem use 可调用[/dim]")
     elif sub == "use":
         d = pick(parts[2].strip() if len(parts) > 2 else "")
         if d is None:

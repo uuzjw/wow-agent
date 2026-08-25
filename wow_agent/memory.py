@@ -25,9 +25,17 @@ def listing(limit=50):
 
 
 def save(summary, title="", cwd="", model=""):
-    mid = "m" + time.strftime("%m%d-%H%M%S")
     try:
         DIR.mkdir(parents=True, exist_ok=True)
+        mid = ""
+        for _ in range(50):
+            cand = ("m" + time.strftime("%m%d-%H%M%S")
+                    + f"-{time.time_ns():019d}")
+            if not (DIR / f"{cand}.json").exists():
+                mid = cand
+                break
+        if not mid:
+            return ""
         data = {"id": mid, "title": title or "未命名记忆",
                 "summary": summary, "cwd": cwd, "model": model,
                 "created": time.time()}
@@ -43,3 +51,22 @@ def delete(mid):
         (DIR / f"{mid}.json").unlink(missing_ok=True)
     except OSError:
         pass
+
+
+MAX_MEMS = 30
+
+
+def find_title(title):
+    """按标题定位已有记忆（用于保存时去重更新）；空标题不参与。"""
+    if not title:
+        return None
+    return next((d for d in listing() if d.get("title") == title), None)
+
+
+def enforce_cap(limit=MAX_MEMS):
+    """超过上限自动清理最旧的记忆，防止记忆库无限膨胀污染上下文。"""
+    removed = 0
+    for d in reversed(listing()[limit:]):
+        delete(d["id"])
+        removed += 1
+    return removed

@@ -1,12 +1,24 @@
 # wow-agent 开发进度存档
 
-> 更新时间: 2026-08-24 | 状态: v0.5.2 ox alpha 兼容性强化
+> 更新时间: 2026-08-25 | 状态: v0.5.3 Agent 可靠性四件套
 > 恢复方式: 对 AI 说「继续对话」，让它读本文件了解上下文
 
 ## 项目定位
 对标 Claude Code / opencode 的终端编码 agent，运行在 Jetson Orin NX (ARM64)。
 Python 3.10+ / uv 管理；依赖 openai / httpx[socks] / prompt_toolkit / rich。
 GitHub: https://github.com/uuzjw/wow-agent（MIT）
+声明: 独立开发，与同名开源项目无关（README 顶部 + 全部 .py 版权头已加，v0.5.2 后提交）
+
+## v0.5.3 新增（可靠性四件套）
+1. **read_file 分块读取** (`tools.py`)：offset/limit 参数；返回头部元信息
+   （总行数/当前区间/续读 offset=...），大文件不再一次吞爆上下文
+2. **提示词强化** (`agent.py` system_prompt)：工具失败必须先析因再换法
+   （同法连败两次禁原样硬试）；声称完成前强制回读验证 + 跑测试/import 冒烟
+3. **循环检测** (`agent.py` run_turn + _call_sig)：同签名调用连续 3 次同结果
+   → 注入系统警告逼模型换思路；签名 JSON 规范化（键排序）防参数序误判，
+   警告后计数归零
+4. **记忆防污染** (`memory.py` + `cli.py`)：/mem save 同名记忆自动更新旧条目；
+   超 MAX_MEMS=30 条自动清理最旧并提示
 
 ## v0.5.2 新增（ox alpha 兼容性 + 上手体验）
 1. **半截输出不残留**：Live 改 transient 渲染，流式中途断线重试时自动丢弃
