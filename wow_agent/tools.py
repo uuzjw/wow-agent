@@ -8,7 +8,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from . import todo
+from . import i18n, todo
+from .i18n import tr
 
 MAX_OUTPUT = 10000
 
@@ -300,26 +301,30 @@ def _run_bash(command, timeout=60):
             out += "\n[stderr]\n" + r.stderr
         return _truncate(f"[exit {r.returncode}]\n{out.strip()}")
     except subprocess.TimeoutExpired:
-        return f"[错误] 命令超过 {timeout}s 未完成，已终止"
+        return tr(f"[错误] 命令超过 {timeout}s 未完成，已终止",
+                  f"[error] Command exceeded {timeout}s timeout, terminated")
 
 
 def _read_file(path, offset=1, limit=0):
     """分块读取：头部带总行数/当前区间/续读 offset，大文件不再一次吞爆上下文。"""
     p = Path(path).expanduser()
     if not p.exists():
-        return f"[错误] 文件不存在: {p}"
+        return tr(f"[错误] 文件不存在: {p}", f"[error] File not found: {p}")
     lines = p.read_text(encoding="utf-8", errors="replace").splitlines()
     total = len(lines)
     start = min(max(int(offset), 1), max(total, 1)) - 1
     n = int(limit) if int(limit) > 0 else 2000
     chunk = lines[start:start + n]
     if not total:
-        head = f"[{p.name} 空文件]"
+        head = tr(f"[{p.name} 空文件]", f"[{p.name} empty]")
     else:
-        head = (f"[{p.name} 共 {total} 行 · "
-                f"显示第 {start + 1}-{start + len(chunk)} 行]")
+        head = (tr(f"[{p.name} 共 {total} 行 · ",
+                     f"[{p.name} total {total} lines · ")
+                + tr(f"显示第 {start + 1}-{start + len(chunk)} 行]",
+                     f"showing lines {start + 1}-{start + len(chunk)}]"))
         if start + len(chunk) < total:
-            head += f" · 续读 offset={start + len(chunk) + 1}"
+            head += tr(f" · 续读 offset={start + len(chunk) + 1}",
+                       f" · next offset={start + len(chunk) + 1}")
     return _truncate(f"{head}\n" + "\n".join(chunk))
 
 
@@ -327,21 +332,25 @@ def _write_file(path, content):
     p = Path(path).expanduser()
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(content, encoding="utf-8")
-    return f"已写入 {p}（{len(content)} 字符）"
+    return tr(f"已写入 {p}（{len(content)} 字符）",
+              f"Written {p} ({len(content)} chars)")
 
 
 def _edit_file(path, old_string, new_string):
     p = Path(path).expanduser()
     if not p.exists():
-        return f"[错误] 文件不存在: {p}"
+        return tr(f"[错误] 文件不存在: {p}", f"[error] File not found: {p}")
     text = p.read_text(encoding="utf-8")
     n = text.count(old_string)
     if n == 0:
-        return "[错误] old_string 未找到"
+        return tr("[错误] old_string 未找到",
+                  "[error] old_string not found")
     if n > 1:
-        return f"[错误] old_string 出现了 {n} 次，需提供更长的上下文使其唯一"
+        return tr(f"[错误] old_string 出现了 {n} 次，需提供更长的上下文使其唯一",
+                  f"[error] old_string appears {n} times; provide longer "
+                  "context to make it unique")
     p.write_text(text.replace(old_string, new_string, 1), encoding="utf-8")
-    return f"已修改 {p}"
+    return tr(f"已修改 {p}", f"Edited {p}")
 
 
 def _glob_files(pattern, path="."):
@@ -350,14 +359,16 @@ def _glob_files(pattern, path="."):
         str(m) for m in root.glob(pattern)
         if m.is_file() and ".git" not in m.parts
     )
-    return _truncate("\n".join(matches) if matches else "[无匹配]")
+    return _truncate("\n".join(matches) if matches else
+                     tr("[无匹配]", "[no matches]"))
 
 
 def _grep_search(pattern, path=".", include=None):
     try:
         rx = re.compile(pattern)
     except re.error as e:
-        return f"[错误] 正则不合法: {e}"
+        return tr(f"[错误] 正则不合法: {e}",
+                  f"[error] Invalid regex: {e}")
     root = Path(path).expanduser()
     files = [root] if root.is_file() else (
         f for f in root.rglob("*")
@@ -371,11 +382,13 @@ def _grep_search(pattern, path=".", include=None):
                 if rx.search(line):
                     hits.append(f"{f}:{i}: {line.strip()}")
                     if len(hits) >= 200:
-                        hits.append("...[匹配过多，已截断]")
+                        hits.append(tr("...[匹配过多，已截断]",
+                                       "...[truncated, too many matches]"))
                         return _truncate("\n".join(hits))
         except OSError:
             continue
-    return _truncate("\n".join(hits) if hits else "[无匹配]")
+    return _truncate("\n".join(hits) if hits else
+                     tr("[无匹配]", "[no matches]"))
 
 
 def _code_index(args):

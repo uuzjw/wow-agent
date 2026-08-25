@@ -12,7 +12,8 @@ import httpx
 import openai
 from openai import OpenAI
 
-from . import config, todo, undo
+from . import config, i18n, todo, undo
+from .i18n import tr
 from .subagent import run as run_subtask
 from .tools import TOOLS_SCHEMA, is_dangerous, is_upload_like
 
@@ -50,30 +51,64 @@ class EmptyReplyError(RuntimeError):
 
 
 def system_prompt(cwd):
+    if i18n.LANG == "zh":
+        return (
+            f"你是 wow-agent，一个运行在终端里的编码助手，底层模型是 {config.MODEL}。\n"
+            f"工作目录: {cwd}\n"
+            f"平台: {platform.system()} {platform.machine()}\n"
+            f"日期: {date.today().isoformat()}\n\n"
+            "规则:\n"
+            "- 用简体中文回复\n"
+            "- 回答简洁直接，不啰嗦\n"
+            "- 修改文件前先 read_file 看现有内容；编辑优先用 edit_file 做精确替换\n"
+            "- 探索代码用 glob_files / grep_search，目录列表可用 run_bash ls\n"
+            "- 完成用户请求即停止，不做多余动作\n"
+            "- 每次只做用户要求的事，未经允许不 commit、不删除文件\n"
+            "- 联网查资料、下载、装包都可以；但严禁未经用户批准把本地文件、代码、"
+            "密钥等数据上传到网络（git push、scp、curl POST 等都会被拦截确认）\n"
+            "- 工具调用失败时：先分析报错根因（路径不对？依赖缺失？权限不足？），"
+            "修复后再试；同一做法连败两次就换别的方案，禁止原样硬试\n"
+            "- 声称完成之前必须验证：write/edit 之后回读改动处确认生效，"
+            "代码改动要跑测试或 import 冒烟检查；验证不过就继续修，"
+            "绝不凭空宣称已完成\n\n"
+            "协作机制:\n"
+            "- 收到多步骤任务，先 todo_write 拆解成带 priority 的计划（大任务用 parent "
+            "拆子任务），随后每完成一步立即 todo_write 更新状态和 note；单步小任务不必用\n"
+            "- 需要大范围查代码、调研方案时，用 task 派只读子代理去搜，"
+            "只让它回结论，避免主对话被文件内容塞满")
     return (
-        f"你是 wow-agent，一个运行在终端里的编码助手，底层模型是 {config.MODEL}。\n"
-        f"工作目录: {cwd}\n"
-        f"平台: {platform.system()} {platform.machine()}\n"
-        f"日期: {date.today().isoformat()}\n\n"
-        "规则:\n"
-        "- 用简体中文回复\n"
-        "- 回答简洁直接，不啰嗦\n"
-        "- 修改文件前先 read_file 看现有内容；编辑优先用 edit_file 做精确替换\n"
-        "- 探索代码用 glob_files / grep_search，目录列表可用 run_bash ls\n"
-        "- 完成用户请求即停止，不做多余动作\n"
-        "- 每次只做用户要求的事，未经允许不 commit、不删除文件\n"
-        "- 联网查资料、下载、装包都可以；但严禁未经用户批准把本地文件、代码、"
-        "密钥等数据上传到网络（git push、scp、curl POST 等都会被拦截确认）\n"
-        "- 工具调用失败时：先分析报错根因（路径不对？依赖缺失？权限不足？），"
-        "修复后再试；同一做法连败两次就换别的方案，禁止原样硬试\n"
-        "- 声称完成之前必须验证：write/edit 之后回读改动处确认生效，"
-        "代码改动要跑测试或 import 冒烟检查；验证不过就继续修，"
-        "绝不凭空宣称已完成\n\n"
-        "协作机制:\n"
-        "- 收到多步骤任务，先 todo_write 拆解成带 priority 的计划（大任务用 parent "
-        "拆子任务），随后每完成一步立即 todo_write 更新状态和 note；单步小任务不必用\n"
-        "- 需要大范围查代码、调研方案时，用 task 派只读子代理去搜，"
-        "只让它回结论，避免主对话被文件内容塞满")
+        f"You are wow-agent, a coding assistant running in a terminal, "
+        f"powered by {config.MODEL}.\n"
+        f"Working directory: {cwd}\n"
+        f"Platform: {platform.system()} {platform.machine()}\n"
+        f"Date: {date.today().isoformat()}\n\n"
+        "Rules:\n"
+        "- Reply in English\n"
+        "- Be concise and direct, no fluff\n"
+        "- read_file before modifying; prefer edit_file for precise edits\n"
+        "- Use glob_files / grep_search to explore code; run_bash ls for "
+        "listings\n"
+        "- Stop once the request is fulfilled; no extra actions\n"
+        "- Only do what the user asked; never commit or delete files "
+        "without permission\n"
+        "- Web lookups, downloads and installs are fine; NEVER upload local "
+        "files, code or secrets without approval (git push, scp, curl POST "
+        "are intercepted for confirmation)\n"
+        "- When a tool call fails: analyze the root cause first (wrong "
+        "path? missing dependency? permissions?), fix and retry; after two "
+        "failures with the same approach switch strategies — never retry "
+        "blindly\n"
+        "- Verify before claiming done: after write/edit re-read the "
+        "change; for code run tests or an import smoke check; if "
+        "verification fails keep fixing — never claim success out of thin "
+        "air\n\n"
+        "Collaboration:\n"
+        "- For multi-step tasks first todo_write a plan with priorities "
+        "(use parent for subtasks), then update status/note via todo_write "
+        "after each step; single-step tasks don't need it\n"
+        "- For broad code research use task to dispatch a read-only "
+        "subagent and bring back only conclusions, keeping the main "
+        "context clean")
 
 
 def est_tokens(messages):
@@ -107,7 +142,8 @@ def _read_maybe(p):
 
 
 def _stream_assistant(client, messages, ui, tools_schema=None, label=None):
-    ui.think_begin(label or f"思考中 · {config.MODEL}")
+    ui.think_begin(label or tr(f"思考中 · {config.MODEL}",
+                               f"thinking · {config.MODEL}"))
     stream = client.chat.completions.create(
         model=config.MODEL,
         messages=messages,
@@ -134,8 +170,9 @@ def _stream_assistant(client, messages, ui, tools_schema=None, label=None):
                   or getattr(delta, "reasoning", None))
             if rc:
                 think_n += len(rc)
-                ui.think_update(
-                    f"思考中 · {config.MODEL}（已思考 {think_n} 字）")
+                ui.think_update(tr(
+                    f"思考中 · {config.MODEL}（已思考 {think_n} 字）",
+                    f"thinking · {config.MODEL} ({think_n} chars so far)"))
             if delta.content:
                 content_parts.append(delta.content)
                 ui.text_delta(delta.content)
@@ -156,10 +193,13 @@ def _stream_assistant(client, messages, ui, tools_schema=None, label=None):
     finally:
         ui.think_end()
     if not tool_calls and not any(p.strip() for p in content_parts):
-        raise EmptyReplyError(
+        raise EmptyReplyError(tr(
             f"模型返回空回复（finish_reason={finish}），"
             "该模型可能不支持工具调用；可 /model 切换到 "
-            "nemotron-3-ultra-free 或 hy3-free")
+            "nemotron-3-ultra-free 或 hy3-free",
+            f"Empty reply (finish_reason={finish}); the model may not "
+            "support tool calls — /model to switch to nemotron-3-ultra-free "
+            "or hy3-free"))
     msg = {"role": "assistant", "content": "".join(content_parts)}
     if tool_calls:
         msg["tool_calls"] = [tool_calls[i] for i in sorted(tool_calls)]
@@ -245,8 +285,11 @@ def run_turn(client, messages, ui, on_progress=None):
     cid = f"t{time.time_ns()}"
     last_sig = None
     repeat_n = 0
+    auth_n = 0
     for _ in range(config.MAX_ITER):
         turns += 1
+        if getattr(ui, "abort_requested", False):
+            raise KeyboardInterrupt
         msg = None
         for attempt in range(6):
             ui.text_begin()
@@ -259,25 +302,45 @@ def run_turn(client, messages, ui, on_progress=None):
                 wait = min(2 ** attempt, 8)
                 if attempt < 5:
                     if isinstance(e, EmptyReplyError):
-                        reason, kind = str(e), "空回复"
+                        reason, kind = str(e), tr("空回复", "empty reply")
                     else:
                         reason = f"{type(e).__name__}: {str(e)[:100]}"
-                        kind = "上游错误"
+                        kind = tr("上游错误", "upstream error")
                     ui.console.print(
                         f"[yellow]{reason}[/yellow]\n"
-                        f"[yellow]· {kind}，{wait}s 后自动重试 "
-                        f"{attempt + 1}/5…（半截输出已丢弃）[/yellow]")
+                        f"[yellow]· {kind}，"
+                        + tr(f"{wait}s 后自动重试 {attempt + 1}/5…"
+                             "（半截输出已丢弃）",
+                             f"retrying in {wait}s ({attempt + 1}/5…"
+                             ", partial output discarded)")
+                        + "[/yellow]")
                     time.sleep(wait)
                 else:
                     if isinstance(e, EmptyReplyError):
                         ui.console.print(f"[red]{e}[/red]")
                     else:
                         ui.console.print(
-                            f"[red]上游连续 6 次失败，放弃本轮: "
-                            f"{type(e).__name__}: {str(e)[:160]}[/red]")
+                            f"[red]"
+                            + tr("上游连续 6 次失败，放弃本轮: ",
+                                 "Upstream failed 6 times, giving up: ")
+                            + f"{type(e).__name__}: {str(e)[:160]}[/red]")
                     return False, {"turns": turns,
                                    "elapsed": time.perf_counter() - t0,
                                    "empty": True, "cid": cid}
+            except openai.AuthenticationError:
+                # 实测 Zen 免费档网关过载时会间歇性乱报 401（key 实际有效），
+                # 先重试两次再判死，避免误杀真 key
+                auth_n += 1
+                if auth_n <= 2:
+                    ui.console.print(
+                        f"[yellow]· "
+                        + tr("401（上游偶发，key 可能有效），",
+                             "401 (upstream hiccup, key may be valid), ")
+                        + tr(f"重试 {auth_n}/2…", f"retry {auth_n}/2…")
+                        + "[/yellow]")
+                    time.sleep(1)
+                    continue
+                raise
             finally:
                 if ok:
                     ui.text_end()
@@ -291,6 +354,8 @@ def run_turn(client, messages, ui, on_progress=None):
                           "elapsed": time.perf_counter() - t0,
                           "cid": cid}
         for call in calls:
+            if getattr(ui, "abort_requested", False):
+                raise KeyboardInterrupt
             name = call["function"]["name"]
             ui.tool_start(name, call["function"]["arguments"])
             result, dt = _execute_tool(call, ui, cid=cid)
@@ -300,10 +365,15 @@ def run_turn(client, messages, ui, on_progress=None):
             repeat_n = repeat_n + 1 if sig == last_sig else 0
             last_sig = sig
             if repeat_n >= 2:
-                content += (
+                content += tr(
                     "\n[系统警告] 同一工具调用已连续 3 次得到相同结果，"
                     "禁止再原样重试：先分析失败或无进展的根因，换一种做法，"
-                    "或直接向用户说明障碍请求决策。")
+                    "或直接向用户说明障碍请求决策。",
+                    "\n[SYSTEM WARNING] The same tool call returned the "
+                    "same result 3 times in a row. Do NOT retry it as-is: "
+                    "analyze the root cause, try a different approach, or "
+                    "explain the blocker to the user and ask for a "
+                    "decision.")
                 repeat_n = 0
             messages.append({
                 "role": "tool",
@@ -316,13 +386,22 @@ def run_turn(client, messages, ui, on_progress=None):
                    "cid": cid}
 
 
-COMPACT_PROMPT = (
+COMPACT_PROMPT_ZH = (
     "请把以下 agent 对话历史压缩为一份摘要，必须保留：\n"
     "1. 用户的核心需求和偏好\n"
     "2. 已完成的关键操作及涉及的文件路径\n"
     "3. 重要结论和决定\n"
     "4. 未完成的事项\n"
     "直接输出摘要正文，不要客套话。")
+
+COMPACT_PROMPT_EN = (
+    "Compress the following agent conversation history into a summary. "
+    "Keep:\n"
+    "1. The user's core needs and preferences\n"
+    "2. Key completed operations and file paths involved\n"
+    "3. Important conclusions and decisions\n"
+    "4. Unfinished items\n"
+    "Output only the summary text, no pleasantries.")
 
 
 def compact(client, messages, ui=None, extra=None):
@@ -340,7 +419,9 @@ def compact(client, messages, ui=None, extra=None):
                 f"{tc['function']['arguments'][:200]}]")
         parts.append(f"[{role}] {c}" if c.strip() else "")
     payload = "\n".join(p for p in parts if p)
-    prompt = COMPACT_PROMPT + (f"\n额外要求: {extra}" if extra else "")
+    prompt = tr(COMPACT_PROMPT_ZH, COMPACT_PROMPT_EN) \
+        + (tr(f"\n额外要求: {extra}", f"\nExtra requirements: {extra}")
+           if extra else "")
     stream = client.chat.completions.create(
         model=config.MODEL,
         messages=[{"role": "user",

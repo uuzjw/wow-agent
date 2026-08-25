@@ -12,16 +12,44 @@ SUB_TOOLS = ("read_file", "glob_files", "grep_search", "run_bash")
 SCHEMA = [t for t in TOOLS_SCHEMA if t["function"]["name"] in SUB_TOOLS]
 RESULT_MAX = 8000
 
-SUB_SYSTEM = (
+"""只读子代理：全新干净上下文 + 受限只读工具，调研后只把结论带回主对话。"""
+
+import json
+
+from . import config, i18n
+from .i18n import tr
+from .tools import TOOLS_SCHEMA, execute
+
+SUB_TOOLS = ("read_file", "glob_files", "grep_search", "run_bash")
+SCHEMA = [t for t in TOOLS_SCHEMA if t["function"]["name"] in SUB_TOOLS]
+RESULT_MAX = 8000
+
+SUB_SYSTEM_ZH = (
     "你是 wow-agent 派出的调研子代理，在全新上下文里只读调研，"
     "结论会回传给主代理执行，所以只汇报结论，不执行修改。\n"
     "规则:\n"
-    "- 只允许 read_file / glob_files / grep_search 和查看类 bash 命令"
+    "- 只允许 read_file / glob_files / grep_search 和查看类 bash 命令\n"
     "（ls/cat/wc/find 等），严禁写入、修改、删除、安装、联网\n"
     "- 搜索要有的放矢：先 glob/grep 定位，再精读关键文件，不要逐个翻\n"
     f"- 最多 {config.SUB_ITER} 轮，在轮次内完成调研\n"
-    "- 调研完成后，最后一条回复只输出结论："
+    "- 调研完成后，最后一条回复只输出结论：\n"
     "关键发现 → 涉及文件:行号 → 对主任务的建议，500 字以内")
+
+SUB_SYSTEM_EN = (
+    "You are wow-agent's read-only research subagent, operating in a "
+    "fresh context; conclusions go back to the main agent, so report "
+    "only conclusions, never modify.\n"
+    "Rules:\n"
+    "- Only use read_file / glob_files / grep_search / read-only bash "
+    "(ls/cat/wc/find), strictly no writes, edits, deletes, installs, "
+    "or network\n"
+    "- Search with purpose: glob/grep to locate, then read key files "
+    "carefully; don't scan file by file\n"
+    f"- At most {config.SUB_ITER} turns, finish within turns\n"
+    "- Final reply: only the conclusion — key findings → files:lines → "
+    "recommendations for main task, within 500 words")
+
+SUB_SYSTEM = tr(SUB_SYSTEM_ZH, SUB_SYSTEM_EN)
 
 
 def run(prompt, ui, description="", system=None):
@@ -31,12 +59,14 @@ def run(prompt, ui, description="", system=None):
     messages = [{"role": "system", "content": system or SUB_SYSTEM},
                 {"role": "user", "content": prompt}]
     head = " ".join((description or prompt).split())[:60]
-    ui.console.print(f"  [magenta]┌ 子代理[/magenta] [dim]{head}[/dim]")
+    ui.console.print(tr(f"  [magenta]┌ 子代理[/magenta] [dim]{head}[/dim]",
+                        f"  [magenta]┌ subagent[/magenta] [dim]{head}[/dim]"))
     final = ""
     try:
         for it in range(config.SUB_ITER):
             msg = _stream_assistant(client, messages, ui, SCHEMA,
-                                    f"子代理调研 {it + 1}/{config.SUB_ITER}")
+                                    tr(f"子代理调研 {it + 1}/{config.SUB_ITER}",
+                                       f"subagent research {it + 1}/{config.SUB_ITER}"))
             calls = msg.get("tool_calls")
             if not calls:
                 final = (msg.get("content") or "").strip()
@@ -59,7 +89,9 @@ def run(prompt, ui, description="", system=None):
         else:
             final = (msg.get("content") or "").strip()
     finally:
-        ui.console.print("  [magenta]└ 子代理结束[/magenta]")
+        ui.console.print(tr("  [magenta]└ 子代理结束[/magenta]",
+                            "  [magenta]└ subagent done[/magenta]"))
     if not final:
-        final = "（子代理没有返回结论，已达轮次上限）"
+        final = tr("（子代理没有返回结论，已达轮次上限）",
+                   "(subagent returned no conclusion, hit turn limit)")
     return final[:RESULT_MAX]

@@ -8,6 +8,8 @@ import os
 import time
 from pathlib import Path
 
+from .i18n import tr
+
 ROOT = Path(os.environ.get("WOW_AGENT_HOME", str(Path.home()))) / ".wow-agent"
 STATE = ROOT / "todo.json"
 STATUSES = ("pending", "in_progress", "completed")
@@ -21,6 +23,13 @@ PHASE_LABEL = {
     "verifying": "🔍 验证中",
     "done": "✅ 已完成",
     "failed": "❌ 受阻",
+}
+PHASE_LABEL_EN = {
+    "planning": "📋 planning",
+    "executing": "⚙ executing",
+    "verifying": "🔍 verifying",
+    "done": "✅ done",
+    "failed": "❌ blocked",
 }
 _phase = "planning"
 
@@ -36,6 +45,12 @@ def set_phase(p):
         _persist()
         return True
     return False
+
+
+def phase_label():
+    from .i18n import tr
+    zh, en = PHASE_LABEL.get(_phase, _phase), PHASE_LABEL_EN.get(_phase, _phase)
+    return tr(zh, en)
 
 _items = []
 
@@ -67,17 +82,22 @@ def reset():
 def apply(args):
     rows = args.get("todos") if isinstance(args, dict) else None
     if not isinstance(rows, list) or not rows:
-        return "[错误] todos 必须是非空数组（每次全量提交整个清单）"
+        return tr("[错误] todos 必须是非空数组（每次全量提交整个清单）",
+                   "[error] todos must be a non-empty array (submit full "
+                   "list each time)")
     set_all(rows)
     if isinstance(args.get("phase"), str):
         set_phase(args["phase"].strip().lower())
     total, done, prog = counts()
     cur = next((t for t in _items if t["status"] == "in_progress"), None)
-    msg = f"清单已更新: 共{total}项 · 完成{done} · 阶段:{PHASE_LABEL[_phase]}"
+    ph = tr(PHASE_LABEL.get(_phase, _phase), PHASE_LABEL_EN.get(_phase, _phase))
+    msg = tr(f"清单已更新: 共{total}项 · 完成{done} · 阶段:{ph}",
+             f"List updated: {total} items · {done} done · phase:{ph}")
     if prog:
-        msg += f" · 进行中{prog}"
+        msg += tr(f" · 进行中{prog}", f" · {prog} in progress")
     if cur:
-        msg += f" | 当前: [{cur['id']}] {cur['content']}"
+        msg += tr(f" | 当前: [{cur['id']}] {cur['content']}",
+                  f" | current: [{cur['id']}] {cur['content']}")
     return msg
 
 

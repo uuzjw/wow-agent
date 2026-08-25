@@ -16,6 +16,10 @@ from wow_agent import memory as mem  # noqa: E402
 from wow_agent import session as sess  # noqa: E402
 from wow_agent.subagent import SUB_TOOLS  # noqa: E402
 from wow_agent.ui import render_todo_panel, UI  # noqa: E402
+from wow_agent import i18n, config  # noqa: E402
+
+# 测试用中文文案，断言基于中文
+i18n.LANG = "zh"
 
 
 def check(name, cond):
@@ -238,5 +242,17 @@ check("MCP initialize+list_tools", [t["name"] for t in tl] == ["echo"])
 out = srv.call("echo", {"text": "wow"})
 check("MCP tools/call 回声", out == "ECHO:wow")
 srv.stop()
+
+# ---- v0.7.0 语言切换测试 ----
+i18n.set_lang("en")
+check("i18n 默认英文",
+      i18n.tr("中文", "english") == "english")
+i18n.set_lang("zh")
+check("i18n 中文切换",
+      i18n.tr("中文", "english") == "中文")
+check("i18n 非法值忽略",
+      not i18n.set_lang("fr") and i18n.LANG == "zh")
+check("config LANGUAGE 默认英文",
+      config.LANGUAGE in ("en", "zh"))
 
 print("\nALL SMOKE TESTS PASSED")

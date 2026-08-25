@@ -16,38 +16,68 @@ from prompt_toolkit.styles import Style
 from prompt_toolkit.utils import get_cwidth
 from rich.text import Text
 
-from . import __version__, agent, config, memory as mem, session as sess, subagent, todo, tools, undo
+from . import (__version__, agent, config, i18n, memory as mem,
+               session as sess, subagent, todo, tools, undo)
+from .i18n import tr
 from .tools import _run_bash
 from .ui import UI, banner, console
 
-COMMANDS = {
-    "/help": "帮助",
-    "/model": "切换服务商/模型",
-    "/config": "查看配置",
-    "/status": "会话状态（上下文/todo/undo）",
-    "/compact": "压缩上下文历史",
-    "/undo": "撤销 AI 的最近一次文件修改",
-    "/mem": "长期记忆 save/use/rm/list/new",
-    "/resume": "恢复历史会话",
-    "/review": "只读代码审查（🔴高风险/🟡建议/🟢优化）",
-    "/safe": "开/关 外传防护（上传需批准）",
-    "/clear": "清空对话并开新会话",
-    "/exit": "退出",
-}
+
+def command_descriptions():
+    return {
+        "/help": tr("帮助", "Help"),
+        "/model": tr("切换服务商/模型", "Switch provider/model"),
+        "/config": tr("查看配置", "Show config"),
+        "/status": tr("会话状态（上下文/todo/undo）",
+                      "Session status (context/todo/undo)"),
+        "/compact": tr("压缩上下文历史", "Compact context history"),
+        "/undo": tr("撤销 AI 的最近一次文件修改",
+                    "Undo last AI file change"),
+        "/mem": tr("长期记忆 save/use/rm/list/new",
+                   "Long-term memory save/use/rm/list/new"),
+        "/resume": tr("恢复历史会话", "Resume a session"),
+        "/review": tr("只读代码审查（🔴高风险/🟡建议/🟢优化）",
+                      "Read-only code review"),
+        "/language": tr("切换语言 en|zh（默认英文）",
+                        "Switch language en|zh (default English)"),
+        "/safe": tr("开/关 外传防护（上传需批准）",
+                    "Toggle safe mode (uploads need approval)"),
+        "/clear": tr("清空对话并开新会话", "Clear conversation"),
+        "/exit": tr("退出", "Exit"),
+    }
+
+
+COMMANDS = command_descriptions()
 
 MEM_SUBS = ["save", "use", "rm", "list", "new"]
 
-REVIEW_SYSTEM = (
-    "你是 wow-agent 的只读代码审查子代理，在干净上下文里调研，不执行任何修改。\n"
-    "- 只用 read_file / glob_files / grep_search / 查看类 bash 命令\n"
-    "- 审查重点：安全风险（注入/密钥泄漏/越权）、正确性（边界/错误处理/"
-    "资源泄漏）、设计与性能；小问题不必穷举，挑值得改的说\n"
-    f"- 最多 {config.SUB_ITER} 轮调研\n"
-    "- 最后一条回复输出审查报告，严格分三节：\n"
-    "🔴 高风险\n🟡 建议\n🟢 优化\n"
-    "每条格式 `- 路径:行号 · 问题 · 修复建议`；某节没有就写（无），不要客套话")
 
-HELP = """[bold]命令[/bold]（输入 / 自动补全，支持模糊匹配如 /cmp → /compact）:
+def review_system():
+    return tr(
+        "你是 wow-agent 的只读代码审查子代理，在干净上下文里调研，"
+        "不执行任何修改。\n"
+        "- 只用 read_file / glob_files / grep_search / 查看类 bash 命令\n"
+        "- 审查重点：安全风险（注入/密钥泄漏/越权）、正确性（边界/错误处理/"
+        "资源泄漏）、设计与性能；小问题不必穷举，挑值得改的说\n"
+        f"- 最多 {config.SUB_ITER} 轮调研\n"
+        "- 最后一条回复输出审查报告，严格分三节：\n"
+        "🔴 高风险\n🟡 建议\n🟢 优化\n"
+        "每条格式 `- 路径:行号 · 问题 · 修复建议`；某节没有就写（无），"
+        "不要客套话",
+        "You are wow-agent's read-only code review subagent. Research in a "
+        "clean context; never modify anything.\n"
+        "- Only use read_file / glob_files / grep_search / read-only bash\n"
+        "- Focus on: security (injection/secrets/privileges), correctness "
+        "(edge cases/error handling/resource leaks), design & performance; "
+        "skip trivia, report what matters\n"
+        f"- At most {config.SUB_ITER} research turns\n"
+        "- Final reply is the review report, strictly three sections:\n"
+        "🔴 High risk\n🟡 Suggestions\n🟢 Optimizations\n"
+        "Each item: `- path:line · issue · fix`; write (none) for empty "
+        "sections; no fluff")
+
+
+HELP_ZH = """[bold]命令[/bold]（输入 / 自动补全，支持模糊匹配如 /cmp → /compact）:
   /model            选择服务商 / API key / 模型（向导）
   /model <名字>      快速切换模型（如 /model deepseek-reasoner）
   /mem              长期记忆：/mem save [标题] 存当前对话摘要
@@ -58,6 +88,7 @@ HELP = """[bold]命令[/bold]（输入 / 自动补全，支持模糊匹配如 /c
   /undo             撤销 AI 最近一次文件写入/编辑（可连续撤销；任务失败可整轮回滚）
   /resume           恢复历史会话继续聊
   /review [路径]     只读代码审查：🔴高风险 / 🟡建议 / 🟢优化 三级报告
+  /language         切换中英文（/language en|zh，默认英文）
   /safe             开/关 安全模式（断网沙盒 + 上传外发强制批准；
                     默认开，装依赖需联网时先 /safe 关）
   /clear            清空对话        /help   帮助
@@ -67,10 +98,35 @@ HELP = """[bold]命令[/bold]（输入 / 自动补全，支持模糊匹配如 /c
  安全网: 高危命令与上传外发命令任何模式都强制二次确认
  ox alpha: 免费档上游偶发波动会自动重试；401 = key 与服务商不匹配，/model 重配"""
 
+HELP_EN = """[bold]Commands[/bold] (type / to autocomplete, fuzzy match like /cmp -> /compact):
+  /model            Pick provider / API key / model (wizard)
+  /model <name>     Quick switch model (e.g. /model deepseek-reasoner)
+  /mem              Long-term memory: /mem save [title] store summary
+                    /mem use N inject /mem rm N delete /mem list /mem new
+  /config           Show current config
+  /status           Session status: context / todo tree / undo depth
+  /compact [hint]   LLM-compact history (also auto-triggered when long)
+  /undo             Undo last AI write/edit (repeatable; failed turns roll back)
+  /resume           Resume a previous session
+  /review [path]    Read-only review: 🔴 high risk / 🟡 suggest / 🟢 optimize
+  /language         Switch language (/language en|zh, default English)
+  /safe             Toggle safe mode (network sandbox + upload approval;
+                    on by default, /safe off when installing deps)
+  /clear            Clear conversation        /help   help
+  /exit or Ctrl+D   quit                     Ctrl+C  interrupt task
+  !<cmd>            Run shell directly without LLM (e.g. !ls -la)
+ Startup: --yolo skips confirmations; pick y at launch for auto mode
+ Safety: dangerous & upload commands always require confirmation
+ ox alpha: free-tier flakiness auto-retries; 401 = wrong key, /model to fix"""
+
+
+def help_text():
+    return tr(HELP_ZH, HELP_EN)
+
 
 def _mask(k):
     if not k:
-        return "[red]未设置[/red]"
+        return tr("[red]未设置[/red]", "[red]not set[/red]")
     return k[:6] + "..." + k[-4:] if len(k) > 14 else "***"
 
 
@@ -148,7 +204,7 @@ class CmdCompleter(Completer):
                     yield Completion(s, start_position=-len(prefix),
                                      display=s)
             return
-        for c, desc in COMMANDS.items():
+        for c, desc in command_descriptions().items():
             if len(parts) == 1 and _subseq(cmd, c) and cmd != c:
                 yield Completion(c, start_position=-len(cmd),
                                  display=f"{c}  {desc}", display_meta=desc)
@@ -191,29 +247,42 @@ def run_task(ui, messages, user_text, state=None):
                                      on_progress=autosave)
     except KeyboardInterrupt:
         ui.abort()
-        console.print("\n[yellow]已中断当前任务[/yellow]")
+        console.print("\n[yellow]"
+                      + tr("已中断当前任务", "Task interrupted") + "[/yellow]")
         return
     except openai.AuthenticationError:
         ui.abort()
         zen = config.PROVIDERS["zen"]["base_url"] == config.BASE_URL
         console.print(
-            "\n[red]✗ 401 KEY 无效或与当前服务商不匹配[/red]\n"
-            f"[dim]服务商: {_provider_name()} · {config.BASE_URL}\n"
-            "常见原因: 把别家的 key 填给了当前服务商 / key 过期 / 复制不全\n"
-            "→ 输入 [/dim][cyan]/model[/cyan][dim] 重新配置，粘贴该服务商自己的 key"
-            + ("（OpenCode Zen 免费档 key 在 opencode.ai/auth 获取）" if zen
-               else "")
+            "\n[red]"
+            + tr("✗ 401 KEY 无效或与当前服务商不匹配",
+                 "✗ 401 key invalid or mismatched with this provider")
+            + "[/red]\n"
+            + f"[dim]{tr('服务商', 'Provider')}: {_provider_name()} · "
+              f"{config.BASE_URL}\n"
+            + tr("常见原因: 把别家的 key 填给了当前服务商 / key 过期 / 复制不全\n"
+                 "→ 输入 ",
+                 "Common causes: key from another provider / expired / "
+                 "truncated\n→ type ")
+            + "[/dim][cyan]/model[/cyan][dim]"
+            + tr(" 重新配置，粘贴该服务商自己的 key",
+                 " to reconfigure with that provider's own key")
+            + (tr("（OpenCode Zen 免费档 key 在 opencode.ai/auth 获取）",
+                  " (free Zen key at opencode.ai/auth)") if zen else "")
             + "[/dim]")
         return
     except Exception as e:
         ui.abort()
-        console.print(f"\n[red]API 出错:[/red] {type(e).__name__}: {e}")
+        console.print(f"\n[red]{tr('API 出错', 'API error')}:[/red] "
+                      f"{type(e).__name__}: {e}")
         return
 
     if not done and stats.get("cid"):
         n = undo.group_depth(stats["cid"])
         if n and ui.confirm(
-                f"[red]本轮未正常完成[/red] 回滚本轮 AI 的 {n} 处文件改动?",
+                tr(f"[red]本轮未正常完成[/red] 回滚本轮 AI 的 {n} 处文件改动?",
+                   f"[red]Turn did not finish[/red] roll back all {n} AI "
+                   "file changes this turn?"),
                 force=True):
             for m in undo.undo_group(stats["cid"]):
                 if m.startswith("[错误]"):
@@ -224,18 +293,23 @@ def run_task(ui, messages, user_text, state=None):
     tok = agent.est_tokens(messages)
     total = time.perf_counter() - t0
     mark = "" if done else (
-        "[red](模型无有效输出)[/red] " if stats.get("empty")
-        else "[red](已达最大迭代)[/red] ")
+        tr("[red](模型无有效输出)[/red] ", "[red](no valid output)[/red] ")
+        if stats.get("empty")
+        else tr("[red](已达最大迭代)[/red] ",
+                "[red](max iterations reached)[/red] "))
     ui.status_line(
-        f"{mark}{stats['turns']} 轮 · {total:.1f}s · "
+        f"{mark}{stats['turns']} {tr('轮', 'turns')} · {total:.1f}s · "
         f"ctx≈{_fmt_tok(tok)} tok")
 
     autosave()
     state["tok"] = tok
     if done and tok > config.AUTO_COMPACT:
         console.print(
-            f"[yellow]上下文已约 {_fmt_tok(tok)} tok "
-            f"(阈值 {config.AUTO_COMPACT})，自动压缩历史…[/yellow]")
+            tr(f"[yellow]上下文已约 {_fmt_tok(tok)} tok "
+               f"(阈值 {config.AUTO_COMPACT})，自动压缩历史…[/yellow]",
+               f"[yellow]Context ≈ {_fmt_tok(tok)} tok "
+               f"(threshold {config.AUTO_COMPACT}), auto-compacting…"
+               "[/yellow]"))
         do_compact(ui, messages, None, state)
         autosave()
 
@@ -245,19 +319,22 @@ def do_compact(ui, messages, extra, state=None):
         new = agent.compact(new_client(), messages, ui, extra)
     except KeyboardInterrupt:
         ui.abort()
-        console.print("\n[yellow]压缩已取消[/yellow]")
+        console.print("\n[yellow]"
+                      + tr("压缩已取消", "Compact cancelled") + "[/yellow]")
         return
     except Exception as e:
         ui.abort()
-        console.print(f"[red]压缩失败:[/red] {type(e).__name__}: {e}")
+        console.print(f"[red]{tr('压缩失败', 'Compact failed')}:[/red] "
+                      f"{type(e).__name__}: {e}")
         return
     messages[:] = new
     tok = agent.est_tokens(messages)
     if state is not None:
         state["tok"] = tok
-    console.print(f"[green]✓ 压缩完成[/green] "
-                  f"[dim]{len(messages)} 条消息 · ctx≈{_fmt_tok(tok)} tok"
-                  f"[/dim]")
+    console.print(
+        f"[green]✓ {tr('压缩完成', 'Compacted')}[/green] "
+        f"[dim]{len(messages)} {tr('条消息', 'messages')} · "
+        f"ctx≈{_fmt_tok(tok)} tok[/dim]")
 
 
 def cmd_model():
@@ -265,20 +342,26 @@ def cmd_model():
                 if p["base_url"] == config.BASE_URL), None)
     key_state = _mask(config.API_KEY) if config.API_KEY else "[red]未设置[/red]"
     console.print(
-        f"\n当前: [cyan]{config.BASE_URL}[/cyan] | "
-        f"模型 [cyan]{config.MODEL}[/cyan] | KEY {key_state}\n")
+        f"\n{tr('当前', 'Current')}: [cyan]{config.BASE_URL}[/cyan] | "
+        f"{tr('模型', 'Model')} [cyan]{config.MODEL}[/cyan] | KEY {key_state}\n")
     pids = list(config.PROVIDERS)
-    console.print("[bold]选择服务商:[/bold]")
+    console.print(f"[bold]{tr('选择服务商', 'Choose a provider')}:[/bold]")
     for i, pid in enumerate(pids, 1):
-        mark = " [green]<- 当前[/green]" if pid == cur else ""
+        mark = (f" [green]<- {tr('当前', 'current')}[/green]"
+                if pid == cur else "")
         p = config.PROVIDERS[pid]
         console.print(f"  {i}. {p['name']}  [dim]{p['base_url']}{mark}[/dim]")
-    console.print("  序号选择 · 关键词过滤(如 zen/kimi) · "
-                  "或直接粘贴 OpenAI 兼容 base_url")
+    console.print("  "
+                  + tr("序号选择 · 关键词过滤(如 zen/kimi) · "
+                       "或直接粘贴 OpenAI 兼容 base_url",
+                       "Pick by number · keyword filter (zen/kimi) · "
+                       "or paste an OpenAI-compatible base_url"))
     try:
-        choice = console.input("[bold]序号/关键词/base_url/回车取消 > [/bold]").strip()
+        choice = console.input(
+            tr("序号/关键词/base_url/回车取消 > ",
+               "number/keyword/base_url/enter to cancel > ")).strip()
     except (KeyboardInterrupt, EOFError):
-        console.print("\n[yellow]已取消[/yellow]")
+        console.print("\n[yellow]" + tr("已取消", "Cancelled") + "[/yellow]")
         return
 
     base_url, model, key = None, None, None
@@ -290,18 +373,22 @@ def cmd_model():
         hits = [(pid, p) for pid, p in config.PROVIDERS.items()
                 if kw in pid or kw in p["name"].lower()]
         if not hits:
-            console.print(f"[red]没有匹配 '{choice}' 的服务商[/red]")
+            console.print(f"[red]{tr('没有匹配', 'No provider matches')} "
+                          f"'{choice}'[/red]")
             return
-        console.print("[bold]匹配到:[/bold]")
+        console.print(f"[bold]{tr('匹配到', 'Matches')}:[/bold]")
         for i, (pid, p) in enumerate(hits, 1):
             console.print(f"  {i}. {p['name']}  [dim]{p['base_url']}[/dim]")
         try:
-            raw = console.input("序号选择/回车取消 > ").strip()
+            raw = console.input(
+                tr("序号选择/回车取消 > ", "number/enter to cancel > ")
+            ).strip()
         except (KeyboardInterrupt, EOFError):
-            console.print("\n[yellow]已取消[/yellow]")
+            console.print("\n[yellow]" + tr("已取消", "Cancelled") + "[/yellow]")
             return
         if not raw.isdigit() or not (1 <= int(raw) <= len(hits)):
-            console.print("[red]无效输入，已取消[/red]")
+            console.print("[red]" + tr("无效输入，已取消",
+                                       "Invalid input, cancelled") + "[/red]")
             return
         sel_pid = hits[int(raw) - 1][0]
     elif choice.isdigit() and 1 <= int(choice) <= len(pids):
@@ -310,17 +397,21 @@ def cmd_model():
         sel_pid = None
         base_url = choice.rstrip("/")
         try:
-            model = console.input("模型名 > ").strip()
+            model = console.input(
+                tr("模型名 > ", "Model name > ")).strip()
             if not model:
                 return
-            key = console.input("API Key (回车保留现有) > ").strip() or None
+            key = console.input(
+                tr("API Key (回车保留现有) > ",
+                   "API Key (enter to keep current) > ")).strip() or None
         except (KeyboardInterrupt, EOFError):
             console.print()
             return
         _finish_model_switch(base_url, model, key)
         return
     else:
-        console.print("[red]无效输入，已取消[/red]")
+        console.print("[red]" + tr("无效输入，已取消",
+                                   "Invalid input, cancelled") + "[/red]")
         return
 
     p = config.PROVIDERS[sel_pid]
@@ -345,8 +436,9 @@ def cmd_model():
         note = p.get("note")
         if note:
             console.print(f"[dim]ℹ {note}[/dim]")
-        hint = (f"回车保留 {_mask(config.API_KEY)}"
-                if config.API_KEY else "必填")
+        hint = (tr(f"回车保留 {_mask(config.API_KEY)}",
+                   f"enter to keep {_mask(config.API_KEY)}")
+                if config.API_KEY else tr("必填", "required"))
         key = console.input(f"API Key ({hint}) > ").strip() or (
             config.API_KEY or None)
         if key and _key_mismatch_confirm(key, sel_pid):
@@ -356,20 +448,30 @@ def cmd_model():
             preset = [m for m in p["models"] if m in live]
             rest = [m for m in live if m not in preset]
             models = preset + rest
-            console.print(f"[green]✓ key 有效[/green] "
-                          f"[dim]已在线获取 {len(live)} 个可用模型"
-                          "（精选排前）[/dim]")
+            console.print(
+                f"[green]✓ {tr('key 有效', 'key valid')}[/green] "
+                f"[dim]{tr('已在线获取', 'fetched')} {len(live)} "
+                + tr("个可用模型（精选排前）",
+                     "models online (curated first)") + "[/dim]")
         elif key:
             console.print(
-                "[yellow]⚠ 用该 key 在线拉取模型列表失败——可能是 key 无效、"
-                "无权限或网络受限。仍将保存；若随后报 401，请确认 key 属于"
-                "当前服务商（/model 可重新配置）[/yellow]")
+                tr("[yellow]⚠ 用该 key 在线拉取模型列表失败——可能是 key 无效、"
+                   "无权限或网络受限。仍将保存；若随后报 401，请确认 key 属于"
+                   "当前服务商（/model 可重新配置）[/yellow]",
+                   "[yellow]⚠ Failed to fetch model list with this key — "
+                   "it may be invalid, unauthorized, or the network is "
+                   "restricted. Saving anyway; if you then get 401, check "
+                   "the key belongs to this provider (/model to "
+                   "reconfigure)[/yellow]"))
 
     if not models:
         try:
-            model = console.input("该服务商未预置模型，请输入模型名 > ").strip()
+            model = console.input(
+                tr("该服务商未预置模型，请输入模型名 > ",
+                   "No preset models for this provider, enter model name > ")
+            ).strip()
         except (KeyboardInterrupt, EOFError):
-            console.print("\n[yellow]已取消[/yellow]")
+            console.print("\n[yellow]" + tr("已取消", "Cancelled") + "[/yellow]")
             return
         if not model:
             return
@@ -378,24 +480,28 @@ def cmd_model():
 
     cur_list = models
     while True:
-        console.print(f"可选模型（共 {len(cur_list)} 个）:")
+        console.print(f"{tr('可选模型（共', 'Models (')}"
+                      f" {len(cur_list)} {tr('个）', ')}')}:")
         for j, m in enumerate(cur_list, 1):
             tags = config.ALIAS_DISPLAY.get(m)
             tag = f"  [magenta]← {tags[0]}[/magenta]" if tags else ""
             console.print(f"  {j}. {m}{tag}")
         try:
             raw = console.input(
-                f"模型名或序号 [{cur_list[0]}]（'词*' 可过滤，如 free*）> "
+                tr(f"模型名或序号 [{cur_list[0]}]（'词*' 可过滤，如 free*）> ",
+                   f"model name or number [{cur_list[0]}] ('kw*' filters, "
+                   "e.g. free*) > ")
             ).strip()
         except (KeyboardInterrupt, EOFError):
-            console.print("\n[yellow]已取消[/yellow]")
+            console.print("\n[yellow]" + tr("已取消", "Cancelled") + "[/yellow]")
             return
         if raw.endswith("*"):
             kw = raw[:-1].strip().lower()
             hits = [m for m in models if kw in m.lower()
                     or any(kw in a for a in config.ALIAS_DISPLAY.get(m, []))]
             if not hits:
-                console.print(f"[red]没有匹配 '{kw}' 的模型[/red]")
+                console.print(f"[red]{tr('没有匹配', 'No model matches')} "
+                              f"'{kw}'[/red]")
                 continue
             cur_list = hits
             continue
@@ -417,33 +523,40 @@ def _finish_model_switch(base_url, model, key):
         apply_kwargs["key"] = key
     config.apply(**apply_kwargs)
     config.save_env(updates_env)
-    console.print(f"[green]已切换并保存到 {config.ENV_FILE}[/green]: "
-                  f"{base_url} | {model}")
+    console.print(f"[green]{tr('已切换并保存到', 'Switched and saved to')} "
+                  f"{config.ENV_FILE}[/green]: {base_url} | {model}")
 
 
 def cmd_model_quick(model_id):
     model_id = config.resolve_model(model_id)
     config.apply(model=model_id)
     config.save_env({"WOW_MODEL": model_id})
-    console.print(f"[green]模型已切换为[/green] {model_id}")
+    console.print(f"[green]{tr('模型已切换为', 'Model switched to')}[/green] "
+                  f"{model_id}")
 
 
 def cmd_config():
     try:
         from . import mcp
-        mcp_n = f"{len(mcp.status())} 个 ({mcp.CONF})"
+        mcp_n = (f"{len(mcp.status())} "
+                 + tr("个", "") + f" ({mcp.CONF})")
     except Exception:
-        mcp_n = "0 个"
+        mcp_n = f"0 {tr('个', '')}"
     console.print(
-        f"服务商: [cyan]{_provider_name()}[/cyan]\n"
+        f"{tr('服务商', 'Provider')}: [cyan]{_provider_name()}[/cyan]\n"
         f"BASE_URL: [cyan]{config.BASE_URL}[/cyan]\n"
         f"MODEL: [cyan]{config.MODEL}[/cyan]\n"
         f"KEY: {_mask(config.API_KEY)}\n"
-        f"自动压缩阈值: {config.AUTO_COMPACT} tok\n"
-        f"断网沙盒: {'开' if tools.NET_BLOCK else '关'} | "
-        f"外传防护(上传需批准): {'开' if config.UPLOAD_GUARD else '关'}\n"
-        f"MCP servers: {mcp_n}\n"
-        f"配置文件: {config.ENV_FILE}")
+        + tr(f"自动压缩阈值: {config.AUTO_COMPACT} tok\n",
+             f"Auto-compact threshold: {config.AUTO_COMPACT} tok\n")
+        + tr(f"断网沙盒: {'开' if tools.NET_BLOCK else '关'} | ",
+             f"Network sandbox: {'on' if tools.NET_BLOCK else 'off'} | ")
+        + tr(f"外传防护(上传需批准): {'开' if config.UPLOAD_GUARD else '关'}\n",
+             f"Upload guard (approve uploads): "
+             f"{'on' if config.UPLOAD_GUARD else 'off'}\n")
+        + tr(f"MCP servers: {mcp_n}\n", f"MCP servers: {mcp_n}\n")
+        + tr(f"语言: {i18n.LANG}\n", f"Language: {i18n.LANG}\n")
+        + tr(f"配置文件: {config.ENV_FILE}", f"Config file: {config.ENV_FILE}"))
 
 
 def cmd_status(messages, state):
@@ -452,19 +565,28 @@ def cmd_status(messages, state):
     bar = "█" * (pct // 10) + "░" * (10 - pct // 10)
     undo_n = undo.depth()
     mode = ("YOLO" if state.get("yolo")
-            else "自主模式" if state.get("auto") else "命令需确认")
+            else tr("自主模式", "auto mode") if state.get("auto")
+            else tr("命令需确认", "confirm each command"))
     ph = todo.PHASE_LABEL.get(todo.phase(), "")
     console.print(
-        f"会话: [cyan]{state.get('sid', '-')}[/cyan]\n"
-        f"上下文: ≈[cyan]{_fmt_tok(tok)}[/cyan] tok "
-        f"[dim]{bar} {pct}% of {config.AUTO_COMPACT} 自动压缩线[/dim]\n"
-        f"消息数: {len(messages)} | 可撤销改动: [cyan]{undo_n}[/cyan]"
+        f"{tr('会话', 'Session')}: [cyan]{state.get('sid', '-')}[/cyan]\n"
+        + tr(f"上下文: ≈[cyan]{_fmt_tok(tok)}[/cyan] tok ",
+             f"Context: ≈[cyan]{_fmt_tok(tok)}[/cyan] tok ")
+        + f"[dim]{bar} {pct}% of {config.AUTO_COMPACT} "
+        + tr("自动压缩线", "auto-compact line") + "[/dim]\n"
+        + tr(f"消息数: {len(messages)} | 可撤销改动: [cyan]{undo_n}[/cyan]",
+             f"Messages: {len(messages)} | Undoable changes: "
+             f"[cyan]{undo_n}[/cyan]")
         + (f" [dim]{' '.join(undo.recent(3))}[/dim]" if undo_n else "")
-        + f"\n任务阶段: {ph} | 模式: {mode} | 安全模式(沙盒+外传批准): "
-        + ("开" if tools.NET_BLOCK and config.UPLOAD_GUARD else
-           "关" if not tools.NET_BLOCK and not config.UPLOAD_GUARD else
-           f"沙盒{'开' if tools.NET_BLOCK else '关'}/外传批准"
-           f"{'开' if config.UPLOAD_GUARD else '关'}"))
+        + "\n" + tr(f"任务阶段: {ph} | 模式: {mode} | 安全模式(沙盒+外传批准): ",
+                    f"Task phase: {ph} | Mode: {mode} | Safe mode "
+                    "(sandbox+upload approval): ")
+        + (tr("开", "on") if tools.NET_BLOCK and config.UPLOAD_GUARD else
+           tr("关", "off") if not tools.NET_BLOCK and not config.UPLOAD_GUARD
+           else tr(f"沙盒{'开' if tools.NET_BLOCK else '关'}/外传批准"
+                   f"{'开' if config.UPLOAD_GUARD else '关'}",
+                   f"sandbox {'on' if tools.NET_BLOCK else 'off'}/upload "
+                   f"guard {'on' if config.UPLOAD_GUARD else 'off'}")))
     if todo.items():
         console.print(ui_todo_panel())
 
@@ -481,38 +603,49 @@ def cmd_mem(line, messages, state, ui):
 
     def pick(idx_str):
         if not idx_str.isdigit() or not (1 <= int(idx_str) <= len(rows)):
-            console.print("[red]序号无效[/red]，/mem 先查看列表")
+            console.print(f"[red]{tr('序号无效', 'Invalid number')}[/red]，"
+                          + tr("/mem 先查看列表", "list with /mem first"))
             return None
         return rows[int(idx_str) - 1]
 
     if sub in ("", "list"):
         if not rows:
-            console.print("[yellow]还没有记忆。用 /mem save [标题] 保存当前对话摘要[/yellow]")
+            console.print(tr(
+                "[yellow]还没有记忆。用 /mem save [标题] 保存当前对话摘要[/yellow]",
+                "[yellow]No memories yet. /mem save [title] to store a "
+                "summary of this conversation[/yellow]"))
             return
-        console.print("[bold]长期记忆（任何目录可用）:[/bold]")
+        console.print(tr("[bold]长期记忆（任何目录可用）:[/bold]",
+                         "[bold]Long-term memory (works in any directory):"
+                         "[/bold]"))
         for i, d in enumerate(rows, 1):
             size = len(d.get("summary", ""))
             console.print(
                 f"  {i}. [cyan]{d['id']}[/cyan] [bold]{d['title']}[/bold] "
-                f"[dim]{d.get('cwd', '?')} · {size} 字[/dim]")
+                f"[dim]{d.get('cwd', '?')} · {size} "
+                + tr("字", "chars") + "[/dim]")
     elif sub == "save":
         title = parts[2].strip() if len(parts) > 2 else ""
         convo = [m for m in messages
                  if m.get("role") != "system"
                  and not (m.get("content") or "").startswith("[")]
         if len(convo) < 2:
-            console.print("[yellow]当前对话内容太少，没什么可存的[/yellow]")
+            console.print(tr("[yellow]当前对话内容太少，没什么可存的[/yellow]",
+                             "[yellow]Not enough conversation to store"
+                             "[/yellow]"))
             return
-        console.print("[dim]正在压缩对话为记忆…[/dim]")
+        console.print(tr("[dim]正在压缩对话为记忆…[/dim]",
+                         "[dim]Compacting conversation into memory…[/dim]"))
         try:
             new = agent.compact(new_client(), messages, ui, None)
         except KeyboardInterrupt:
             ui.abort()
-            console.print("\n[yellow]已取消[/yellow]")
+            console.print("\n[yellow]" + tr("已取消", "Cancelled") + "[/yellow]")
             return
         except Exception as e:
             ui.abort()
-            console.print(f"[red]生成摘要失败:[/red] {type(e).__name__}: {e}")
+            console.print(f"[red]{tr('生成摘要失败', 'Summary failed')}:"
+                          f"[/red] {type(e).__name__}: {e}")
             return
         summary = new[1]["content"]
         if not title:
@@ -529,11 +662,16 @@ def cmd_mem(line, messages, state, ui):
         pruned = mem.enforce_cap()
         note = ""
         if dup and dup["id"] != mid:
-            note = " · 同名旧记忆已更新"
+            note = tr(" · 同名旧记忆已更新",
+                      " · same-title memory updated")
         if pruned:
-            note += f" · 超 {mem.MAX_MEMS} 条已自动清理最旧 {pruned} 条"
-        console.print(f"[green]✓ 记忆已保存[/green] [cyan]{mid}[/cyan] "
-                      f"[dim]{title}{note} · 任何目录 /mem use 可调用[/dim]")
+            note += tr(f" · 超 {mem.MAX_MEMS} 条已自动清理最旧 {pruned} 条",
+                       f" · over {mem.MAX_MEMS}, pruned {pruned} oldest")
+        console.print(f"[green]✓ {tr('记忆已保存', 'Memory saved')}[/green] "
+                      f"[cyan]{mid}[/cyan] "
+                      f"[dim]{title}{note} · "
+                      + tr("任何目录 /mem use 可调用",
+                           "/mem use it from any directory") + "[/dim]")
     elif sub == "use":
         d = pick(parts[2].strip() if len(parts) > 2 else "")
         if d is None:
@@ -543,25 +681,32 @@ def cmd_mem(line, messages, state, ui):
                              "content": agent.system_prompt(str(Path.cwd()))})
         messages.append({
             "role": "user",
-            "content": f"[长期记忆 · {d['title']}]\n{d['summary']}\n"
-                       "（以上是从前的经验记忆，请结合当前任务参考）"})
-        console.print(f"[green]✓ 已注入记忆[/green] [cyan]{d['title']}[/cyan]")
+            "content": tr(f"[长期记忆 · {d['title']}]\n{d['summary']}\n"
+                          "（以上是从前的经验记忆，请结合当前任务参考）",
+                          f"[Long-term memory · {d['title']}]\n{d['summary']}"
+                          "\n(Past experience; use it together with the "
+                          "current task)")})
+        console.print(f"[green]✓ {tr('已注入记忆', 'Memory injected')}"
+                      f"[/green] [cyan]{d['title']}[/cyan]")
     elif sub == "rm":
         d = pick(parts[2].strip() if len(parts) > 2 else "")
         if d is None:
             return
         mem.delete(d["id"])
-        console.print(f"[green]✓ 已删除[/green] {d['title']}")
+        console.print(f"[green]✓ {tr('已删除', 'Deleted')}[/green] "
+                      f"{d['title']}")
     elif sub == "new":
         messages.clear()
         todo.reset()
         ui.set_todos([])
         state["sid"] = sess.new_id()
         state["tok"] = 0
-        console.print(f"[dim]新会话 {state['sid']}（记忆仍保留，"
-                      "/mem use 随时调用）[/dim]")
+        console.print(f"[dim]{tr('新会话', 'New session')} {state['sid']}"
+                      + tr("（记忆仍保留，/mem use 随时调用）",
+                           " (memories kept, /mem use anytime)") + "[/dim]")
     else:
-        console.print("[red]用法:[/red] /mem save|use|rm|list|new")
+        console.print(f"[red]{tr('用法', 'Usage')}:[/red] "
+                      "/mem save|use|rm|list|new")
 
 
 def cmd_safe():
@@ -569,19 +714,25 @@ def cmd_safe():
     tools.NET_BLOCK = enable
     config.set_upload_guard(enable)
     if enable:
-        console.print("[green]✓ 安全模式已开启[/green] "
-                      "[dim]shell 断网沙盒 + 上传外发命令强制批准"
-                      "（装依赖需联网时先 /safe 关）[/dim]")
+        console.print(f"[green]✓ {tr('安全模式已开启', 'Safe mode ON')}[/green] "
+                      "[dim]"
+                      + tr("shell 断网沙盒 + 上传外发命令强制批准"
+                           "（装依赖需联网时先 /safe 关）",
+                           "shell network sandbox + uploads need approval "
+                           "(/safe off when installing deps)") + "[/dim]")
     else:
-        console.print("[yellow]⚠ 安全模式已关闭[/yellow] "
-                      "[dim]shell 可直接联网，上传外发不再强制确认，注意安全"
-                      "[/dim]")
+        console.print(f"[yellow]⚠ {tr('安全模式已关闭', 'Safe mode OFF')}"
+                      "[/yellow] [dim]"
+                      + tr("shell 可直接联网，上传外发不再强制确认，注意安全",
+                           "shell has direct network; uploads no longer "
+                           "confirmed. Be careful.") + "[/dim]")
 
 
 def cmd_undo():
     r = undo.undo()
     if r is None:
-        console.print("[yellow]没有可撤销的文件改动了[/yellow]")
+        console.print(tr("[yellow]没有可撤销的文件改动了[/yellow]",
+                         "[yellow]Nothing to undo[/yellow]"))
     elif r.startswith("[错误]"):
         console.print(r)
     else:
@@ -591,15 +742,18 @@ def cmd_undo():
 def cmd_resume(ui, messages, state):
     rows = sess.listing()
     if not rows:
-        console.print("[yellow]还没有历史会话[/yellow]")
+        console.print(tr("[yellow]还没有历史会话[/yellow]",
+                         "[yellow]No previous sessions[/yellow]"))
         return
-    console.print("[bold]最近的会话:[/bold]")
+    console.print(tr("[bold]最近的会话:[/bold]", "[bold]Recent sessions:"
+                                             "[/bold]"))
     for i, (sid, model, n, snippet) in enumerate(rows, 1):
         console.print(
-            f"  {i}. [cyan]{sid}[/cyan] [dim]{model} · {n} 条 · "
-            f"{snippet}[/dim]")
+            f"  {i}. [cyan]{sid}[/cyan] [dim]{model} · {n} "
+            + tr("条", "msgs") + f" · {snippet}[/dim]")
     try:
-        raw = console.input("序号选择/回车取消 > ").strip()
+        raw = console.input(
+            tr("序号选择/回车取消 > ", "number/enter to cancel > ")).strip()
     except (KeyboardInterrupt, EOFError):
         console.print()
         return
@@ -616,16 +770,23 @@ def cmd_resume(ui, messages, state):
     state["tok"] = agent.est_tokens(messages)
     ui.set_todos(d.get("todos") or [])
     todo.save(d["id"])
-    console.print(f"[green]✓ 已恢复会话 {d['id']}[/green] "
-                  f"[dim]{len(messages)} 条消息"
-                  + (f" · {todo.counts()[0]} 项任务" if todo.items() else "")
+    console.print(f"[green]✓ {tr('已恢复会话', 'Resumed session')} "
+                  f"{d['id']}[/green] "
+                  f"[dim]{len(messages)} {tr('条消息', 'messages')}"
+                  + (f" · {todo.counts()[0]} " + tr("项任务", "todos")
+                     if todo.items() else "")
                   + "[/dim]")
 
 
 def main():
-    ap = argparse.ArgumentParser(prog="wow", description="wow-agent 终端编码助手")
-    ap.add_argument("task", nargs="*", help="一次性任务，不给则进入交互模式")
-    ap.add_argument("--yolo", action="store_true", help="跳过命令执行确认")
+    i18n.set_lang(config.LANGUAGE)
+    ap = argparse.ArgumentParser(
+        prog="wow", description="wow-agent terminal coding assistant")
+    ap.add_argument("task", nargs="*", help=tr(
+        "一次性任务，不给则进入交互模式",
+        "one-shot task; omit to enter interactive mode"))
+    ap.add_argument("--yolo", action="store_true", help=tr(
+        "跳过命令执行确认", "skip command confirmations"))
     ap.add_argument("-V", "--version", action="store_true")
     args = ap.parse_args()
     if args.version:
@@ -633,11 +794,16 @@ def main():
         return
 
     if not config.API_KEY:
-        console.print("[yellow]首次使用，先配置服务商和 API key：[/yellow]")
+        console.print(tr("[yellow]首次使用，先配置服务商和 API key：[/yellow]",
+                         "[yellow]First run: configure a provider and API "
+                         "key:[/yellow]"))
         cmd_model()
         if not config.API_KEY:
-            console.print("[red]仍未配置 key。可稍后在会话里用 /model 配置，"
-                          "或 export WOW_API_KEY=... 后重试[/red]")
+            console.print(tr(
+                "[red]仍未配置 key。可稍后在会话里用 /model 配置，"
+                "或 export WOW_API_KEY=... 后重试[/red]",
+                "[red]Still no key. Configure later with /model, or "
+                "export WOW_API_KEY=... and retry[/red]"))
             sys.exit(1)
 
     ui = UI(yolo=args.yolo)
@@ -664,9 +830,13 @@ def main():
         sys.stdout.flush()
 
     banner(__version__, _provider_name(), config.MODEL, str(Path.cwd()))
-    _panel_line("进入自主模式？", f"bold #e8e8e8 on {PANEL_BG}")
-    _panel_line("y = 免逐步确认 · 上传/高危命令仍需批准 · 实时存档"
-                " · 回车 = 每步确认", f"#9a9ab0 on {PANEL_BG}")
+    _panel_line(tr("进入自主模式？", "Enter auto mode?"),
+                f"bold #e8e8e8 on {PANEL_BG}")
+    _panel_line(tr("y = 免逐步确认 · 上传/高危命令仍需批准 · 实时存档"
+                   " · 回车 = 每步确认",
+                   "y = no per-step confirm · uploads/dangerous still ask · "
+                   "live autosave · enter = confirm each step"),
+                f"#9a9ab0 on {PANEL_BG}")
     if not auto:
         try:
             ans = console.input("y/N > ").strip().lower()
@@ -676,7 +846,8 @@ def main():
     state["auto"] = auto
     if auto:
         ui.session_allow = True
-        _panel_line("自主模式已开启", f"#9a9ab0 on {PANEL_BG}")
+        _panel_line(tr("自主模式已开启", "Auto mode on"),
+                    f"#9a9ab0 on {PANEL_BG}")
 
     session = PromptSession(
         history=FileHistory(str(Path.home() / ".wow_history")),
@@ -710,11 +881,11 @@ def main():
             ui.set_todos([])
             state["sid"] = sess.new_id()
             state["tok"] = 0
-            console.print("[dim]对话已清空，新会话 "
-                          f"{state['sid']}[/dim]")
+            msg = tr("对话已清空，新会话", "Conversation cleared, new session")
+            console.print(f"[dim]{msg} {state['sid']}[/dim]")
             continue
         if line == "/help":
-            console.print(HELP)
+            console.print(help_text())
             continue
         if line == "/config":
             cmd_config()
@@ -735,10 +906,54 @@ def main():
             parts = line.split(maxsplit=1)
             if len(parts) == 2 and not parts[1].strip().startswith(
                     ("save", "use", "rm", "list", "new")):
-                console.print("[red]用法:[/red] /mem save|use|rm|list|new")
+                console.print(f"[red]{tr('用法', 'Usage')}:[/red] "
+                              "/mem save|use|rm|list|new")
                 continue
             cmd_mem(line, messages, state, ui)
             continue
+        if line.startswith("/language"):
+            arg = line[len("/language"):].strip().lower()
+            if arg in ("en", "zh"):
+                i18n.set_lang(arg)
+                config.save_env({"WOW_LANGUAGE": arg})
+                COMMANDS.clear()
+                COMMANDS.update(command_descriptions())
+                console.print(
+                    f"[green]✓[/green] "
+                    + tr("语言已切换：中文（模型将用中文回复）",
+                         "Language switched: English (model replies in "
+                         "English)"))
+            elif not arg:
+                # 交互式菜单
+                console.print(tr("选择语言:", "Select language:"))
+                console.print("  1. " + tr("中文", "Chinese"))
+                console.print("  2. " + tr("English", "English"))
+                try:
+                    choice = console.input(
+                        tr("选择 [1/2/回车取消]: ", "Select [1/2/enter to cancel]: ")
+                    ).strip()
+                except (KeyboardInterrupt, EOFError):
+                    console.print()
+                    continue
+                if choice == "1":
+                    i18n.set_lang("zh")
+                    config.save_env({"WOW_LANGUAGE": "zh"})
+                    COMMANDS.clear()
+                    COMMANDS.update(command_descriptions())
+                    console.print(f"[green]✓[/green] {tr('语言已切换', 'Language switched')}")
+                elif choice == "2":
+                    i18n.set_lang("en")
+                    config.save_env({"WOW_LANGUAGE": "en"})
+                    COMMANDS.clear()
+                    COMMANDS.update(command_descriptions())
+                    console.print(f"[green]✓[/green] {tr('语言已切换', 'Language switched')}")
+                else:
+                    cur = tr("中文", "English") if i18n.LANG == "zh" \
+                        else tr("中文", "English")
+                    console.print(
+                        tr(f"当前语言: {cur} · 用法: /language en|zh",
+                           f"Current language: {cur} · usage: /language en|zh"))
+                continue
         if line.startswith("/compact"):
             extra = line[len("/compact"):].strip() or None
             do_compact(ui, messages, extra, state)
@@ -752,11 +967,14 @@ def main():
             continue
         if line.startswith("/review"):
             scope = line[len("/review"):].strip() or "."
-            console.print(f"\n[magenta]▪ 只读代码审查[/magenta] "
-                          f"[dim]{scope}[/dim]")
+            console.print(f"\n[magenta]▪ "
+                          + tr("只读代码审查", "Read-only code review")
+                          + f"[/magenta] [dim]{scope}[/dim]")
             report = subagent.run(
-                f"审查目标: {scope}\n请开始只读调研并输出审查报告。",
-                ui, "代码审查", system=REVIEW_SYSTEM)
+                tr(f"审查目标: {scope}\n请开始只读调研并输出审查报告。",
+                   f"Review target: {scope}\nStart the read-only research "
+                   "and output the review report."),
+                ui, tr("代码审查", "code review"), system=review_system())
             from rich.markdown import Markdown
             console.print(Markdown(report))
             continue
@@ -765,12 +983,14 @@ def main():
             console.print(f"[dim]{out.strip()}[/dim]")
             continue
         if line.startswith("/"):
-            console.print(f"[red]未知命令[/red] {line.split()[0]}，"
-                          "输入 / 可查看补全提示")
+            console.print(f"[red]{tr('未知命令', 'Unknown command')}[/red] "
+                          f"{line.split()[0]}，"
+                          + tr("输入 / 可查看补全提示",
+                               "type / to see completions"))
             continue
         run_task(ui, messages, line, state)
 
-    console.print("[dim]再见[/dim]")
+    console.print("[dim]" + tr("再见", "Bye") + "[/dim]")
 
 
 if __name__ == "__main__":

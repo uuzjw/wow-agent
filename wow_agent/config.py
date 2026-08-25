@@ -153,7 +153,9 @@ def resolve_model(name):
 
 
 def _load_dotenv():
-    for candidate in (Path.cwd() / ".env", ENV_FILE):
+    # 全局 ENV_FILE 优先（/model 保存的目标，权威配置）；
+    # cwd .env 只补缺，防止项目里的占位符/旧值把真 key 屏蔽掉
+    for candidate in (ENV_FILE, Path.cwd() / ".env"):
         if candidate.exists():
             for line in candidate.read_text(encoding="utf-8").splitlines():
                 line = line.strip()
@@ -172,6 +174,9 @@ AUTO_COMPACT = int(os.environ.get("WOW_AUTO_COMPACT", "55000"))
 SUB_ITER = int(os.environ.get("WOW_SUB_ITER", "10"))
 UPLOAD_GUARD = os.environ.get("WOW_UPLOAD_GUARD", "1").lower() not in (
     "0", "false", "no")
+LANGUAGE = os.environ.get("WOW_LANGUAGE", "en").lower()
+if LANGUAGE not in ("en", "zh"):
+    LANGUAGE = "en"
 
 
 def set_upload_guard(v):

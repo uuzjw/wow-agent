@@ -15,7 +15,8 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from . import todo
+from . import i18n, todo
+from .i18n import tr
 
 LOGO_PATH = (Path(os.environ.get("WOW_AGENT_HOME", str(Path.home())))
              / ".wow-agent" / "logo.png")
@@ -62,7 +63,7 @@ def render_todo_panel():
     total, done, prog = todo.counts()
     body = Text()
     if not rows:
-        body.append("（暂无任务）", style="dim")
+        body.append(tr("（暂无任务）", "(no tasks)"), style="dim")
     for t, depth in rows:
         icon, color = _STATUS_STYLE[t["status"]]
         tag, tag_color = _PRIO_TAG[t["priority"]]
@@ -77,9 +78,8 @@ def render_todo_panel():
             if len(note) > 46:
                 note = note[:46] + "…"
             body.append(f"{pad}   └ {note}\n", style="dim italic")
-    label = todo.PHASE_LABEL.get(todo.phase(), "")
-    title = f"☰ {label} · 计划 {done}/{total}" + \
-        (f" · ▶{prog}" if prog else "")
+    title = (f"☰ {tr('计划', 'Plan')} {done}/{total}"
+             + (f" · ▶{prog}" if prog else ""))
     return Panel(body, title=title, title_align="left",
                  border_style="magenta", width=PANEL_WIDTH)
 
@@ -134,7 +134,13 @@ def image_art(path, max_cols=46):
 
     w, h = img.size
     cols = max(8, min(max_cols, w))
-    rows = max(2, round(cols * h / w / 2))
+    # 等比缩放：终端字符格不是正方形，宽高比可用 WOW_CELL_ASPECT 调
+    # （默认 2.0 = 字符高是宽的 2 倍；看着压扁调小如 1.7，拉长调大如 2.3）
+    try:
+        aspect = float(os.environ.get("WOW_CELL_ASPECT", "2.0"))
+    except ValueError:
+        aspect = 2.0
+    rows = max(2, round(cols * h / w / aspect))
     small = img.resize((cols, rows * 2), Image.NEAREST)
     px = small.load()
 
@@ -186,9 +192,9 @@ def image_art(path, max_cols=46):
 def banner(version, provider, model, cwd=""):
     console.print()
     shown = False
-    if LOGO_PATH.exists() and console.width >= 46:
+    if LOGO_PATH.exists() and console.width >= 30:
         try:
-            art = image_art(LOGO_PATH, max_cols=44)
+            art = image_art(LOGO_PATH, max_cols=26)
             for line in art.renderables:
                 console.print(line, justify="center")
             shown = True
@@ -200,7 +206,9 @@ def banner(version, provider, model, cwd=""):
     tip = Text()
     tip.append("● ", style="#e5a50a")
     tip.append("Tip ", style="bold #e5a50a")
-    tip.append("/undo 撤销最近修改 · /help 全部命令", style="#8a8a92")
+    tip.append(tr("/undo 撤销最近修改 · /help 全部命令",
+                  "/undo reverts last change · /help all commands"),
+               style="#8a8a92")
     console.print(tip, justify="center")
     w = console.width
     left = Text(f" {cwd}", style="dim")
@@ -287,7 +295,7 @@ class UI:
         self.text_end()
 
     # ---------- 思考 spinner ----------
-    def think_begin(self, label="思考中"):
+    def think_begin(self, label=tr("思考中", "thinking")):
         self.think_end()
         try:
             self._think = self.console.status(
@@ -328,10 +336,12 @@ class UI:
         cut = ""
         if len(lines) > RESULT_MAX_LINES:
             lines = lines[:RESULT_MAX_LINES]
-            cut = f"\n  … [已截断，共 {len(body)} 字符]"
+            cut = tr(f"\n  … [已截断，共 {len(body)} 字符]",
+                     f"\n  … [truncated, {len(body)} chars total]")
         elif len(body) > RESULT_MAX_CHARS:
             lines = body[:RESULT_MAX_CHARS].splitlines()
-            cut = f"\n  … [已截断，共 {len(result)} 字符]"
+            cut = tr(f"\n  … [已截断，共 {len(result)} 字符]",
+                     f"\n  … [truncated, {len(result)} chars total]")
         shown = "\n".join("  " + ln for ln in lines)
         self.console.print(Text(shown + cut, style=color))
 
@@ -352,7 +362,8 @@ class UI:
                 self.console.print(f"  [dim]{ln}[/dim]")
         if len(diff_lines) > DIFF_MAX_LINES:
             self.console.print(
-                f"  [dim]… 共 {len(diff_lines)} 行差异[/dim]")
+                tr(f"  [dim]… 共 {len(diff_lines)} 行差异[/dim]",
+                   f"  [dim]… {len(diff_lines)} lines diff[/dim]"))
 
     # ---------- 确认 ----------
     def confirm(self, command, force=False):
@@ -360,16 +371,22 @@ class UI:
             return True
         try:
             ans = self.console.input(
-                f"[yellow]>> 执行? [/yellow]{command} "
-                f"[yellow][y/N/a=本会话全允许][/] ")
+                tr(f"[yellow]>> 执行? [/yellow]{command} "
+                   "[yellow][y/N/a=本会话全允许][/] ",
+                   "[yellow]>> Run? [/yellow]{command} "
+                   "[yellow][y/N/a=allow all this session][/] ")
+            ).strip().lower()
         except (KeyboardInterrupt, EOFError):
             self.console.print()
             return False
         a = ans.strip().lower()
         if a in ("a", "all") and not force:
             self.session_allow = True
-            self.console.print("[dim]本会话后续命令将自动执行"
-                               "（高危命令仍会询问）[/dim]")
+            self.console.print(tr("[dim]本会话后续命令将自动执行"
+                                  "（高危命令仍会询问）[/dim]",
+                                  "[dim]All subsequent commands in this "
+                                  "session will auto-run (high-risk still "
+                                  "asks)[/dim]"))
             return True
         return a in ("y", "yes")
 
