@@ -226,6 +226,137 @@ TOOLS_SCHEMA = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_status",
+            "description": "显示 Git 工作区状态（修改、暂存、未跟踪文件）。",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_diff",
+            "description": "显示工作区或暂存区的 diff。可指定文件路径。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "staged": {"type": "boolean", "description": "显示暂存区 diff（默认 false，显示工作区）"},
+                    "path": {"type": "string", "description": "可选，限定文件路径"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_log",
+            "description": "显示提交历史。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "limit": {"type": "integer", "description": "显示条数，默认 10"},
+                    "oneline": {"type": "boolean", "description": "单行模式，默认 true"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_add",
+            "description": "将文件加入暂存区。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "paths": {"type": "array", "items": {"type": "string"}, "description": "文件路径列表，默认 ['.'] 全部"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_commit",
+            "description": "提交暂存区更改。可选自动生成提交信息。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string", "description": "提交信息，留空则自动生成"},
+                    "amend": {"type": "boolean", "description": "修正上一次提交，默认 false"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_push",
+            "description": "推送到远程仓库。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "remote": {"type": "string", "description": "远程名，默认 origin"},
+                    "branch": {"type": "string", "description": "分支名，默认当前分支"},
+                    "force": {"type": "boolean", "description": "强制推送，默认 false"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_branch",
+            "description": "列出、创建、删除分支。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "action": {"type": "string", "enum": ["list", "create", "delete", "switch"], "description": "操作类型"},
+                    "name": {"type": "string", "description": "分支名（create/switch/delete 时必填）"},
+                    "start_point": {"type": "string", "description": "创建时的起点，默认 HEAD"},
+                },
+                "required": ["action"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_diff_cached",
+            "description": "显示暂存区 diff（等同于 git_diff staged=true）。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "可选，限定文件路径"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "git_log_graph",
+            "description": "显示图形化提交历史（类似 git log --graph --oneline）。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "limit": {"type": "integer", "description": "显示条数，默认 20"},
+                },
+                "required": [],
+            },
+        },
+    },
 ]
 
 
@@ -398,6 +529,141 @@ def _code_index(args):
                          path=str(args.get("path") or ""))
 
 
+# ===== Git 工具实现 =====
+
+def _git(cmd_args, cwd=None):
+    """执行 git 命令，返回 (stdout, stderr, returncode)"""
+    if cwd is None:
+        cwd = Path.cwd()
+    cmd = ["git"] + cmd_args
+    try:
+        r = subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True, timeout=30)
+        return r.stdout.strip(), r.stderr.strip(), r.returncode
+    except subprocess.TimeoutExpired:
+        return "", "timeout", 124
+    except Exception as e:
+        return "", str(e), 1
+
+
+def _git_status():
+    out, err, rc = _git(["status", "--short", "--branch"])
+    if rc != 0:
+        return tr(f"[错误] git status 失败: {err}", f"[error] git status failed: {err}")
+    if not out:
+        return tr("工作区干净", "Working tree clean")
+    return f"[branch] {out.splitlines()[0]}\n{out}"
+
+
+def _git_diff(staged=False, path=None):
+    args = ["diff"]
+    if staged:
+        args.append("--cached")
+    if path:
+        args.extend(["--", path])
+    out, err, rc = _git(args)
+    if rc != 0:
+        return tr(f"[错误] git diff 失败: {err}", f"[error] git diff failed: {err}")
+    if not out:
+        return tr("无差异", "No changes")
+    return _truncate(out)
+
+
+def _git_log(limit=10, oneline=True):
+    args = ["log"]
+    if oneline:
+        args.append("--oneline")
+    args.extend(["-n", str(limit)])
+    out, err, rc = _git(args)
+    if rc != 0:
+        return tr(f"[错误] git log 失败: {err}", f"[error] git log failed: {err}")
+    if not out:
+        return tr("无提交记录", "No commits")
+    return out
+
+
+def _git_add(paths):
+    args = ["add"] + paths
+    out, err, rc = _git(["add"] + paths)
+    if rc != 0:
+        return tr(f"[错误] git add 失败: {err}", f"[error] git add failed: {err}")
+    return tr(f"已添加: {', '.join(paths)}", f"Added: {', '.join(paths)}")
+
+
+def _git_commit(message=None, amend=False):
+    if amend:
+        args = ["commit", "--amend", "--no-edit"]
+    elif message:
+        args = ["commit", "-m", message]
+    else:
+        # 自动生成提交信息
+        out, _, _ = _git(["diff", "--cached", "--stat"])
+        if not out:
+            return tr("暂存区为空，无需提交", "Nothing to commit")
+        args = ["commit", "-m", f"auto: {out.splitlines()[0][:50]}"]
+    out, err, rc = _git(args)
+    if rc != 0:
+        return tr(f"[错误] git commit 失败: {err}", f"[error] git commit failed: {err}")
+    return tr(f"已提交: {out.strip()}", f"Committed: {out.strip()}")
+
+
+def _git_push(remote="origin", branch=None, force=False):
+    args = ["push", remote]
+    if force:
+        args.append("--force")
+    if branch:
+        args.append(branch)
+    out, err, rc = _git(args)
+    if rc != 0:
+        return tr(f"[错误] git push 失败: {err}", f"[error] git push failed: {err}")
+    return tr(f"已推送到 {remote}", f"Pushed to {remote}")
+
+
+def _git_branch(action, name=None, start_point=None):
+    if action == "list":
+        out, err, rc = _git(["branch", "-a"])
+        if rc != 0:
+            return tr(f"[错误] git branch 失败: {err}", f"[error] git branch failed: {err}")
+        return out or tr("无分支", "No branches")
+    elif action == "create":
+        if not name:
+            return tr("[错误] 创建分支需指定 name", "[error] create branch requires name")
+        args = ["branch", name]
+        if start_point:
+            args.append(start_point)
+        out, err, rc = _git(args)
+        if rc != 0:
+            return tr(f"[错误] 创建分支失败: {err}", f"[error] create branch failed: {err}")
+        return tr(f"已创建分支 {name}", f"Created branch {name}")
+    elif action == "delete":
+        if not name:
+            return tr("[错误] 删除分支需指定 name", "[error] delete branch requires name")
+        out, err, rc = _git(["branch", "-d", name])
+        if rc != 0:
+            out, err, rc = _git(["branch", "-D", name])
+            if rc != 0:
+                return tr(f"[错误] 删除分支失败: {err}", f"[error] delete branch failed: {err}")
+        return tr(f"已删除分支 {name}", f"Deleted branch {name}")
+    elif action == "switch":
+        if not name:
+            return tr("[错误] 切换分支需指定 name", "[error] switch branch requires name")
+        out, err, rc = _git(["switch", name])
+        if rc != 0:
+            return tr(f"[错误] 切换分支失败: {err}", f"[error] switch branch failed: {err}")
+        return tr(f"已切换到分支 {name}", f"Switched to branch {name}")
+    else:
+        return tr(f"[错误] 未知 action: {action}", f"[error] unknown action: {action}")
+
+
+def _git_log_graph(limit=20):
+    args = ["log", "--graph", "--oneline", "--all", f"-n{limit}"]
+    out, err, rc = _git(args)
+    if rc != 0:
+        return tr(f"[错误] git log 失败: {err}", f"[error] git log failed: {err}")
+    if not out:
+        return tr("无提交记录", "No commits")
+    return out
+
+
 EXECUTORS = {
     "run_bash": lambda a: _run_bash(a["command"], int(a.get("timeout", 60))),
     "read_file": lambda a: _read_file(a["path"], int(a.get("offset", 1)),
@@ -408,6 +674,15 @@ EXECUTORS = {
     "grep_search": lambda a: _grep_search(a["pattern"], a.get("path", "."), a.get("include")),
     "code_index": _code_index,
     "todo_write": todo.apply,
+    "git_status": lambda a: _git_status(),
+    "git_diff": lambda a: _git_diff(a.get("staged", False), a.get("path")),
+    "git_log": lambda a: _git_log(int(a.get("limit", 10)), a.get("oneline", True)),
+    "git_add": lambda a: _git_add(a.get("paths", ["."])),
+    "git_commit": lambda a: _git_commit(a.get("message"), a.get("amend", False)),
+    "git_push": lambda a: _git_push(a.get("remote", "origin"), a.get("branch"), a.get("force", False)),
+    "git_branch": lambda a: _git_branch(a["action"], a.get("name"), a.get("start_point")),
+    "git_diff_cached": lambda a: _git_diff(True, a.get("path")),
+    "git_log_graph": lambda a: _git_log_graph(int(a.get("limit", 20))),
 }
 
 
