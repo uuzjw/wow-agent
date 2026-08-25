@@ -13,6 +13,30 @@ STATE = ROOT / "todo.json"
 STATUSES = ("pending", "in_progress", "completed")
 PRIORITIES = {"high": 0, "medium": 1, "low": 2}
 
+# 任务状态机：规划 → 执行 → 验证 → 完成/受阻，模型可显式切换，文件改动自动推进
+PHASES = ("planning", "executing", "verifying", "done", "failed")
+PHASE_LABEL = {
+    "planning": "📋 规划中",
+    "executing": "⚙ 执行中",
+    "verifying": "🔍 验证中",
+    "done": "✅ 已完成",
+    "failed": "❌ 受阻",
+}
+_phase = "planning"
+
+
+def phase():
+    return _phase
+
+
+def set_phase(p):
+    global _phase
+    if p in PHASES:
+        _phase = p
+        _persist()
+        return True
+    return False
+
 _items = []
 
 
@@ -34,8 +58,9 @@ def set_all(rows):
 
 
 def reset():
-    global _items
+    global _items, _phase
     _items = []
+    _phase = "planning"
     _persist()
 
 
@@ -44,9 +69,11 @@ def apply(args):
     if not isinstance(rows, list) or not rows:
         return "[错误] todos 必须是非空数组（每次全量提交整个清单）"
     set_all(rows)
+    if isinstance(args.get("phase"), str):
+        set_phase(args["phase"].strip().lower())
     total, done, prog = counts()
     cur = next((t for t in _items if t["status"] == "in_progress"), None)
-    msg = f"清单已更新: 共{total}项 · 完成{done}"
+    msg = f"清单已更新: 共{total}项 · 完成{done} · 阶段:{PHASE_LABEL[_phase]}"
     if prog:
         msg += f" · 进行中{prog}"
     if cur:
@@ -116,7 +143,7 @@ def _persist():
     try:
         ROOT.mkdir(parents=True, exist_ok=True)
         STATE.write_text(json.dumps(
-            {"updated": time.time(), "todos": _items},
+            {"updated": time.time(), "todos": _items, "phase": _phase},
             ensure_ascii=False), encoding="utf-8")
     except OSError:
         pass

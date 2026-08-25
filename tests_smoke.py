@@ -147,4 +147,96 @@ check("UI set_todos 同步", ui.todo_badge() == "☑0/1")
 from wow_agent.agent import est_tokens  # noqa: E402
 check("token 估算仍工作", est_tokens([{"role": "user", "content": "hello"}]) > 0)
 
+# ---- v0.6.0 整轮分组回滚 ----
+from wow_agent import undo as und  # noqa: E402
+
+tmpu = Path(tempfile.mkdtemp(prefix="wow-undo-"))
+fA = tmpu / "a.txt"
+fB = tmpu / "b.txt"
+fC = tmpu / "c.txt"
+fA.write_text("orig-a")
+fC.write_text("keep")
+und.push(str(fA), True, "orig-a", cid="t1")
+fA.write_text("mod-a")
+und.push(str(fB), False, None, cid="t1")
+fB.write_text("new-b")
+und.push(str(fC), True, "keep")
+check("整轮快照计数", und.group_depth("t1") == 2)
+und.undo_group("t1")
+check("整轮回滚还原+删新建",
+      fA.read_text() == "orig-a" and not fB.exists())
+check("整轮回滚不误伤他轮", fC.read_text() == "keep"
+      and und.group_depth("t1") == 0)
+und.undo()
+check("单步 /undo 兼容", fC.read_text() == "keep" and und.depth() == 0)
+
+# ---- v0.6.0 任务状态机 ----
+todo.reset()
+check("状态机默认规划", todo.phase() == "planning")
+receipt = tools.execute("todo_write",
+                        {"todos": [{"content": "x"}], "phase": "executing"})
+check("todo_write 切阶段", todo.phase() == "executing" and "执行中" in receipt)
+check("非法阶段拒绝", not todo.set_phase("bogus"))
+tools.execute("todo_write",
+              {"todos": [{"content": "x"}], "phase": "verifying"})
+check("阶段推进到验证", todo.phase() == "verifying")
+todo.reset()
+check("reset 回规划", todo.phase() == "planning")
+
+# ---- v0.6.0 项目索引 ----
+from wow_agent import indexer  # noqa: E402
+
+proj = Path(tempfile.mkdtemp(prefix="wow-idx-"))
+(proj / "pkg").mkdir()
+(proj / "pkg" / "__init__.py").write_text("")
+(proj / "pkg" / "mod.py").write_text(
+    "import os\n\nclass Alpha:\n    def go(self):\n        pass\n"
+    "\n\ndef beta():\n    return 1\n")
+(proj / "readme.md").write_text("# hi\n")
+d = indexer.build(proj)
+check("索引构建文件数", sum(1 for f in d["files"] if f.get("mtime")) == 3)
+r = indexer.query(action="search", q="alpha", root=str(proj))
+check("索引符号搜索", "pkg/mod.py" in r and "class Alpha" in r)
+r = indexer.query(action="file", path="pkg/mod.py", root=str(proj))
+check("索引单文件结构", "func" in r and "Alpha.go" in r and "beta" in r)
+r = indexer.query(action="summary", root=str(proj))
+check("索引概览", "扩展名" in r and "Python 符号" in r)
+
+# ---- v0.6.0 MCP stdio 客户端（假服务器回路）----
+FAKE_MCP = """import sys, json
+for line in sys.stdin:
+    line = line.strip()
+    if not line:
+        continue
+    m = json.loads(line)
+    r = {}
+    if m.get("method") == "initialize":
+        r = {"jsonrpc": "2.0", "id": m["id"], "result": {
+            "protocolVersion": "2024-11-05", "capabilities": {},
+            "serverInfo": {"name": "fake"}}}
+    elif m.get("method") == "tools/list":
+        r = {"jsonrpc": "2.0", "id": m["id"], "result": {"tools": [
+            {"name": "echo", "description": "回声",
+             "inputSchema": {"type": "object",
+                             "properties": {"text": {"type": "string"}}}}]}}
+    elif m.get("method") == "tools/call":
+        t = m["params"].get("arguments", {}).get("text", "")
+        r = {"jsonrpc": "2.0", "id": m["id"], "result": {
+            "content": [{"type": "text", "text": "ECHO:" + t}]}}
+    if r:
+        print(json.dumps(r), flush=True)
+"""
+from wow_agent import mcp as mcpx  # noqa: E402
+
+srv_py = Path(tempfile.mkdtemp(prefix="wow-mcp-")) / "fake_server.py"
+srv_py.write_text(FAKE_MCP)
+srv = mcpx.Server("fake", {"command": sys.executable,
+                           "args": [str(srv_py)]})
+srv.start()
+tl = srv.list_tools()
+check("MCP initialize+list_tools", [t["name"] for t in tl] == ["echo"])
+out = srv.call("echo", {"text": "wow"})
+check("MCP tools/call 回声", out == "ECHO:wow")
+srv.stop()
+
 print("\nALL SMOKE TESTS PASSED")

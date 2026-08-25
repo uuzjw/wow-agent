@@ -144,6 +144,30 @@ TOOLS_SCHEMA = [
     {
         "type": "function",
         "function": {
+            "name": "code_index",
+            "description": (
+                "查询项目索引（文件树 + Python 类/函数/import 符号表）。"
+                "找代码先查这里再精读，比反复 find/grep 省得多。"
+                "action=summary 项目概览 | search 按符号名模糊搜 | "
+                "file 看单文件结构 | rebuild 强制重建"),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "action": {"type": "string",
+                               "enum": ["summary", "search", "file", "rebuild"],
+                               "description": "默认 summary"},
+                    "query": {"type": "string",
+                              "description": "search 时的关键词"},
+                    "path": {"type": "string",
+                             "description": "file 时相对项目根的路径"},
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "todo_write",
             "description": (
                 "维护当前任务的计划清单（每次全量提交整个清单）。"
@@ -169,6 +193,14 @@ TOOLS_SCHEMA = [
                             },
                             "required": ["content"],
                         },
+                    },
+                    "phase": {
+                        "type": "string",
+                        "enum": ["planning", "executing", "verifying",
+                                 "done", "failed"],
+                        "description": ("整体任务阶段状态机：planning 规划 → executing 动手 "
+                                        "→ verifying 验证改动 → done 完成 / failed 受阻"
+                                        "（需要用户决策）。随进展同步更新"),
                     },
                 },
                 "required": ["todos"],
@@ -346,6 +378,13 @@ def _grep_search(pattern, path=".", include=None):
     return _truncate("\n".join(hits) if hits else "[无匹配]")
 
 
+def _code_index(args):
+    from . import indexer
+    return indexer.query(action=str(args.get("action") or "summary"),
+                         q=str(args.get("query") or ""),
+                         path=str(args.get("path") or ""))
+
+
 EXECUTORS = {
     "run_bash": lambda a: _run_bash(a["command"], int(a.get("timeout", 60))),
     "read_file": lambda a: _read_file(a["path"], int(a.get("offset", 1)),
@@ -354,6 +393,7 @@ EXECUTORS = {
     "edit_file": lambda a: _edit_file(a["path"], a["old_string"], a["new_string"]),
     "glob_files": lambda a: _glob_files(a["pattern"], a.get("path", ".")),
     "grep_search": lambda a: _grep_search(a["pattern"], a.get("path", "."), a.get("include")),
+    "code_index": _code_index,
     "todo_write": todo.apply,
 }
 

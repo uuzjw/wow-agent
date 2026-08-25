@@ -77,7 +77,9 @@ def render_todo_panel():
             if len(note) > 46:
                 note = note[:46] + "…"
             body.append(f"{pad}   └ {note}\n", style="dim italic")
-    title = f"☰ 计划 {done}/{total}" + (f" · ▶{prog}" if prog else "")
+    label = todo.PHASE_LABEL.get(todo.phase(), "")
+    title = f"☰ {label} · 计划 {done}/{total}" + \
+        (f" · ▶{prog}" if prog else "")
     return Panel(body, title=title, title_align="left",
                  border_style="magenta", width=PANEL_WIDTH)
 

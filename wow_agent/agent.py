@@ -35,6 +35,16 @@ def make_client():
     )
 
 
+def full_schema():
+    """内置工具 + MCP 桥接工具（未配置 MCP 时与静态表等价）。"""
+    try:
+        from . import mcp
+        extra = mcp.schemas()
+    except Exception:
+        extra = []
+    return list(TOOLS_SCHEMA) + extra
+
+
 class EmptyReplyError(RuntimeError):
     """模型返回空内容且无工具调用（常见于免费模型不支持 tools）。"""
 
@@ -101,7 +111,7 @@ def _stream_assistant(client, messages, ui, tools_schema=None, label=None):
     stream = client.chat.completions.create(
         model=config.MODEL,
         messages=messages,
-        tools=tools_schema if tools_schema is not None else TOOLS_SCHEMA,
+        tools=tools_schema if tools_schema is not None else full_schema(),
         stream=True,
     )
     content_parts = []
@@ -157,7 +167,7 @@ def _stream_assistant(client, messages, ui, tools_schema=None, label=None):
     return msg
 
 
-def _execute_tool(call, ui):
+def _execute_tool(call, ui, cid=""):
     name = call["function"]["name"]
     raw = call["function"]["arguments"]
     try:
@@ -189,6 +199,9 @@ def _execute_tool(call, ui):
         if name == "task":
             result = run_subtask(str(args.get("prompt") or ""), ui,
                                  str(args.get("description") or ""))
+        elif name.startswith("mcp__"):
+            from . import mcp
+            result = mcp.execute(name, args)
         else:
             from .tools import execute
             result = execute(name, args)
@@ -199,12 +212,18 @@ def _execute_tool(call, ui):
         ui.set_todos(todo.items())
     elapsed = time.perf_counter() - t0
 
+    if (name in FILE_TOOLS
+            and not result.lstrip().startswith(
+                ("[错误]", "[工具执行出错]", "[用户拒绝]"))
+            and todo.phase() == "executing"):
+        todo.set_phase("verifying")
+
     if p is not None:
         after = _read_maybe(p) if p.exists() else None
         if result.lstrip().startswith(("[错误]", "[工具执行出错]")):
             pass
         elif after != before:
-            undo.push(str(p), bool(existed), before)
+            undo.push(str(p), bool(existed), before, cid=cid)
             ui.diff(_diff_lines(before, after, str(p)),
                     is_new=(before is None))
     return result, elapsed
@@ -223,6 +242,7 @@ def _call_sig(call):
 def run_turn(client, messages, ui, on_progress=None):
     turns = 0
     t0 = time.perf_counter()
+    cid = f"t{time.time_ns()}"
     last_sig = None
     repeat_n = 0
     for _ in range(config.MAX_ITER):
@@ -257,7 +277,7 @@ def run_turn(client, messages, ui, on_progress=None):
                             f"{type(e).__name__}: {str(e)[:160]}[/red]")
                     return False, {"turns": turns,
                                    "elapsed": time.perf_counter() - t0,
-                                   "empty": True}
+                                   "empty": True, "cid": cid}
             finally:
                 if ok:
                     ui.text_end()
@@ -268,11 +288,12 @@ def run_turn(client, messages, ui, on_progress=None):
         calls = msg.get("tool_calls")
         if not calls:
             return True, {"turns": turns,
-                          "elapsed": time.perf_counter() - t0}
+                          "elapsed": time.perf_counter() - t0,
+                          "cid": cid}
         for call in calls:
             name = call["function"]["name"]
             ui.tool_start(name, call["function"]["arguments"])
-            result, dt = _execute_tool(call, ui)
+            result, dt = _execute_tool(call, ui, cid=cid)
             ui.tool_result(name, result, dt)
             content = result[:20000]
             sig = _call_sig(call)
@@ -291,7 +312,8 @@ def run_turn(client, messages, ui, on_progress=None):
             })
             if callable(on_progress):
                 on_progress()
-    return False, {"turns": turns, "elapsed": time.perf_counter() - t0}
+    return False, {"turns": turns, "elapsed": time.perf_counter() - t0,
+                   "cid": cid}
 
 
 COMPACT_PROMPT = (

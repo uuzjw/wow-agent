@@ -24,11 +24,11 @@ SUB_SYSTEM = (
     "关键发现 → 涉及文件:行号 → 对主任务的建议，500 字以内")
 
 
-def run(prompt, ui, description=""):
+def run(prompt, ui, description="", system=None):
     from .agent import _stream_assistant, make_client
 
     client = make_client()
-    messages = [{"role": "system", "content": SUB_SYSTEM},
+    messages = [{"role": "system", "content": system or SUB_SYSTEM},
                 {"role": "user", "content": prompt}]
     head = " ".join((description or prompt).split())[:60]
     ui.console.print(f"  [magenta]┌ 子代理[/magenta] [dim]{head}[/dim]")

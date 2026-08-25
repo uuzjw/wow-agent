@@ -1,6 +1,6 @@
 # wow-agent 开发进度存档
 
-> 更新时间: 2026-08-25 | 状态: v0.5.3 Agent 可靠性四件套
+> 更新时间: 2026-08-25 | 状态: v0.6.0 可靠性五件套（checkpoint/状态机/索引/MCP/review）
 > 恢复方式: 对 AI 说「继续对话」，让它读本文件了解上下文
 
 ## 项目定位
@@ -8,6 +8,26 @@
 Python 3.10+ / uv 管理；依赖 openai / httpx[socks] / prompt_toolkit / rich。
 GitHub: https://github.com/uuzjw/wow-agent（MIT）
 声明: 独立开发，与同名开源项目无关（README 顶部 + 全部 .py 版权头已加，v0.5.2 后提交）
+
+## v0.6.0 新增（Agent 工程化五件套）
+1. **整轮分组回滚** (`undo.py` + `agent.py` + `cli.py`)：快照带轮次 cid；
+   任务失败（空回复/达上限）时主动询问「回滚本轮 N 处改动」，一键 undo_group；
+   单步 /undo 行为不变
+2. **任务状态机** (`todo.py` + `tools.py` + `ui.py`)：planning → executing →
+   verifying → done/failed；模型经 todo_write 的 phase 参数显式切换，
+   文件改动成功后自动 executing→verifying 推进；面板标题/`/status` 实时显示，
+   随 todo.json 持久化
+3. **项目索引** (`indexer.py` 新模块 + `code_index` 工具)：扫描项目生成
+   文件树 + Python 符号表（ast：类/函数/import 带行号），存
+   ~/.wow-agent/index/<proj>.json 不污染项目；summary/search/file/rebuild
+   四种查询；mtime 过期自动重建；模型先查索引再精读省上下文
+4. **MCP stdio 客户端** (`mcp.py` 新模块，零外部依赖)：~/.wow-agent/mcp.json
+   配置 servers，换行分隔 JSON-RPC over stdin/stdout，后台线程收包；
+   initialize 握手 → tools/list → tools/call；工具名 mcp__<server>__<tool>
+   经 agent.full_schema() 动态并入主对话工具表；子代理不带 MCP 保持只读；
+   atexit 统一回收进程；假服务器协议回路测试通过
+5. **/review 代码审查** (`cli.py` + `subagent.py`)：subagent.run 支持 system
+   覆盖；REVIEW_SYSTEM 三级报告格式（🔴高风险/🟡建议/🟢优化，路径:行号+建议）
 
 ## v0.5.3 新增（可靠性四件套）
 1. **read_file 分块读取** (`tools.py`)：offset/limit 参数；返回头部元信息

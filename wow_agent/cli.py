@@ -16,7 +16,7 @@ from prompt_toolkit.styles import Style
 from prompt_toolkit.utils import get_cwidth
 from rich.text import Text
 
-from . import __version__, agent, config, memory as mem, session as sess, todo, tools, undo
+from . import __version__, agent, config, memory as mem, session as sess, subagent, todo, tools, undo
 from .tools import _run_bash
 from .ui import UI, banner, console
 
@@ -29,12 +29,23 @@ COMMANDS = {
     "/undo": "撤销 AI 的最近一次文件修改",
     "/mem": "长期记忆 save/use/rm/list/new",
     "/resume": "恢复历史会话",
+    "/review": "只读代码审查（🔴高风险/🟡建议/🟢优化）",
     "/safe": "开/关 外传防护（上传需批准）",
     "/clear": "清空对话并开新会话",
     "/exit": "退出",
 }
 
 MEM_SUBS = ["save", "use", "rm", "list", "new"]
+
+REVIEW_SYSTEM = (
+    "你是 wow-agent 的只读代码审查子代理，在干净上下文里调研，不执行任何修改。\n"
+    "- 只用 read_file / glob_files / grep_search / 查看类 bash 命令\n"
+    "- 审查重点：安全风险（注入/密钥泄漏/越权）、正确性（边界/错误处理/"
+    "资源泄漏）、设计与性能；小问题不必穷举，挑值得改的说\n"
+    f"- 最多 {config.SUB_ITER} 轮调研\n"
+    "- 最后一条回复输出审查报告，严格分三节：\n"
+    "🔴 高风险\n🟡 建议\n🟢 优化\n"
+    "每条格式 `- 路径:行号 · 问题 · 修复建议`；某节没有就写（无），不要客套话")
 
 HELP = """[bold]命令[/bold]（输入 / 自动补全，支持模糊匹配如 /cmp → /compact）:
   /model            选择服务商 / API key / 模型（向导）
@@ -44,8 +55,9 @@ HELP = """[bold]命令[/bold]（输入 / 自动补全，支持模糊匹配如 /c
   /config           查看当前配置
   /status           会话状态：上下文估算 / 任务清单 / undo 深度
   /compact [要求]    用 LLM 压缩历史，上下文过长时也会自动触发
-  /undo             撤销 AI 最近一次文件写入/编辑（可连续撤销）
+  /undo             撤销 AI 最近一次文件写入/编辑（可连续撤销；任务失败可整轮回滚）
   /resume           恢复历史会话继续聊
+  /review [路径]     只读代码审查：🔴高风险 / 🟡建议 / 🟢优化 三级报告
   /safe             开/关 安全模式（断网沙盒 + 上传外发强制批准；
                     默认开，装依赖需联网时先 /safe 关）
   /clear            清空对话        /help   帮助
@@ -197,6 +209,17 @@ def run_task(ui, messages, user_text, state=None):
         ui.abort()
         console.print(f"\n[red]API 出错:[/red] {type(e).__name__}: {e}")
         return
+
+    if not done and stats.get("cid"):
+        n = undo.group_depth(stats["cid"])
+        if n and ui.confirm(
+                f"[red]本轮未正常完成[/red] 回滚本轮 AI 的 {n} 处文件改动?",
+                force=True):
+            for m in undo.undo_group(stats["cid"]):
+                if m.startswith("[错误]"):
+                    console.print(f"  [red]{m}[/red]")
+                else:
+                    console.print(f"  [green]✓[/green] {m}")
 
     tok = agent.est_tokens(messages)
     total = time.perf_counter() - t0
@@ -406,6 +429,11 @@ def cmd_model_quick(model_id):
 
 
 def cmd_config():
+    try:
+        from . import mcp
+        mcp_n = f"{len(mcp.status())} 个 ({mcp.CONF})"
+    except Exception:
+        mcp_n = "0 个"
     console.print(
         f"服务商: [cyan]{_provider_name()}[/cyan]\n"
         f"BASE_URL: [cyan]{config.BASE_URL}[/cyan]\n"
@@ -414,6 +442,7 @@ def cmd_config():
         f"自动压缩阈值: {config.AUTO_COMPACT} tok\n"
         f"断网沙盒: {'开' if tools.NET_BLOCK else '关'} | "
         f"外传防护(上传需批准): {'开' if config.UPLOAD_GUARD else '关'}\n"
+        f"MCP servers: {mcp_n}\n"
         f"配置文件: {config.ENV_FILE}")
 
 
@@ -424,13 +453,14 @@ def cmd_status(messages, state):
     undo_n = undo.depth()
     mode = ("YOLO" if state.get("yolo")
             else "自主模式" if state.get("auto") else "命令需确认")
+    ph = todo.PHASE_LABEL.get(todo.phase(), "")
     console.print(
         f"会话: [cyan]{state.get('sid', '-')}[/cyan]\n"
         f"上下文: ≈[cyan]{_fmt_tok(tok)}[/cyan] tok "
         f"[dim]{bar} {pct}% of {config.AUTO_COMPACT} 自动压缩线[/dim]\n"
         f"消息数: {len(messages)} | 可撤销改动: [cyan]{undo_n}[/cyan]"
         + (f" [dim]{' '.join(undo.recent(3))}[/dim]" if undo_n else "")
-        + f"\n模式: {mode} | 安全模式(沙盒+外传批准): "
+        + f"\n任务阶段: {ph} | 模式: {mode} | 安全模式(沙盒+外传批准): "
         + ("开" if tools.NET_BLOCK and config.UPLOAD_GUARD else
            "关" if not tools.NET_BLOCK and not config.UPLOAD_GUARD else
            f"沙盒{'开' if tools.NET_BLOCK else '关'}/外传批准"
@@ -719,6 +749,16 @@ def main():
                 cmd_model_quick(parts[1].strip())
             else:
                 cmd_model()
+            continue
+        if line.startswith("/review"):
+            scope = line[len("/review"):].strip() or "."
+            console.print(f"\n[magenta]▪ 只读代码审查[/magenta] "
+                          f"[dim]{scope}[/dim]")
+            report = subagent.run(
+                f"审查目标: {scope}\n请开始只读调研并输出审查报告。",
+                ui, "代码审查", system=REVIEW_SYSTEM)
+            from rich.markdown import Markdown
+            console.print(Markdown(report))
             continue
         if line.startswith("!"):
             out = _run_bash(line[1:], timeout=120)

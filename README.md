@@ -17,8 +17,16 @@ Linux x86_64 / ARM64（Jetson Orin NX 实测）为主场。
   OpenAI / Gemini / Ollama / LM Studio，`/model` 向导在线拉取真实模型列表
 - **免费可用**：OpenCode Zen 免费档模型（含 ox alpha `x-preview-f-free`），
   key 在 [opencode.ai/auth](https://opencode.ai/auth) 获取；上游波动自动重试
-- **任务树计划**：多步任务自动拆解成带优先级/父子层级的清单，流式回答时侧栏实时渲染
-- **只读子代理**：干净上下文里调研代码，只回结论，不污染主对话
+- **任务树计划 + 状态机**：多步任务自动拆解成带优先级/父子层级的清单，
+  planning → executing → verifying → done/failed 阶段流转，侧栏实时渲染
+- **可靠修改**：改动自动快照彩色 diff；任务失败可一键回滚本轮全部改动，
+  `/undo` 仍可单步撤销，快照落盘跨重启有效
+- **项目索引**：一次扫描生成 文件树 + Python 符号表（ast），`code_index`
+  先查索引再精读，省掉反复 find/grep 的上下文开销
+- **MCP 生态**：`~/.wow-agent/mcp.json` 一行配置接入外部 MCP Server
+  （文件系统/数据库/浏览器/GitHub…），工具以 `mcp__服务__工具` 无缝并入
+- **只读子代理**：干净上下文里调研代码，只回结论，不污染主对话；
+  `/review` 三级代码审查报告（🔴高风险/🟡建议/🟢优化）
 - **长期记忆**：`/mem save` 把对话压缩成经验摘要，任何目录 `/mem use` 随时调用
 - **安全防线**：断网沙盒执行 shell（unshare -n / 代理黑洞）、上传外发命令强制批准、
   高危命令二次确认、AI 改动可 `/undo` 撤销
@@ -69,7 +77,8 @@ $ wow                 # 或 uv run wow
 | `/compact [要求]` | 手动压缩历史（超阈值也会自动触发） |
 | `/mem save/use/rm/list/new` | 长期记忆管理 |
 | `/resume` | 恢复历史会话 |
-| `/undo` | 撤销 AI 最近一次文件修改 |
+| `/undo` | 撤销 AI 最近一次文件修改；任务失败可整轮回滚 |
+| `/review [路径]` | 只读代码审查：🔴高风险 / 🟡建议 / 🟢优化 |
 | `/safe` | 开/关安全模式（断网沙盒 + 外传强制批准） |
 | `/clear` `/exit` | 清空对话 / 退出 |
 
@@ -78,6 +87,16 @@ $ wow                 # 或 uv run wow
 配置存于 `~/.wow-agent.env`，也可用环境变量覆盖：
 `WOW_API_KEY`、`WOW_BASE_URL`、`WOW_MODEL`、`WOW_SAFE_MODE`（0 关沙盒）、
 `WOW_MAX_ITER`、`WOW_AUTO_COMPACT`。参考 `.env.example`。
+
+MCP Server 在 `~/.wow-agent/mcp.json` 配置：
+
+```json
+{
+  "servers": {
+    "fs": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-fs", "/tmp"]}
+  }
+}
+```
 
 用 Ollama / LM Studio 本地模型无需 key：`/model` 里选对应服务商即可。
 
