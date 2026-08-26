@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>配置参考 | wow-agent</title>
+    <meta name="description" content="全部 WOW_* 环境变量、MCP 服务器与服务商配置。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/config/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="配置参考 | wow-agent" />
+    <meta property="og:description" content="全部 WOW_* 环境变量、MCP 服务器与服务商配置。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../home/index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../safety/index.html">安全</a>
+        <a class="top-nav__link" href="index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../config/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../guide/index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../guide/installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../guide/first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../guide/cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../guide/commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../guide/faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../tutorials/index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../tutorials/custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../tutorials/add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../tutorials/mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../tutorials/subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../tutorials/contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">参考手册</p>
+    <h1 class="entry-title">配置参考</h1>
+    <div class="prose"><p>配置文件：<code>~/.wow-agent.env</code>（权限 600）。</p>
+<pre><code class="language-bash">WOW_API_KEY=            # API Key
+WOW_BASE_URL=           # OpenAI 兼容端点
+WOW_MODEL=              # 模型 ID
+WOW_SAFE_MODE=1         # 0 关闭沙盒（不推荐）
+WOW_MAX_ITER=40         # 每任务最大迭代轮数
+WOW_AUTO_COMPACT=55000  # 自动压缩阈值（Token）
+WOW_LANGUAGE=en         # en | zh，默认 en
+WOW_MODEL_CTX=128000    # 模型上下文长度（用于估算）
+WOW_CELL_ASPECT=2.0     # 终端字符宽高比（logo 缩放）
+WOW_UPLOAD_GUARD=1      # 外传防护开关
+</code></pre>
+<h2>MCP 服务器</h2>
+<p><code>~/.wow-agent/mcp.json</code>：</p>
+<pre><code class="language-json">{
+  "servers": {
+    "fs": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-fs", "/tmp"] }
+  }
+}
+</code></pre>
+<h2>优先级</h2>
+<p>CLI 参数 → <code>~/.wow-agent.env</code> → 项目 <code>.env</code> → 内置默认值。</p>
+<p>运行时查看：<code>/config</code>、<code>/config get WOW_MAX_ITER</code>、<code>/config set WOW_MAX_ITER 60</code>（仅当前会话）。</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

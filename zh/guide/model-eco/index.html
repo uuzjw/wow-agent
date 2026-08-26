@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>模型生态 | wow-agent</title>
+    <meta name="description" content="16+ 云端服务商与完全本地模型，统一接口接入。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/guide/model-eco/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="模型生态 | wow-agent" />
+    <meta property="og:description" content="16+ 云端服务商与完全本地模型，统一接口接入。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../guide/model-eco/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">核心概念</p>
+    <h1 class="entry-title">模型生态</h1>
+    <div class="prose"><h2>云端服务商</h2>
+<p>DeepSeek · Qwen · Kimi · GLM · SiliconFlow · 豆包 · 混元 · MiniMax · OpenRouter · Groq · Mistral · Grok · OpenAI · Gemini · OpenCode Zen（免费档含 <code>x-preview-f-free</code>）</p>
+<h2>本地模型</h2>
+<table>
+<thead>
+<tr>
+<th>服务商</th>
+<th>启动</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ollama</td>
+<td><code>ollama serve</code></td>
+<td>无需 Key，100% 离线</td>
+</tr>
+<tr>
+<td>LM Studio</td>
+<td>GUI + 本地服务</td>
+<td>任意 GGUF 模型</td>
+</tr>
+</tbody>
+</table>
+<h2>切换</h2>
+<pre><code class="language-bash">/model                 # 交互向导
+/model deepseek        # 快速切换
+/model ollama:llama3   # 本地模型
+</code></pre>
+<h2>选型建议</h2>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>推荐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编程质量最佳</td>
+<td>DeepSeek Coder、GPT-4o</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>Groq (Llama3)、Gemini Flash</td>
+</tr>
+<tr>
+<td>免费</td>
+<td>DeepSeek / Qwen 免费档、OpenCode Zen</td>
+</tr>
+<tr>
+<td>隐私</td>
+<td>Ollama codellama / deepseek-coder</td>
+</tr>
+<tr>
+<td>长上下文</td>
+<td>Kimi (200k)、Gemini 1.5 Pro (1M)</td>
+</tr>
+</tbody>
+</table>
+<p>记得设置 <code>WOW_MODEL_CTX</code> 让上下文估算与模型匹配。</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

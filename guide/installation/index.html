@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Installation | wow-agent</title>
+    <meta name="description" content="Complete installation guide for wow-agent on Linux, macOS, WSL and Windows — including offline and air-gapped setups." />
+    <link rel="canonical" href="https://uuzjw.github.io/guide/installation/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Installation | wow-agent" />
+    <meta property="og:description" content="Complete installation guide for wow-agent on Linux, macOS, WSL and Windows — including offline and air-gapped setups." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/guide/installation/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">User Guide</p>
+    <h1 class="entry-title">Installation</h1>
+    <div class="prose"><p>This page covers every supported way to install wow-agent, from a 60-second setup to fully offline environments.</p>
+<h2>Requirements</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Minimum</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.10+</td>
+<td>3.11+ recommended</td>
+</tr>
+<tr>
+<td><a href="https://docs.astral.sh/uv/">uv</a></td>
+<td>latest</td>
+<td>package manager, installs in seconds</td>
+</tr>
+<tr>
+<td>Disk</td>
+<td>~200 MB</td>
+<td>incl. virtual environment</td>
+</tr>
+<tr>
+<td>RAM</td>
+<td>512 MB</td>
+<td>agent itself; your model needs its own</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>optional</td>
+<td>fully offline possible with local models</td>
+</tr>
+</tbody>
+</table>
+<h2>One-line install (recommended)</h2>
+<p>Linux, macOS, WSL:</p>
+<pre><code class="language-bash">git clone https://github.com/uuzjw/wow-agent.git
+cd wow-agent
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
+uv run wow
+</code></pre>
+<p>Windows (PowerShell, experimental):</p>
+<pre><code class="language-powershell">git clone https://github.com/uuzjw/wow-agent.git
+cd wow-agent
+irm https://astral.sh/uv/install.ps1 | iex
+$env:Path += ";$env:USERPROFILE\.local\bin"
+uv sync; uv run wow
+</code></pre>
+<h2>What happens on first launch</h2>
+<ol>
+<li>A welcome screen appears and asks you to <strong>pick a model provider</strong> (DeepSeek, Qwen, OpenAI, Ollama, …)</li>
+<li>You paste your <strong>API key</strong> (not needed for local providers)</li>
+<li>wow-agent writes <code>~/.wow-agent.env</code> with permission <code>600</code> — only your user can read it</li>
+<li>You land in the interactive prompt, ready to type a task</li>
+</ol>
+<pre><code class="language-text">$ uv run wow
+
+  Welcome to wow-agent!
+
+  ? Select model provider › DeepSeek
+  ? API Key › sk-****
+  ? Model › deepseek-coder
+
+  ✔ Config saved to ~/.wow-agent.env (600)
+
+  You > _
+</code></pre>
+<h2>Installing without git</h2>
+<p>Only want the code, no history?</p>
+<pre><code class="language-bash">curl -L https://github.com/uuzjw/wow-agent/archive/refs/heads/main.tar.gz | tar xz
+cd wow-agent-main &#x26;&#x26; uv sync &#x26;&#x26; uv run wow
+</code></pre>
+<h2>Offline / air-gapped installation</h2>
+<p>wow-agent works fully offline with local models:</p>
+<pre><code class="language-bash"># 1. On a machine WITH internet
+git clone https://github.com/uuzjw/wow-agent.git
+cd wow-agent &#x26;&#x26; uv sync
+
+# 2. Copy the whole folder to the target machine (USB / scp)
+# 3. On the target machine
+uv run wow          # pick Ollama or LM Studio as provider
+</code></pre>
+<p>Run the model itself offline:</p>
+<pre><code class="language-bash">curl -fsSL https://ollama.ai/install.sh | sh   # once, with internet
+ollama pull deepseek-coder:6.7b                # model weights
+ollama serve                                   # local endpoint :11434
+</code></pre>
+<h2>Upgrading</h2>
+<pre><code class="language-bash">cd wow-agent
+git pull
+uv sync
+</code></pre>
+<p>Your <code>~/.wow-agent.env</code>, memory and snapshots survive upgrades.</p>
+<h2>Uninstall</h2>
+<pre><code class="language-bash">rm -rf wow-agent/           # the app
+rm ~/.wow-agent.env         # config
+rm -rf ~/.wow-agent/        # memory + snapshots (optional)
+</code></pre>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command not found: uv</code></td>
+<td>re-open shell or <code>source ~/.bashrc</code>; or run <code>uv run wow</code> from the project folder</td>
+</tr>
+<tr>
+<td><code>Python 3.10 required</code></td>
+<td>uv usually manages Python itself; run <code>uv python install 3.11</code></td>
+</tr>
+<tr>
+<td><code>permission denied</code> on <code>~/.wow-agent.env</code></td>
+<td>file is mode 600 by design; run as your own user, not root</td>
+</tr>
+<tr>
+<td>behind a corporate proxy</td>
+<td><code>export HTTPS_PROXY=http://proxy:port</code> before <code>uv sync</code></td>
+</tr>
+<tr>
+<td>Windows: <code>uv</code> not found after install</td>
+<td>restart PowerShell so PATH refreshes</td>
+</tr>
+</tbody>
+</table>
+<h2>Next steps</h2>
+<ul>
+<li><a href="/wow-agent/guide/first-task/">Your First Task</a> — a guided walkthrough</li>
+<li><a href="/wow-agent/guide/cookbook/">Everyday Cookbook</a> — recipes for common jobs</li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

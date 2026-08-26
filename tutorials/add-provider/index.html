@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add a Model Provider | wow-agent</title>
+    <meta name="description" content="Connect any OpenAI-compatible endpoint to wow-agent in minutes — presets, headers, model lists and per-provider capabilities." />
+    <link rel="canonical" href="https://uuzjw.github.io/tutorials/add-provider/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Add a Model Provider | wow-agent" />
+    <meta property="og:description" content="Connect any OpenAI-compatible endpoint to wow-agent in minutes — presets, headers, model lists and per-provider capabilities." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/tutorials/add-provider/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Developer Tutorial</p>
+    <h1 class="entry-title">Add a Model Provider</h1>
+    <div class="prose"><p>Any endpoint that speaks the OpenAI Chat Completions dialect can be a wow-agent provider. This tutorial adds a fictional provider <strong>NebulaAI</strong>.</p>
+<h2>Fastest path: no code at all</h2>
+<p>For one-off use, skip code — set three env vars:</p>
+<pre><code class="language-bash"># ~/.wow-agent.env
+WOW_API_KEY=neb_sk-...
+WOW_BASE_URL=https://api.nebula.ai/v1
+WOW_MODEL=nebula-coder-large
+</code></pre>
+<p>Done. The rest of this tutorial makes it a <strong>first-class provider</strong> with a picker entry and online model listing.</p>
+<h2>Step 1 — Add the preset</h2>
+<p>In <code>wow_agent/config.py</code>, extend <code>PROVIDERS</code>:</p>
+<pre><code class="language-python">"nebula": {
+    "base_url": "https://api.nebula.ai/v1",
+    "models": ["nebula-coder-large", "nebula-coder-mini"],
+    "default": "nebula-coder-large",
+    "api_key_env": "NEBULA_API_KEY",      # where to read the key from
+    "capabilities": {
+        "streaming": True,
+        "tools": True,          # supports function/tool calling
+        "vision": False,
+        "max_context": 128000,
+    },
+},
+</code></pre>
+<p>Field reference:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base_url</code></td>
+<td>✔</td>
+<td>OpenAI-compatible root (include <code>/v1</code> when required)</td>
+</tr>
+<tr>
+<td><code>models</code></td>
+<td>✔</td>
+<td>static fallback list</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>✔</td>
+<td>preselected model</td>
+</tr>
+<tr>
+<td><code>api_key_env</code></td>
+<td>–</td>
+<td>env var holding the key</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td>–</td>
+<td>extra headers, <code>{api_key}</code> placeholder supported</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td>–</td>
+<td>lets the agent adapt behavior (e.g. no tool-calling)</td>
+</tr>
+</tbody>
+</table>
+<h2>Step 2 — Verify</h2>
+<pre><code class="language-bash">uv run wow
+/model            # NebulaAI should appear in the picker
+/model nebula     # quick switch
+/model --fetch    # pull live model list from the endpoint (if supported)
+</code></pre>
+<h2>Step 3 — Handle quirks (optional)</h2>
+<p>Some endpoints deviate slightly. Common patches, in <code>config.py</code> provider entry:</p>
+<pre><code class="language-python">"headers": {"X-Source": "wow-agent"},          # tracking header
+"query_params": {"api-version": "2024-02-01"}, # Azure-style versioning
+"wire": {"tool_format": "openai_v1"},          # force a dialect
+</code></pre>
+<h2>Step 4 — Contribute it back</h2>
+<ol>
+<li><code>uv run python tests_smoke.py</code> — must stay green</li>
+<li>Add a line to <code>PROVIDERS</code> + a test fixture</li>
+<li>PR with the provider name as title: <code>feat(providers): NebulaAI</code></li>
+</ol>
+<p>See <a href="/wow-agent/tutorials/contributing/">Contributing</a> for the full workflow.</p>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401 Unauthorized</code></td>
+<td>key in wrong env var / not exported</td>
+</tr>
+<tr>
+<td><code>404</code> on chat</td>
+<td><code>base_url</code> missing or over-including <code>/v1</code></td>
+</tr>
+<tr>
+<td>Tools never called</td>
+<td>provider <code>capabilities.tools</code> false or dialect mismatch</td>
+</tr>
+<tr>
+<td>Streaming garbled</td>
+<td>set <code>capabilities.streaming: false</code> to force plain mode</td>
+</tr>
+</tbody>
+</table></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

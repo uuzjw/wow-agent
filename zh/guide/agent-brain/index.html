@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>智能核心 | wow-agent</title>
+    <meta name="description" content="任务规划、planning→executing→verifying 状态机与干净上下文子代理。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/guide/agent-brain/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="智能核心 | wow-agent" />
+    <meta property="og:description" content="任务规划、planning→executing→verifying 状态机与干净上下文子代理。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../guide/agent-brain/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">核心概念</p>
+    <h1 class="entry-title">智能核心</h1>
+    <div class="prose"><h2>任务规划</h2>
+<p>高层目标自动拆解：</p>
+<pre><code>目标："添加 JWT 认证"
+├── 调研现有认证模式
+├── 设计 Token 模式
+├── 实现模型 + 中间件
+├── 添加登录/注册端点
+└── 编写测试、更新文档
+</code></pre>
+<p>非自动模式下，计划会先展示供你批准。</p>
+<h2>状态机</h2>
+<pre><code class="language-text">planning → executing → verifying → done
+                ↘            ↗
+                 failed ←────┘   （自动回滚）
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>planning</td>
+<td>通过代码索引分析仓库、构建任务树</td>
+</tr>
+<tr>
+<td>executing</td>
+<td>调用工具，每次写入前快照</td>
+</tr>
+<tr>
+<td>verifying</td>
+<td>运行测试/Lint/类型检查</td>
+</tr>
+<tr>
+<td>failed</td>
+<td>整轮回滚 + 错误报告</td>
+</tr>
+</tbody>
+</table>
+<h2>子代理</h2>
+<ul>
+<li><strong>调研代理</strong> — 干净上下文、只读工具，只回结论不污染主上下文</li>
+<li><strong>审查代理</strong> — 驱动 <code>/review</code> 三级审查（🔴高风险 · 🟡建议 · 🟢优化）</li>
+</ul>
+<h2>记忆</h2>
+<p>短期历史在 <code>WOW_AUTO_COMPACT</code> Token 时自动压缩。长期知识跨会话持久：</p>
+<pre><code class="language-bash">/mem save "project:payment" "Stripe webhook 在 payment/webhooks.py"
+</code></pre></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

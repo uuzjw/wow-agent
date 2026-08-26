@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quick Start | wow-agent</title>
+    <meta name="description" content="Install and run wow-agent in under a minute with uv." />
+    <link rel="canonical" href="https://uuzjw.github.io/guide/quick-start/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Quick Start | wow-agent" />
+    <meta property="og:description" content="Install and run wow-agent in under a minute with uv." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/guide/quick-start/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Guide</p>
+    <h1 class="entry-title">Quick Start</h1>
+    <div class="prose"><h2>Prerequisites</h2>
+<ul>
+<li>Python 3.10+</li>
+<li><a href="https://docs.astral.sh/uv/">uv</a> package manager</li>
+</ul>
+<h2>Install &#x26; run</h2>
+<pre><code class="language-bash"># Ubuntu / Debian / WSL
+cd wow-agent
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
+uv run wow
+</code></pre>
+<p>Windows (PowerShell, experimental):</p>
+<pre><code class="language-powershell">cd wow-agent
+irm https://astral.sh/uv/install.ps1 | iex
+$env:Path += ";$env:USERPROFILE\.local\bin"
+uv sync; uv run wow
+</code></pre>
+<p>First launch walks you through provider + API key setup; config is saved to <code>~/.wow-agent.env</code> (mode 600).</p>
+<h2>First commands</h2>
+<pre><code class="language-text">$ wow
+Enter auto mode? y/N
+> Help me understand this project structure
+</code></pre>
+<ul>
+<li><code>!&#x3C;cmd></code> — run shell directly without the model (e.g. <code>!git status</code>)</li>
+<li><code>/</code> — fuzzy command completion, <code>/help</code> lists everything</li>
+</ul>
+<h2>Essential commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/model</code></td>
+<td>switch provider/model wizard</td>
+</tr>
+<tr>
+<td><code>/status</code></td>
+<td>context · task progress · undoable changes</td>
+</tr>
+<tr>
+<td><code>/compact</code></td>
+<td>compress history manually</td>
+</tr>
+<tr>
+<td><code>/mem save/use/rm</code></td>
+<td>long-term memory</td>
+</tr>
+<tr>
+<td><code>/resume</code></td>
+<td>restore previous session</td>
+</tr>
+<tr>
+<td><code>/undo</code></td>
+<td>revert last change</td>
+</tr>
+<tr>
+<td><code>/review [path]</code></td>
+<td>read-only review: 🔴 high / 🟡 suggestion / 🟢 polish</td>
+</tr>
+<tr>
+<td><code>/language en|zh</code></td>
+<td>UI language</td>
+</tr>
+<tr>
+<td><code>/safe</code></td>
+<td>toggle safe mode</td>
+</tr>
+</tbody>
+</table>
+<h2>Next steps</h2>
+<ul>
+<li>Read <a href="/wow-agent/why/">Why wow-agent</a></li>
+<li>Explore the <a href="/wow-agent/architecture/">Architecture</a></li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

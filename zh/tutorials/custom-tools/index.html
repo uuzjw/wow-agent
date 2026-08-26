@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>自定义工具 | wow-agent</title>
+    <meta name="description" content="约 30 行代码教会 wow-agent 新本领 —— Schema、执行器、安全级别与测试的完整实战。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/tutorials/custom-tools/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="自定义工具 | wow-agent" />
+    <meta property="og:description" content="约 30 行代码教会 wow-agent 新本领 —— Schema、执行器、安全级别与测试的完整实战。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../tutorials/custom-tools/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">开发者教程</p>
+    <h1 class="entry-title">自定义工具</h1>
+    <div class="prose"><p>本教程给 Agent 加一个 <code>deploy</code> 工具，让它能把项目部署到 staging。耗时约 15 分钟。</p>
+<h2>工具的工作原理</h2>
+<p>一个工具 = <strong>JSON Schema</strong>（模型看到什么）+ <strong>执行器</strong>（实际跑什么）+ <strong>安全级别</strong>（防护层要什么）。模型决定用某个工具时，wow-agent 按 Schema 校验参数、过安全检查、按需打快照，然后调用你的执行器。</p>
+<h2>第 1 步 —— 声明 Schema</h2>
+<p>打开 <code>wow_agent/tools.py</code>，往 <code>TOOLS_SCHEMA</code> 里加：</p>
+<pre><code class="language-python">"deploy": {
+    "description": (
+        "部署当前项目到目标环境。"
+        "仅当用户明确要求部署时使用。"
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "environment": {
+                "type": "string",
+                "enum": ["staging", "production"],
+                "description": "目标环境",
+            },
+            "version": {
+                "type": "string",
+                "description": "Git 引用或版本标签；默认 HEAD",
+            },
+        },
+        "required": ["environment"],
+    },
+    "safety": "modify",       # safe | modify | destructive
+    "confirmation": True,      # 总是先问用户
+}
+</code></pre>
+<p>Schema 技巧：</p>
+<ul>
+<li><code>description</code> 就是提示词工程 —— 写清<strong>何时</strong>用这个工具</li>
+<li><code>enum</code> 防止模型瞎编环境名</li>
+<li><code>confirmation: True</code> 强制交互确认，自动模式也不例外</li>
+</ul>
+<h2>第 2 步 —— 写执行器</h2>
+<pre><code class="language-python">async def execute_deploy(params: dict, context) -> dict:
+    import subprocess
+
+    env = params["environment"]
+    ref = params.get("version", "HEAD")
+
+    result = subprocess.run(
+        ["scripts/deploy.sh", env, ref],
+        capture_output=True, text=True, timeout=300,
+    )
+    if result.returncode != 0:
+        return {"success": False, "error": result.stderr[-2000:]}
+
+    return {
+        "success": True,
+        "output": result.stdout[-2000:],
+        "url": f"https://{env}.example.com",
+    }
+
+TOOL_EXECUTORS["deploy"] = execute_deploy
+</code></pre>
+<p>执行器契约：</p>
+<ul>
+<li>接收校验过的 <code>params</code> + 执行 <code>context</code></li>
+<li>返回带 <code>success</code> 的字典 —— 错误会回传给模型，让它重试或解释</li>
+<li>输出限长（<code>[-2000:]</code>）—— 巨型输出会烧上下文</li>
+</ul>
+<h2>第 3 步 —— 试跑</h2>
+<pre><code class="language-text">You > 把当前 HEAD 部署到 staging
+
+┌ PLANNING
+│ 1. 确认部署（需要批准）
+│ 2. 执行 deploy 工具 → staging @ HEAD
+Approve? [Y/n] y
+
+⚠ 部署到 staging —— 确认？[y/N] y
+✔ https://staging.example.com 已上线
+</code></pre>
+<p>注意有<strong>双重确认</strong>：计划一次，<code>confirmation: True</code> 再一次。</p>
+<h2>第 4 步 —— 不用 LLM 也能测</h2>
+<pre><code class="language-python"># tests/test_tool_deploy.py
+import asyncio
+from wow_agent.tools import TOOL_EXECUTORS
+
+def test_deploy_rejects_bad_env(monkeypatch):
+    async def fake_run(*a, **k):
+        class R: returncode = 1; stderr = "bad env"; stdout = ""
+        return R()
+    monkeypatch.setattr("subprocess.run", fake_run)
+    result = asyncio.run(TOOL_EXECUTORS["deploy"]({"environment": "staging"}, None))
+    assert result["success"] is False
+</code></pre>
+<p>离线运行：</p>
+<pre><code class="language-bash">uv run python tests_smoke.py
+</code></pre>
+<h2>检查清单</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Schema 的 <code>description</code> 有用，能用 <code>enum</code> 就用</li>
+<li class="task-list-item"><input type="checkbox" disabled> 安全级别符合实际（改不改状态？）</li>
+<li class="task-list-item"><input type="checkbox" disabled> 输出已截断，上下文友好</li>
+<li class="task-list-item"><input type="checkbox" disabled> 加了离线单元测试</li>
+<li class="task-list-item"><input type="checkbox" disabled> 沙盒开启时可用（不需要网络，或有说明）</li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

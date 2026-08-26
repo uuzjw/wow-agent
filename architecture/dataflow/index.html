@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data Flow | wow-agent</title>
+    <meta name="description" content="Follow one user goal through wow-agent end-to-end — every hop, every guard, every snapshot, from prompt to verified result." />
+    <link rel="canonical" href="https://uuzjw.github.io/architecture/dataflow/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Data Flow | wow-agent" />
+    <meta property="og:description" content="Follow one user goal through wow-agent end-to-end — every hop, every guard, every snapshot, from prompt to verified result." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/architecture/dataflow/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Architecture</p>
+    <h1 class="entry-title">Data Flow</h1>
+    <div class="prose"><p>Trace a single request — <em>"fix the duplicate-key bug in src/config.py"</em> — through the machine.</p>
+<h2>The full path</h2>
+<pre><code class="language-text">You
+ │ "fix the duplicate-key bug…"
+ ▼
+┌──────────────────────── CLI (cli.py) ────────────────┐
+│ parse input → route: chat? command? shell escape?    │
+└──────────────────────┬───────────────────────────────┘
+                       ▼
+┌───────────────── AGENT BRAIN (agent.py) ─────────────┐
+│ 1. load memory (/mem) + session context              │
+│ 2. query CODE INDEX for relevant symbols             │
+│ 3. ask model for a PLAN → task tree (todo.py)        │
+│ 4. state: PLANNING → show plan → approve?            │
+└──────────────────────┬───────────────────────────────┘
+                       ▼ plan approved
+┌──────────────────── EXECUTING ───────────────────────┐
+│ for each subtask:                                    │
+│   model picks a TOOL + arguments                     │
+│        │                                             │
+│        ▼                                             │
+│   ┌─ SAFETY GATE (tools.py) ──────────────┐          │
+│   │ schema validation → egress patterns  │          │
+│   │ → dangerous-command check → confirm? │          │
+│   └──────────────┬────────────────────────┘          │
+│                  ▼                                   │
+│   snapshot (undo.py) → EXECUTE tool                  │
+│                  ▼                                   │
+│   result back to model (bounded output)              │
+└──────────────────────┬───────────────────────────────┘
+                       ▼ all subtasks done
+┌──────────────────── VERIFYING ───────────────────────┐
+│ run tests + lint via shell tool                      │
+│   pass → DONE (summary, memory update)               │
+│   fail → FAILED → auto-rollback all task snapshots   │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<h2>Hop-by-hop details</h2>
+<h3>1. Context assembly</h3>
+<p>Before any model call, the brain assembles: system prompt + i18n strings + conversation + memory entries + <strong>code index hits</strong> for keywords in your goal. Index hits mean the model reads <code>config.py</code>'s symbol outline, not the whole repo.</p>
+<h3>2. Planning call</h3>
+<p>The model returns a task tree (JSON). <code>todo.py</code> validates dependencies and stores it. Auto mode skips the approval gate — dangerous steps still confirm later.</p>
+<h3>3. Tool selection loop</h3>
+<p>Each iteration: model emits <code>{tool, params}</code> → schema-validated → safety-gated → snapshotted → executed. The result (truncated, e.g. last 2000 chars) returns as a tool message. Loop continues until the model signals completion or <code>WOW_MAX_ITER</code> hits.</p>
+<h3>4. The safety gate ordering</h3>
+<pre><code class="language-text">validate params ──▶ egress patterns ──▶ dangerous patterns ──▶ confirmation
+      │                    │                     │                  │
+   400-ish            BLOCK/log             BLOCK/log          typed YES
+</code></pre>
+<p>Order matters: cheap checks first; confirmations last, only for what survives.</p>
+<h3>5. Snapshots</h3>
+<p><code>undo.py</code> diffs the target file pre-write, stores <code>{meta, diff}</code> under <code>~/.wow-agent/snapshots/</code>, links it to the current task id. Task failure walks task-linked snapshots in reverse.</p>
+<h3>6. Verification</h3>
+<p>The shell tool runs your project's tests (auto-detected: pytest/npm test/go test…). Non-zero exit → verification failure → rollback + failure report with the exact command output that failed.</p>
+<h2>What touches the network?</h2>
+<table>
+<thead>
+<tr>
+<th>Hop</th>
+<th>Network?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>model API calls</td>
+<td>yes — to your chosen provider only</td>
+</tr>
+<tr>
+<td>tool execution (sandboxed)</td>
+<td><strong>no</strong> — namespace-isolated</td>
+</tr>
+<tr>
+<td>MCP servers</td>
+<td>inherit sandbox</td>
+</tr>
+<tr>
+<td>telemetry</td>
+<td>none exists</td>
+</tr>
+</tbody>
+</table>
+<h2>Failure containment</h2>
+<p>Any layer can fail without corrupting state: model errors → retry/next iteration; tool errors → returned to model for self-correction; verification failure → rollback; crash → session + snapshots persist on disk.</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

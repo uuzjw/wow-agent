@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>第一个任务 | wow-agent</title>
+    <meta name="description" content="手把手带你完成 wow-agent 的第一个真实编码任务 —— 从输入目标到验证通过，每一步界面都展示给你看。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/guide/first-task/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="第一个任务 | wow-agent" />
+    <meta property="og:description" content="手把手带你完成 wow-agent 的第一个真实编码任务 —— 从输入目标到验证通过，每一步界面都展示给你看。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../guide/first-task/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">用户指南</p>
+    <h1 class="entry-title">第一个任务</h1>
+    <div class="prose"><p>本教程带你完整走一遍真实任务：<strong>"给函数加上输入校验，并修复你发现的 Bug"</strong>。你看到的每个界面都会展示出来。</p>
+<h2>1. 启动 Agent</h2>
+<pre><code class="language-bash">cd my-project
+uv run wow
+</code></pre>
+<p>会询问 <code>Enter auto mode? y/N</code>：</p>
+<ul>
+<li><strong>N（默认，首次推荐）</strong>—— Agent 展示计划，写入前先征得同意</li>
+<li><strong>y</strong>—— 跳过逐步确认自动执行；高危命令和数据外传<em>仍然</em>需要批准</li>
+</ul>
+<h2>2. 描述目标，而不是步骤</h2>
+<pre><code class="language-text">You > src/config.py 里的 parse_config 在文件有重复键时崩溃。
+      找出原因并妥善修复。
+</code></pre>
+<p>好提示词的技巧：</p>
+<ul>
+<li>✅ 说清<strong>哪里有问题</strong>（哪怕是大致位置）</li>
+<li>✅ 说清"修好"对你意味着什么</li>
+<li>❌ 别指挥具体改哪一行 —— 规划是 Agent 的工作</li>
+</ul>
+<h2>3. 看计划（PLANNING 状态）</h2>
+<p>Agent 通过代码索引读取相关文件，然后展示任务树：</p>
+<pre><code class="language-text">┌ PLANNING ───────────────────────────────────────────┐
+│ 1. 读取 src/config.py 并复现崩溃                    │
+│ 2. 定位根因（重复键处理）                            │
+│ 3. 实施修复 + 补回归测试                             │
+│ 4. 运行测试套件                                      │
+│ Approve plan? [Y/n]                                  │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<p>按 <strong>Y</strong> 批准。想先改计划？输 <code>n</code> 再补充，比如 <code>合并重复键时打警告日志</code>。</p>
+<h2>4. 执行（EXECUTING 状态）</h2>
+<p>Agent 逐个完成子任务。<strong>每次</strong>写文件前都会打快照（这就是 <code>/undo</code> 的底气）：</p>
+<pre><code class="language-text">┌ EXECUTING 2/4 ──────────────────────────────────────┐
+│ ▸ 读取 src/config.py（48 行）                        │
+│ ✔ 根因：load() 第 31 行 dict 直接覆盖               │
+│ ▸ 编辑 src/config.py                                 │
+│   @@ -28,7 +28,12 @@                                 │
+│   -    data = json.load(f)                           │
+│   +    data = json.load(f, object_pairs_hook=...)    │
+│ snapshot snap_4f2a saved                             │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<h2>5. 验证（VERIFYING 状态）</h2>
+<p>实现完成后，Agent 会<strong>证明</strong>它：</p>
+<pre><code class="language-text">┌ VERIFYING ──────────────────────────────────────────┐
+│ ✔ pytest tests/test_config.py -q   12 passed        │
+│ ✔ ruff check .                     clean            │
+│ Task complete in 3m 41s                             │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<h2>6. 出问题怎么办</h2>
+<pre><code class="language-text">You > /undo          # 撤销最近一次修改
+You > /undo --list   # 查看所有可撤销项
+</code></pre>
+<p>如果验证失败，wow-agent 会<strong>自动整轮回滚</strong> —— 仓库精确回到任务前状态，并给你错误报告。</p>
+<h2>7. 收尾</h2>
+<pre><code class="language-text">You > /status        # 上下文占用、任务进度
+You > !git diff      # 亲眼检查变更
+You > !git add -A &#x26;&#x26; git commit -m "fix: parse_config 重复键崩溃"
+</code></pre>
+<h2>你刚学到的概念</h2>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>状态机</td>
+<td>planning → executing → verifying → done/failed</td>
+</tr>
+<tr>
+<td>快照</td>
+<td>每次写入都可经 <code>/undo</code> 撤销</td>
+</tr>
+<tr>
+<td>验证</td>
+<td>测试/Lint 通过才算"完成"</td>
+</tr>
+<tr>
+<td>自动回滚</td>
+<td>失败任务自动还原仓库</td>
+</tr>
+</tbody>
+</table>
+<h2>接下来</h2>
+<ul>
+<li><a href="/wow-agent/zh/guide/cookbook/">日常食谱</a> —— 10+ 现成配方</li>
+<li><a href="/wow-agent/zh/guide/commands/">命令速查</a> —— 完整斜杠命令工具箱</li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

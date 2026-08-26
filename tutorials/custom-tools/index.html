@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Custom Tools | wow-agent</title>
+    <meta name="description" content="Teach wow-agent a new ability in ~30 lines — full walkthrough with schema, executor, safety level and testing." />
+    <link rel="canonical" href="https://uuzjw.github.io/tutorials/custom-tools/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Custom Tools | wow-agent" />
+    <meta property="og:description" content="Teach wow-agent a new ability in ~30 lines — full walkthrough with schema, executor, safety level and testing." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/tutorials/custom-tools/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Developer Tutorial</p>
+    <h1 class="entry-title">Custom Tools</h1>
+    <div class="prose"><p>In this tutorial you will add a <code>deploy</code> tool that lets the agent deploy a project to staging. Time: ~15 minutes.</p>
+<h2>How tools work</h2>
+<p>A tool = <strong>JSON Schema</strong> (what the model sees) + <strong>executor</strong> (what actually runs) + <strong>safety level</strong> (what the guard requires). When the model decides to use a tool, wow-agent validates parameters against the schema, runs safety checks, snapshots if needed, then calls your executor.</p>
+<h2>Step 1 — Declare the schema</h2>
+<p>Open <code>wow_agent/tools.py</code> and add to <code>TOOLS_SCHEMA</code>:</p>
+<pre><code class="language-python">"deploy": {
+    "description": (
+        "Deploy the current project to a target environment. "
+        "Use only when the user explicitly asks to deploy."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "environment": {
+                "type": "string",
+                "enum": ["staging", "production"],
+                "description": "Target environment",
+            },
+            "version": {
+                "type": "string",
+                "description": "Git ref or version tag; defaults to HEAD",
+            },
+        },
+        "required": ["environment"],
+    },
+    "safety": "modify",       # safe | modify | destructive
+    "confirmation": True,      # always ask the user first
+}
+</code></pre>
+<p>Schema tips:</p>
+<ul>
+<li><code>description</code> is prompt engineering — say <strong>when</strong> to use the tool</li>
+<li><code>enum</code> prevents the model from inventing environments</li>
+<li><code>confirmation: True</code> forces an interactive approve, even in auto mode</li>
+</ul>
+<h2>Step 2 — Write the executor</h2>
+<pre><code class="language-python">async def execute_deploy(params: dict, context) -> dict:
+    import subprocess
+
+    env = params["environment"]
+    ref = params.get("version", "HEAD")
+
+    result = subprocess.run(
+        ["scripts/deploy.sh", env, ref],
+        capture_output=True, text=True, timeout=300,
+    )
+    if result.returncode != 0:
+        return {"success": False, "error": result.stderr[-2000:]}
+
+    return {
+        "success": True,
+        "output": result.stdout[-2000:],
+        "url": f"https://{env}.example.com",
+    }
+
+TOOL_EXECUTORS["deploy"] = execute_deploy
+</code></pre>
+<p>Executor contract:</p>
+<ul>
+<li>Receive validated <code>params</code> + execution <code>context</code></li>
+<li>Return a dict with <code>success</code> — errors go back to the model so it can retry or explain</li>
+<li>Keep output bounded (<code>[-2000:]</code>) — huge outputs burn context</li>
+</ul>
+<h2>Step 3 — Try it</h2>
+<pre><code class="language-text">You > deploy current HEAD to staging
+
+┌ PLANNING
+│ 1. confirm deploy (requires approval)
+│ 2. run deploy tool → staging @ HEAD
+Approve? [Y/n] y
+
+⚠ Deploy to staging — confirm? [y/N] y
+✔ https://staging.example.com is live
+</code></pre>
+<p>Notice the <strong>double confirmation</strong>: once for the plan, once because <code>confirmation: True</code>.</p>
+<h2>Step 4 — Test without an LLM</h2>
+<pre><code class="language-python"># tests/test_tool_deploy.py
+import asyncio
+from wow_agent.tools import TOOL_EXECUTORS
+
+def test_deploy_rejects_bad_env(monkeypatch):
+    async def fake_run(*a, **k):
+        class R: returncode = 1; stderr = "bad env"; stdout = ""
+        return R()
+    monkeypatch.setattr("subprocess.run", fake_run)
+    result = asyncio.run(TOOL_EXECUTORS["deploy"]({"environment": "staging"}, None))
+    assert result["success"] is False
+</code></pre>
+<p>Run offline:</p>
+<pre><code class="language-bash">uv run python tests_smoke.py
+</code></pre>
+<h2>Checklist</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Schema has helpful <code>description</code> + <code>enum</code> where possible</li>
+<li class="task-list-item"><input type="checkbox" disabled> Safety level matches reality (does it change state?)</li>
+<li class="task-list-item"><input type="checkbox" disabled> Output truncated to something context-friendly</li>
+<li class="task-list-item"><input type="checkbox" disabled> Offline unit test added</li>
+<li class="task-list-item"><input type="checkbox" disabled> Works with sandbox ON (no network needed, or documented)</li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

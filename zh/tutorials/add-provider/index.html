@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>添加模型服务商 | wow-agent</title>
+    <meta name="description" content="几分钟把任意 OpenAI 兼容端点接入 wow-agent —— 预设、请求头、模型列表与能力声明。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/tutorials/add-provider/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="添加模型服务商 | wow-agent" />
+    <meta property="og:description" content="几分钟把任意 OpenAI 兼容端点接入 wow-agent —— 预设、请求头、模型列表与能力声明。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../tutorials/add-provider/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">开发者教程</p>
+    <h1 class="entry-title">添加模型服务商</h1>
+    <div class="prose"><p>任何说 OpenAI Chat Completions 方言的端点都能成为 wow-agent 服务商。本教程接入一个虚构服务商 <strong>NebulaAI</strong>。</p>
+<h2>最快路径：零代码</h2>
+<p>一次性使用不用写代码 —— 设三个环境变量：</p>
+<pre><code class="language-bash"># ~/.wow-agent.env
+WOW_API_KEY=neb_sk-...
+WOW_BASE_URL=https://api.nebula.ai/v1
+WOW_MODEL=nebula-coder-large
+</code></pre>
+<p>完成。本教程剩下的部分是把它做成<strong>一等服务商</strong>：选择器入口 + 在线模型列表。</p>
+<h2>第 1 步 —— 加预设</h2>
+<p>在 <code>wow_agent/config.py</code> 扩展 <code>PROVIDERS</code>：</p>
+<pre><code class="language-python">"nebula": {
+    "base_url": "https://api.nebula.ai/v1",
+    "models": ["nebula-coder-large", "nebula-coder-mini"],
+    "default": "nebula-coder-large",
+    "api_key_env": "NEBULA_API_KEY",      # 从哪个环境变量读 Key
+    "capabilities": {
+        "streaming": True,
+        "tools": True,          # 支持函数/工具调用
+        "vision": False,
+        "max_context": 128000,
+    },
+},
+</code></pre>
+<p>字段说明：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>必需</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base_url</code></td>
+<td>✔</td>
+<td>OpenAI 兼容根地址（需要 <code>/v1</code> 就带上）</td>
+</tr>
+<tr>
+<td><code>models</code></td>
+<td>✔</td>
+<td>静态兜底模型列表</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>✔</td>
+<td>默认选中模型</td>
+</tr>
+<tr>
+<td><code>api_key_env</code></td>
+<td>–</td>
+<td>存 Key 的环境变量名</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td>–</td>
+<td>额外请求头，支持 <code>{api_key}</code> 占位符</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td>–</td>
+<td>让 Agent 调整行为（比如不支持工具调用时）</td>
+</tr>
+</tbody>
+</table>
+<h2>第 2 步 —— 验证</h2>
+<pre><code class="language-bash">uv run wow
+/model            # 选择器里应出现 NebulaAI
+/model nebula     # 快速切换
+/model --fetch    # 从端点拉取实时模型列表（如支持）
+</code></pre>
+<h2>第 3 步 —— 处理方言差异（可选）</h2>
+<p>有的端点略有偏差。<code>config.py</code> 服务商条目里常见的补丁：</p>
+<pre><code class="language-python">"headers": {"X-Source": "wow-agent"},          # 追踪头
+"query_params": {"api-version": "2024-02-01"}, # Azure 式版本参数
+"wire": {"tool_format": "openai_v1"},          # 强制方言
+</code></pre>
+<h2>第 4 步 —— 贡献回上游</h2>
+<ol>
+<li><code>uv run python tests_smoke.py</code> —— 必须保持绿</li>
+<li><code>PROVIDERS</code> 加条目 + 测试夹具</li>
+<li>PR 标题用服务商名：<code>feat(providers): NebulaAI</code>
+完整流程见<a href="/wow-agent/zh/tutorials/contributing/">参与贡献</a>。</li>
+</ol>
+<h2>故障排查</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>可能原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401 Unauthorized</code></td>
+<td>Key 放错环境变量 / 没导出</td>
+</tr>
+<tr>
+<td>chat 请求 <code>404</code></td>
+<td><code>base_url</code> 少了或多算了 <code>/v1</code></td>
+</tr>
+<tr>
+<td>从不调用工具</td>
+<td><code>capabilities.tools</code> 为 false 或方言不匹配</td>
+</tr>
+<tr>
+<td>流式输出乱码</td>
+<td>设 <code>capabilities.streaming: false</code> 强制普通模式</td>
+</tr>
+</tbody>
+</table></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

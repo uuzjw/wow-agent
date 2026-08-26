@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MCP 服务器 | wow-agent</title>
+    <meta name="description" content="用 Model Context Protocol 服务器零代码扩展 wow-agent —— 文件系统、GitHub、数据库或你自己的服务。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/tutorials/mcp-servers/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="MCP 服务器 | wow-agent" />
+    <meta property="og:description" content="用 Model Context Protocol 服务器零代码扩展 wow-agent —— 文件系统、GitHub、数据库或你自己的服务。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../tutorials/mcp-servers/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">开发者教程</p>
+    <h1 class="entry-title">MCP 服务器</h1>
+    <div class="prose"><p>MCP（Model Context Protocol）是向 LLM Agent 暴露<strong>工具</strong>与<strong>资源</strong>的标准协议。wow-agent 原生支持：配置一次服务器，它的工具就和内置工具并列出现。</p>
+<h2>第 1 步 —— 配置</h2>
+<p>创建 <code>~/.wow-agent/mcp.json</code>：</p>
+<pre><code class="language-json">{
+  "servers": {
+    "fs": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/me/projects"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "ghp_xxx" }
+    }
+  }
+}
+</code></pre>
+<p>每个服务器 = 进程命令 + 参数 + 可选环境变量。Agent 启动时拉起它们。</p>
+<h2>第 2 步 —— 验证发现</h2>
+<pre><code class="language-text">You > /debug mcp
+  fs      RUNNING   tools: read_file, write_file, list_directory, …
+  github  RUNNING   tools: create_issue, get_pull_request, …
+
+You > /debug tools          # mcp_fs__read_file 等已列出
+</code></pre>
+<p>工具命名空间为 <code>mcp_&#x3C;服务器>__&#x3C;工具></code>，永不与内置冲突。</p>
+<h2>第 3 步 —— 使用</h2>
+<p>自然语言直接说 —— 模型看得到工具 Schema：</p>
+<pre><code class="language-text">You > 列出 uuzjw/wow-agent 仓库带 "bug" 标签的开放 issue
+You > 读一下 /home/me/projects/notes/roadmap.md 并总结
+</code></pre>
+<h2>自己写一个 MCP 服务器（Python）</h2>
+<pre><code class="language-python"># my_server.py  —  pip install "mcp[cli]"
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("team-tools")
+
+@mcp.tool()
+def oncall_schedule() -> str:
+    """返回本周值班工程师。"""
+    return "alice（周一至周三），bob（周四、周五）"
+
+@mcp.tool()
+def query_status(service: str) -> str:
+    """查询某服务的内部状态页。"""
+    return f"{service}: 一切正常"
+
+if __name__ == "__main__":
+    mcp.run()
+</code></pre>
+<p>注册：</p>
+<pre><code class="language-json">{
+  "servers": {
+    "team": { "command": "python", "args": ["/path/to/my_server.py"] }
+  }
+}
+</code></pre>
+<h2>安全模型</h2>
+<ul>
+<li>MCP 服务器<strong>继承 Agent 的断网沙盒</strong> —— 恶意服务器也无法外联</li>
+<li>文件系统服务器只能看到 <code>args</code> 里给的路径 —— 挂载范围尽量窄</li>
+<li>工具调用照样过安全系统（<code>destructive</code> 确认照常生效）</li>
+<li>锁版本防供应链风险：<code>server-github@1.2.3</code></li>
+</ul>
+<h2>运维</h2>
+<pre><code class="language-bash">/debug mcp          # 各服务器状态（运行中 / 失败 + stderr）
+/mcp refresh        # 重启服务器并重新发现工具
+</code></pre>
+<h2>故障排查</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>启动时 FAILED</td>
+<td>手动运行它的命令，看 stderr</td>
+</tr>
+<tr>
+<td>工具没出现</td>
+<td><code>/mcp refresh</code>；检查 <code>npx</code> 可用性</td>
+</tr>
+<tr>
+<td>启动慢</td>
+<td>去掉不用的重型包；锁版本利用缓存</td>
+</tr>
+</tbody>
+</table></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

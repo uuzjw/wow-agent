@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>wow-agent</title>
+    <meta name="description" content="A simple, open, extensible terminal AI coding assistant. Model freedom, local-first, safety by default." />
+    <link rel="canonical" href="https://uuzjw.github.io/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="wow-agent" />
+    <meta property="og:description" content="A simple, open, extensible terminal AI coding assistant. Model freedom, local-first, safety by default." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="index.html">
+    
+      <img class="brand-logo" src="assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="guide/index.html">Guide</a>
+        <a class="top-nav__link" href="architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="tools/index.html">Tools</a>
+        <a class="top-nav__link" href="safety/index.html">Safety</a>
+        <a class="top-nav__link" href="config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="zh/home/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+
+
+
+
+
+
+
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+  <div class="shell hero-inner">
+    <span class="hero-badge anim-up">v0.6.0 · MIT · Terminal Native · ARM64</span>
+    <h1 class="hero-title anim-up d1">The AI Coding Partner<br /><span class="grad-text">in Your Terminal</span></h1>
+    <p class="hero-sub anim-up d2">Give it a goal — wow-agent plans, executes tools, runs your tests, and rolls back on failure. Any model. Your data never leaves the machine.</p>
+    <div class="hero-actions anim-up d3">
+      <a class="btn btn--primary" href="guide/index.html">Get Started →</a>
+      <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+    <pre class="hero-install anim-up d3 mono"><code>git clone https://github.com/uuzjw/wow-agent && cd wow-agent && uv sync && uv run wow</code></pre>
+  </div>
+</section>
+
+<section class="shell provider-strip reveal" aria-label="Supported providers">
+  <p class="provider-label">One interface, every major model</p>
+  <div class="provider-logos">
+    <span>DeepSeek</span><span>Qwen</span><span>Kimi</span><span>GLM</span><span>OpenAI</span><span>Gemini</span><span>Groq</span><span>OpenRouter</span><span>Ollama</span><span>LM Studio</span>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">Choose your path</h2>
+  <p class="section-sub reveal">Just want to get things done, or build on top of it? We wrote docs for both of you.</p>
+  <div class="grid-2">
+    <a class="path-card reveal" href="guide/index.html">
+      <span class="path-icon">🚀</span>
+      <h3>I just want to use it</h3>
+      <p>Install in 5 minutes, run your first task with a guided walkthrough, copy-paste from 10 everyday recipes.</p>
+      <span class="path-link">User Guide →</span>
+    </a>
+    <a class="path-card reveal" href="tutorials/index.html">
+      <span class="path-icon">🛠️</span>
+      <h3>I want to build on it</h3>
+      <p>Add a custom tool in ~30 lines, turn any OpenAI-compatible endpoint into a first-class provider, extend via MCP with zero agent code.</p>
+      <span class="path-link">Developer Tutorials →</span>
+    </a>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">Four pillars</h2>
+  <div class="grid-4">
+    <article class="card reveal">
+      <div class="card__icon card__icon--brand">🧠</div>
+      <h3>Agent Brain</h3>
+      <p>Task tree + state machine; clean-context research sub-agents; long-term memory across sessions.</p>
+      <ul class="ticks">
+        <li>planning→executing→verifying</li>
+        <li>Three-level review</li>
+        <li>/mem memory</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--accent">🛠️</div>
+      <h3>Developer Tools</h3>
+      <p>File CRUD, colored diffs, AST symbol index; snapshot before every write, /undo anytime.</p>
+      <ul class="ticks">
+        <li>code_index incremental index</li>
+        <li>Diff visualization</li>
+        <li>/undo</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--success">☁️</div>
+      <h3>Model Ecosystem</h3>
+      <p>16+ cloud providers and local models behind one interface; /model fetches lists online; free tiers work out of the box.</p>
+      <ul class="ticks">
+        <li>/model --fetch</li>
+        <li>Ollama · LM Studio</li>
+        <li>offline capable</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--warn">🛡️</div>
+      <h3>Safety System</h3>
+      <p>Network sandbox, egress guard, double confirmation, full-task rollback — defense in depth, four layers.</p>
+      <ul class="ticks">
+        <li>unshare -n</li>
+        <li>egress guard</li>
+        <li>auto rollback</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">Four-layer architecture</h2>
+  <p class="section-sub reveal">One responsibility per layer, every layer extensible. <a href="architecture/index.html">Deep dive →</a></p>
+  <div class="arch">
+    <div class="arch-layer reveal"><span class="arch-num">1</span><div><h4>Agent Brain</h4><p>task planning · state machine · sub-agents</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--accent reveal"><span class="arch-num">2</span><div><h4>Developer Tools</h4><p>file CRUD · diff/undo · code index</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--success reveal"><span class="arch-num">3</span><div><h4>Model Ecosystem</h4><p>16+ cloud providers · local Ollama/LM Studio</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--warn reveal"><span class="arch-num">4</span><div><h4>Safety System</h4><p>sandbox · egress guard · confirm · rollback</p></div></div>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">Safety is the default, not an option</h2>
+  <p class="section-sub reveal">An agent that runs commands must have a constrained execution environment. Four layers ship on by default, each independently auditable.</p>
+  <div class="safety-band reveal">
+    <div class="safety-item"><span class="safety-n">1</span><div><h4>Network sandbox</h4><p>unshare -n</p></div></div>
+    <div class="safety-item"><span class="safety-n">2</span><div><h4>Egress guard</h4><p>curl POST · scp · git push</p></div></div>
+    <div class="safety-item"><span class="safety-n">3</span><div><h4>Dangerous confirm</h4><p>rm -rf · dd · fork bomb</p></div></div>
+    <div class="safety-item"><span class="safety-n">4</span><div><h4>Rollback</h4><p>/undo · auto task rollback</p></div></div>
+  </div>
+  <p class="section-sub reveal" style="margin-top:1.2rem"><a href="safety/index.html">Read the safety whitepaper →</a></p>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">By the numbers</h2>
+  <div class="stats-band reveal">
+    <div class="stat"><span class="stat__num">16+</span><span class="stat__label">providers</span></div>
+    <div class="stat"><span class="stat__num">4</span><span class="stat__label">safety layers</span></div>
+    <div class="stat"><span class="stat__num">&lt;1s</span><span class="stat__label">cold start</span></div>
+    <div class="stat"><span class="stat__num">~50ms</span><span class="stat__label">index update</span></div>
+    <div class="stat"><span class="stat__num">0</span><span class="stat__label">telemetry</span></div>
+  </div>
+</section>
+
+<section class="shell section cta-band reveal">
+  <div>
+    <h2>Up and running in 30 seconds</h2>
+    <pre class="code-inline mono"><code>git clone https://github.com/uuzjw/wow-agent && cd wow-agent && uv sync && uv run wow</code></pre>
+  </div>
+  <a class="btn btn--primary" href="guide/first-task/index.html">Walk through your first task →</a>
+</section>
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

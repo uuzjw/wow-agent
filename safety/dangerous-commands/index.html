@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dangerous Command Guard | wow-agent</title>
+    <meta name="description" content="Typed-YES confirmation for destructive commands — built-in patterns, custom rules and why confirmation is the last line of defense." />
+    <link rel="canonical" href="https://uuzjw.github.io/safety/dangerous-commands/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Dangerous Command Guard | wow-agent" />
+    <meta property="og:description" content="Typed-YES confirmation for destructive commands — built-in patterns, custom rules and why confirmation is the last line of defense." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/safety/dangerous-commands/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Safety · Layer 3</p>
+    <h1 class="entry-title">Dangerous Command Guard</h1>
+    <div class="prose"><p>Layer 3 catches commands that would destroy data or systems. It is deliberately annoying: these commands deserve friction.</p>
+<h2>Built-in patterns</h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filesystem destruction</td>
+<td><code>rm -rf /</code>, <code>rm -rf ~/*</code>, <code>rm -rf /etc</code></td>
+</tr>
+<tr>
+<td>disk surgery</td>
+<td><code>dd if=… of=/dev/sd*</code>, <code>mkfs.*</code>, <code>fdisk/parted</code></td>
+</tr>
+<tr>
+<td>power/state</td>
+<td><code>shutdown</code>, <code>reboot</code>, <code>halt</code>, <code>init 0/6</code></td>
+</tr>
+<tr>
+<td>process kill</td>
+<td><code>kill -9 1</code>, <code>pkill -9 -u root</code></td>
+</tr>
+<tr>
+<td>fork bombs</td>
+<td><code>:(){ :|:&#x26; };:</code></td>
+</tr>
+<tr>
+<td>permission wipeout</td>
+<td><code>chmod -R 777 /</code>, <code>chown -R nobody /</code></td>
+</tr>
+<tr>
+<td>firewall disable</td>
+<td><code>iptables -F</code>, <code>ufw disable</code></td>
+</tr>
+</tbody>
+</table>
+<h2>The confirmation ritual</h2>
+<pre><code class="language-text">⚠ DANGEROUS COMMAND
+  rm -rf /tmp/build/*
+  class: recursive deletion · scope: /tmp/build/*
+
+Type YES to confirm:
+> yes        ✗ must be exactly YES
+> y          ✗ must be exactly YES
+> YES        ✔ executing
+</code></pre>
+<p>Exact-match <code>YES</code>, 30-second timeout (<code>WOW_CONFIRM_TIMEOUT</code>), no remember-me. Friction is the feature.</p>
+<h2>Custom patterns</h2>
+<pre><code class="language-bash"># ~/.wow-agent.env — JSON array of regex
+WOW_DANGEROUS_PATTERNS='["terraform\\s+destroy", "kubectl\\s+delete\\s+(ns|namespace)"]'
+</code></pre>
+<p>Use it for your org's own blunderbusses: prod deploys with <code>--force</code>, database drops, queue purges.</p>
+<h2>Design rationale</h2>
+<ul>
+<li><strong>Why not just block?</strong> Some dangerous commands are legitimate (<code>rm -rf build/</code>). The guard separates <em>risky</em> from <em>confirmed-risky</em>.</li>
+<li><strong>Why typed YES, not y/N?</strong> Mis-typing a single key must not authorize destruction. <code>YES</code> requires intent.</li>
+<li><strong>Why no session-wide skip?</strong> "Always allow" is how one tired evening becomes a resume-generating event. The sandbox (Layer 1) is the right place for blanket policy.</li>
+</ul>
+<h2>What it can't catch</h2>
+<p>Commands that are destructive <em>in effect</em> but innocent-looking (<code>find … -delete</code>, app-level <code>DROP TABLE</code> inside a migration). Pair this layer with <a href="/wow-agent/safety/rollback/">snapshots &#x26; rollback</a> — behavior-level mistakes are undone by data-level recovery.</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

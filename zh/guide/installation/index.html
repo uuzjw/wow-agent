@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>安装 | wow-agent</title>
+    <meta name="description" content="wow-agent 全平台安装指南 —— Linux、macOS、WSL、Windows，以及离线与气隙环境部署。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/guide/installation/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="安装 | wow-agent" />
+    <meta property="og:description" content="wow-agent 全平台安装指南 —— Linux、macOS、WSL、Windows，以及离线与气隙环境部署。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../guide/installation/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">用户指南</p>
+    <h1 class="entry-title">安装</h1>
+    <div class="prose"><p>本页覆盖所有受支持的安装方式，从 60 秒极速安装到完全离线环境。</p>
+<h2>环境要求</h2>
+<table>
+<thead>
+<tr>
+<th>要求</th>
+<th>最低版本</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.10+</td>
+<td>推荐 3.11+</td>
+</tr>
+<tr>
+<td><a href="https://docs.astral.sh/uv/">uv</a></td>
+<td>最新版</td>
+<td>秒级安装的包管理器</td>
+</tr>
+<tr>
+<td>磁盘</td>
+<td>~200 MB</td>
+<td>含虚拟环境</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>512 MB</td>
+<td>Agent 本体；模型另计</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>可选</td>
+<td>本地模型可完全离线</td>
+</tr>
+</tbody>
+</table>
+<h2>一行命令安装（推荐）</h2>
+<p>Linux / macOS / WSL：</p>
+<pre><code class="language-bash">git clone https://github.com/uuzjw/wow-agent.git
+cd wow-agent
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
+uv run wow
+</code></pre>
+<p>Windows（PowerShell，实验性）：</p>
+<pre><code class="language-powershell">git clone https://github.com/uuzjw/wow-agent.git
+cd wow-agent
+irm https://astral.sh/uv/install.ps1 | iex
+$env:Path += ";$env:USERPROFILE\.local\bin"
+uv sync; uv run wow
+</code></pre>
+<h2>首次启动会发生什么</h2>
+<ol>
+<li>欢迎界面引导你<strong>选择模型服务商</strong>（DeepSeek、Qwen、OpenAI、Ollama…）</li>
+<li>粘贴 <strong>API Key</strong>（本地服务商不需要）</li>
+<li>配置写入 <code>~/.wow-agent.env</code>，权限 <code>600</code> —— 仅你的用户可读</li>
+<li>进入交互提示符，随时可以输入任务</li>
+</ol>
+<pre><code class="language-text">$ uv run wow
+
+  Welcome to wow-agent!
+
+  ? Select model provider › DeepSeek
+  ? API Key › sk-****
+  ? Model › deepseek-coder
+
+  ✔ Config saved to ~/.wow-agent.env (600)
+
+  You > _
+</code></pre>
+<h2>不用 git 的安装方式</h2>
+<p>只要代码不要历史：</p>
+<pre><code class="language-bash">curl -L https://github.com/uuzjw/wow-agent/archive/refs/heads/main.tar.gz | tar xz
+cd wow-agent-main &#x26;&#x26; uv sync &#x26;&#x26; uv run wow
+</code></pre>
+<h2>离线 / 气隙环境安装</h2>
+<p>配合本地模型可完全离线工作：</p>
+<pre><code class="language-bash"># 1. 在有网的机器上
+git clone https://github.com/uuzjw/wow-agent.git
+cd wow-agent &#x26;&#x26; uv sync
+
+# 2. 整个文件夹拷贝到目标机器（U盘 / scp）
+# 3. 目标机器上
+uv run wow          # 选择 Ollama 或 LM Studio 作为服务商
+</code></pre>
+<p>模型本身离线化：</p>
+<pre><code class="language-bash">curl -fsSL https://ollama.ai/install.sh | sh   # 一次性，需网络
+ollama pull deepseek-coder:6.7b                # 模型权重
+ollama serve                                   # 本地端点 :11434
+</code></pre>
+<h2>升级</h2>
+<pre><code class="language-bash">cd wow-agent
+git pull
+uv sync
+</code></pre>
+<p>你的 <code>~/.wow-agent.env</code>、记忆和快照在升级后全部保留。</p>
+<h2>卸载</h2>
+<pre><code class="language-bash">rm -rf wow-agent/           # 程序
+rm ~/.wow-agent.env         # 配置
+rm -rf ~/.wow-agent/        # 记忆 + 快照（可选）
+</code></pre>
+<h2>故障排查</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>解决</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command not found: uv</code></td>
+<td>重开终端或 <code>source ~/.bashrc</code>；或在项目目录 <code>uv run wow</code></td>
+</tr>
+<tr>
+<td><code>Python 3.10 required</code></td>
+<td>uv 会自动管理 Python；执行 <code>uv python install 3.11</code></td>
+</tr>
+<tr>
+<td><code>~/.wow-agent.env</code> 权限拒绝</td>
+<td>文件本就是 600 权限；用你自己的用户运行，不要 root</td>
+</tr>
+<tr>
+<td>公司代理环境</td>
+<td><code>uv sync</code> 前 <code>export HTTPS_PROXY=http://proxy:port</code></td>
+</tr>
+<tr>
+<td>Windows 装完找不到 uv</td>
+<td>重启 PowerShell 刷新 PATH</td>
+</tr>
+</tbody>
+</table>
+<h2>下一步</h2>
+<ul>
+<li><a href="/wow-agent/zh/guide/first-task/">第一个任务</a> —— 手把手实战演练</li>
+<li><a href="/wow-agent/zh/guide/cookbook/">日常食谱</a> —— 常见任务的现成配方</li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Developer Tutorials | wow-agent</title>
+    <meta name="description" content="Hands-on tutorials for extending wow-agent — custom tools, model providers, MCP servers, sub-agents and contributing." />
+    <link rel="canonical" href="https://uuzjw.github.io/tutorials/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Developer Tutorials | wow-agent" />
+    <meta property="og:description" content="Hands-on tutorials for extending wow-agent — custom tools, model providers, MCP servers, sub-agents and contributing." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../index.html">
+    
+      <img class="brand-logo" src="../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../zh/tutorials/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Developer</p>
+    <h1 class="entry-title">Developer Tutorials</h1>
+    <div class="prose"><p>wow-agent is built to be extended. Every layer exposes a clean extension point. Pick your path:</p>
+<h2>Learning paths</h2>
+<table>
+<thead>
+<tr>
+<th>I want to…</th>
+<th>Tutorial</th>
+<th>Difficulty</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Give the agent a new ability (e.g. deploy, query internal API)</td>
+<td><a href="/wow-agent/tutorials/custom-tools/">Custom Tools</a></td>
+<td>★☆☆</td>
+</tr>
+<tr>
+<td>Connect a model provider that isn't built in</td>
+<td><a href="/wow-agent/tutorials/add-provider/">Add a Provider</a></td>
+<td>★☆☆</td>
+</tr>
+<tr>
+<td>Wire up external capabilities via MCP (filesystem, GitHub, DBs)</td>
+<td><a href="/wow-agent/tutorials/mcp-servers/">MCP Servers</a></td>
+<td>★★☆</td>
+</tr>
+<tr>
+<td>Understand &#x26; build isolated research/review agents</td>
+<td><a href="/wow-agent/tutorials/subagents/">Sub-agents</a></td>
+<td>★★☆</td>
+</tr>
+<tr>
+<td>Fix a bug or ship a feature in wow-agent itself</td>
+<td><a href="/wow-agent/tutorials/contributing/">Contributing</a></td>
+<td>★★☆</td>
+</tr>
+</tbody>
+</table>
+<h2>The 30-second mental model</h2>
+<pre><code class="language-text">You ──▶ Agent Brain (plans, decides)
+           │ calls
+           ▼
+        TOOLS  ← everything the agent can DO lives here
+           │
+     ┌─────┼──────┐
+     ▼     ▼      ▼
+   built-in custom  MCP     ← your extension points
+   (read/edit/ (your    (external
+    shell/…)  schema)  servers)
+</code></pre>
+<p>Three ways in, by effort:</p>
+<ol>
+<li><strong>MCP server</strong> — zero wow-agent code; run any standard MCP server</li>
+<li><strong>Custom tool</strong> — ~30 lines of Python in <code>tools.py</code></li>
+<li><strong>Core contribution</strong> — modify the agent itself; see <a href="/wow-agent/tutorials/contributing/">Contributing</a></li>
+</ol>
+<h2>Ground rules for extensions</h2>
+<ul>
+<li>Tools must declare a <strong>safety level</strong> (<code>safe</code> / <code>modify</code> / <code>destructive</code>) — the safety system enforces it</li>
+<li>All I/O goes through the tool layer so snapshots and logging cover your code too</li>
+<li>Prefer JSON-Schema-validated parameters; the model fills them, validation protects you</li>
+</ul>
+<p>Start with <a href="/wow-agent/tutorials/custom-tools/">Custom Tools</a> — most people are done in 15 minutes.</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your First Task | wow-agent</title>
+    <meta name="description" content="A step-by-step guided walkthrough of giving wow-agent its first real coding task, from prompt to verified result." />
+    <link rel="canonical" href="https://uuzjw.github.io/guide/first-task/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Your First Task | wow-agent" />
+    <meta property="og:description" content="A step-by-step guided walkthrough of giving wow-agent its first real coding task, from prompt to verified result." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/guide/first-task/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">User Guide</p>
+    <h1 class="entry-title">Your First Task</h1>
+    <div class="prose"><p>This walkthrough takes you through a complete real task: <strong>"add input validation to a function and fix the bug you find"</strong>. Every screen you will see is shown.</p>
+<h2>1. Start the agent</h2>
+<pre><code class="language-bash">cd my-project
+uv run wow
+</code></pre>
+<p>You are asked <code>Enter auto mode? y/N</code>:</p>
+<ul>
+<li><strong>N (default, recommended at first)</strong> — the agent shows its plan and asks before writing anything</li>
+<li><strong>y</strong> — it works without step-by-step confirms; dangerous commands and data-egress attempts <em>still</em> require approval</li>
+</ul>
+<h2>2. Describe the goal, not the steps</h2>
+<pre><code class="language-text">You > The function parse_config in src/config.py crashes when the file
+      has duplicate keys. Find out why and fix it properly.
+</code></pre>
+<p>Tips for a good first prompt:</p>
+<ul>
+<li>✅ say <strong>what is wrong</strong> and <strong>where</strong> (even roughly)</li>
+<li>✅ say what "fixed" means to you</li>
+<li>❌ don't dictate exact line edits — planning is the agent's job</li>
+</ul>
+<h2>3. Watch the plan (PLANNING state)</h2>
+<p>The agent reads the relevant files via its code index, then shows a task tree:</p>
+<pre><code class="language-text">┌ PLANNING ───────────────────────────────────────────┐
+│ 1. Read src/config.py and reproduce the crash       │
+│ 2. Identify root cause (duplicate-key handling)     │
+│ 3. Implement fix + add regression test              │
+│ 4. Run test suite                                    │
+│ Approve plan? [Y/n]                                  │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<p>Press <strong>Y</strong> to approve. Want changes first? Type feedback like <code>n</code> then
+<code>also log a warning when duplicates are merged</code>.</p>
+<h2>4. Execution (EXECUTING state)</h2>
+<p>The agent works through subtasks. Before <strong>every</strong> file write it takes a snapshot (this is what makes <code>/undo</code> possible):</p>
+<pre><code class="language-text">┌ EXECUTING 2/4 ──────────────────────────────────────┐
+│ ▸ Reading src/config.py (48 lines)                  │
+│ ✔ Root cause: dict overwrite in load(), line 31     │
+│ ▸ Edit src/config.py                                │
+│   @@ -28,7 +28,12 @@                                 │
+│   -    data = json.load(f)                           │
+│   +    data = json.load(f, object_pairs_hook=...)    │
+│ snapshot snap_4f2a saved                             │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<h2>5. Verification (VERIFYING state)</h2>
+<p>When implementation is done, the agent <strong>proves</strong> it:</p>
+<pre><code class="language-text">┌ VERIFYING ──────────────────────────────────────────┐
+│ ✔ pytest tests/test_config.py -q   12 passed        │
+│ ✔ ruff check .                     clean            │
+│ Task complete in 3m 41s                             │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<h2>6. If anything goes wrong</h2>
+<pre><code class="language-text">You > /undo          # revert the last change
+You > /undo --list   # see everything revertable
+</code></pre>
+<p>If verification fails, wow-agent <strong>rolls the whole task back automatically</strong> — your repo returns to the exact pre-task state, and you get an error report.</p>
+<h2>7. Wrap up</h2>
+<pre><code class="language-text">You > /status        # context used, task progress
+You > !git diff      # inspect changes with your own eyes
+You > !git add -A &#x26;&#x26; git commit -m "fix: duplicate-key crash in parse_config"
+</code></pre>
+<h2>What you just learned</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>State machine</td>
+<td>planning → executing → verifying → done/failed</td>
+</tr>
+<tr>
+<td>Snapshots</td>
+<td>every write is revertible via <code>/undo</code></td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>tests/lint must pass before "done"</td>
+</tr>
+<tr>
+<td>Auto rollback</td>
+<td>failed tasks restore your repo automatically</td>
+</tr>
+</tbody>
+</table>
+<h2>Where to go next</h2>
+<ul>
+<li><a href="/wow-agent/guide/cookbook/">Everyday Cookbook</a> — 10+ ready-made recipes</li>
+<li><a href="/wow-agent/guide/commands/">Commands</a> — the full slash-command toolbox</li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

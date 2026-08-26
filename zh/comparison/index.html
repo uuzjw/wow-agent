@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>横向对比 | wow-agent</title>
+    <meta name="description" content="wow-agent 与浏览器聊天、IDE 副驾驶、IDE Agent 的逐项诚实对比 —— 包括我们不占优的地方。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/comparison/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="横向对比 | wow-agent" />
+    <meta property="og:description" content="wow-agent 与浏览器聊天、IDE 副驾驶、IDE Agent 的逐项诚实对比 —— 包括我们不占优的地方。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../home/index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../comparison/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../guide/index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../guide/installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../guide/first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../guide/cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../guide/commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../guide/faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../tutorials/index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../tutorials/custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../tutorials/add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../tutorials/mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../tutorials/subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../tutorials/contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">产品</p>
+    <h1 class="entry-title">横向对比</h1>
+    <div class="prose"><p>四类产品都在解决"AI 写代码"，方式完全不同。本页诚实地把格局讲清楚 —— 包括 wow-agent <em>不</em>占优的地方。</p>
+<h2>产品格局</h2>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>代表</th>
+<th>核心循环</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>浏览器聊天</td>
+<td>ChatGPT、Claude.ai</td>
+<td>粘代码 → 聊 → 粘回来</td>
+</tr>
+<tr>
+<td>IDE 副驾驶</td>
+<td>Copilot、Cursor Tab</td>
+<td>打字时行内补全</td>
+</tr>
+<tr>
+<td>IDE Agent</td>
+<td>Cursor Agent、Windsurf</td>
+<td>编辑器内多文件编辑</td>
+</tr>
+<tr>
+<td><strong>终端 Agent</strong></td>
+<td><strong>wow-agent</strong>、Claude Code、Aider</td>
+<td><strong>目标 → 规划 → 工具 → 验证结果</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>逐项对比</h2>
+<table>
+<thead>
+<tr>
+<th>标准</th>
+<th>浏览器聊天</th>
+<th>IDE 副驾驶</th>
+<th>IDE Agent</th>
+<th>wow-agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在真实仓库里工作</td>
+<td>部分</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>多文件任务执行</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>跑测试并验证</td>
+<td>✗</td>
+<td>✗</td>
+<td>部分</td>
+<td>✔ 状态机</td>
+</tr>
+<tr>
+<td>模型自由（自带 Key/厂商）</td>
+<td>✗</td>
+<td>✗</td>
+<td>部分</td>
+<td>✔ 16+ + 本地</td>
+</tr>
+<tr>
+<td>完全离线运行</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ Ollama/LM Studio</td>
+</tr>
+<tr>
+<td>网络隔离执行</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ <code>unshare -n</code></td>
+</tr>
+<tr>
+<td>外传防护（拦 push/SCP）</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>Agent 改动一键回滚</td>
+<td>✗</td>
+<td>✗</td>
+<td>部分</td>
+<td>✔ 快照 + 自动回滚</td>
+</tr>
+<tr>
+<td>ARM64 / 边缘设备</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ Jetson 实测</td>
+</tr>
+<tr>
+<td>零订阅（自带 Key）</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ MIT 免费</td>
+</tr>
+<tr>
+<td>IDE 集成（悬停、补全）</td>
+<td>—</td>
+<td>✔✔</td>
+<td>✔</td>
+<td>✗ 仅终端</td>
+</tr>
+<tr>
+<td>GUI / 可视化 Diff</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>终端 Diff</td>
+</tr>
+</tbody>
+</table>
+<h2>wow-agent 赢在哪</h2>
+<ol>
+<li><strong>信任架构</strong>。沙盒 + 外传拦截 + 确认机制 + 回滚，这套纵深防御没有 IDE Agent 默认内置。</li>
+<li><strong>主权</strong>。任意服务商、任意 Key，或完全本地 —— 无厂商锁定、无订阅、数据留在本地。</li>
+<li><strong>环境</strong>。纯终端 + ARM64 原生意味着服务器、容器、CI、Jetson 开发板 —— 不需要 IDE。</li>
+</ol>
+<h2>别人赢在哪</h2>
+<ol>
+<li><strong>行内补全</strong>。想要编辑器里按键级自动补全，副驾驶完胜任何 Agent —— 工具层次不同。</li>
+<li><strong>可视化体验</strong>。丰富 GUI、图片 Diff、设计预览 —— 终端输出强大但不图形化。</li>
+<li><strong>生态成熟度</strong>。成熟产品有更大的插件市场和支持团队。</li>
+</ol>
+<h2>选择指南</h2>
+<table>
+<thead>
+<tr>
+<th>你是…</th>
+<th>最佳选择</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>天天在服务器/SSH/容器里干活</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>隐私/合规敏感，要本地模型</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>要自动化多文件任务且带验证</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>用边缘设备 / ARM64 开发板</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>想要打字时的自动补全</td>
+<td>IDE 副驾驶</td>
+</tr>
+<tr>
+<td>想要 VS Code 里的图形化 Agent</td>
+<td>IDE Agent</td>
+</tr>
+</tbody>
+</table>
+<h2>组合使用</h2>
+<p>它们不互斥。常见配置：副驾驶管行内补全，wow-agent 管<strong>任务级工作</strong> —— "实现这个功能，证明它能跑，然后自己收拾干净。"</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

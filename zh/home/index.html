@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>wow-agent | wow-agent</title>
+    <meta name="description" content="面向所有人的终端编程助手。一个简单、开放、可扩展的终端 AI 编程助手。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/home/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="wow-agent | wow-agent" />
+    <meta property="og:description" content="面向所有人的终端编程助手。一个简单、开放、可扩展的终端 AI 编程助手。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+
+
+
+
+
+
+
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+  <div class="shell hero-inner">
+    <span class="hero-badge anim-up">v0.6.0 · MIT · 终端原生 · ARM64</span>
+    <h1 class="hero-title anim-up d1">终端里的 AI 编程伙伴<br /><span class="grad-text">属于每一个人</span></h1>
+    <p class="hero-sub anim-up d2">给一个目标，wow-agent 规划、调用工具执行、跑测试验证、失败自动回滚。模型自由接入，数据永不离机。</p>
+    <div class="hero-actions anim-up d3">
+      <a class="btn btn--primary" href="../guide/index.html">开始使用 →</a>
+      <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+    <pre class="hero-install anim-up d3 mono"><code>git clone https://github.com/uuzjw/wow-agent && cd wow-agent && uv sync && uv run wow</code></pre>
+  </div>
+</section>
+
+<section class="shell provider-strip reveal" aria-label="Supported providers">
+  <p class="provider-label">一个接口，接入全部主流模型</p>
+  <div class="provider-logos">
+    <span>DeepSeek</span><span>Qwen</span><span>Kimi</span><span>GLM</span><span>OpenAI</span><span>Gemini</span><span>Groq</span><span>OpenRouter</span><span>Ollama</span><span>LM Studio</span>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">选你的路线</h2>
+  <p class="section-sub reveal">只想用它干活，还是想在它之上构建？都有为你准备的文档。</p>
+  <div class="grid-2">
+    <a class="path-card reveal" href="../guide/index.html">
+      <span class="path-icon">🚀</span>
+      <h3>我是用户</h3>
+      <p>5 分钟安装，第一个任务手把手带跑，10 个日常配方即抄即用。</p>
+      <span class="path-link">用户指南 →</span>
+    </a>
+    <a class="path-card reveal" href="../tutorials/index.html">
+      <span class="path-icon">🛠️</span>
+      <h3>我是开发者</h3>
+      <p>30 行代码加一个自定义工具，任意 OpenAI 兼容端点变成一等服务商，MCP 零代码扩展。</p>
+      <span class="path-link">开发者教程 →</span>
+    </a>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">四大支柱</h2>
+  <div class="grid-4">
+    <article class="card reveal">
+      <div class="card__icon card__icon--brand">🧠</div>
+      <h3>智能核心</h3>
+      <p>任务树 + 状态机自动流转；子代理干净上下文调研；长期记忆跨会话。</p>
+      <ul class="ticks">
+        <li>planning→executing→verifying</li>
+        <li>三级代码审查</li>
+        <li>/mem 长期记忆</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--accent">🛠️</div>
+      <h3>开发工具</h3>
+      <p>文件 CRUD、彩色 Diff、AST 符号索引；每次写入前快照，随时 /undo。</p>
+      <ul class="ticks">
+        <li>code_index 增量索引</li>
+        <li>Diff 可视化</li>
+        <li>/undo</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--success">☁️</div>
+      <h3>模型生态</h3>
+      <p>16+ 云端服务商与本地模型统一接入，/model 在线拉取列表，免费档开箱即用。</p>
+      <ul class="ticks">
+        <li>/model --fetch</li>
+        <li>Ollama · LM Studio</li>
+        <li>离线可用</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--warn">🛡️</div>
+      <h3>安全系统</h3>
+      <p>断网沙盒、外传拦截、高危二次确认、失败整轮回滚 —— 纵深防御四层。</p>
+      <ul class="ticks">
+        <li>unshare -n</li>
+        <li>外传拦截</li>
+        <li>自动回滚</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">四层架构</h2>
+  <p class="section-sub reveal">每一层职责单一，每一层都可扩展。<a href="../architecture/index.html">深入了解 →</a></p>
+  <div class="arch">
+    <div class="arch-layer reveal"><span class="arch-num">1</span><div><h4>智能核心 Agent Brain</h4><p>任务规划 · 状态机 · 子代理协作</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--accent reveal"><span class="arch-num">2</span><div><h4>开发工具 Developer Tools</h4><p>文件 CRUD · Diff/Undo · 代码索引</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--success reveal"><span class="arch-num">3</span><div><h4>模型生态 Model Ecosystem</h4><p>云端 16+ 服务商 · 本地 Ollama/LM Studio</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--warn reveal"><span class="arch-num">4</span><div><h4>安全系统 Safety System</h4><p>断网沙盒 · 外传拦截 · 高危确认 · 回滚</p></div></div>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">安全是默认项，不是选项</h2>
+  <p class="section-sub reveal">Agent 能执行命令，所以执行环境必须被约束。四层防护开箱即用，每一层都可独立审计。</p>
+  <div class="safety-band reveal">
+    <div class="safety-item"><span class="safety-n">1</span><div><h4>断网沙盒</h4><p>unshare -n</p></div></div>
+    <div class="safety-item"><span class="safety-n">2</span><div><h4>外传拦截</h4><p>curl POST · scp · git push</p></div></div>
+    <div class="safety-item"><span class="safety-n">3</span><div><h4>高危确认</h4><p>rm -rf · dd · fork bomb</p></div></div>
+    <div class="safety-item"><span class="safety-n">4</span><div><h4>回滚</h4><p>/undo · 失败自动回滚</p></div></div>
+  </div>
+  <p class="section-sub reveal" style="margin-top:1.2rem"><a href="../safety/index.html">阅读安全白皮书 →</a></p>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">数字说话</h2>
+  <div class="stats-band reveal">
+    <div class="stat"><span class="stat__num">16+</span><span class="stat__label">模型服务商</span></div>
+    <div class="stat"><span class="stat__num">4</span><span class="stat__label">安全层级</span></div>
+    <div class="stat"><span class="stat__num">&lt;1s</span><span class="stat__label">冷启动</span></div>
+    <div class="stat"><span class="stat__num">~50ms</span><span class="stat__label">索引增量更新</span></div>
+    <div class="stat"><span class="stat__num">0</span><span class="stat__label">遥测数据</span></div>
+  </div>
+</section>
+
+<section class="shell section cta-band reveal">
+  <div>
+    <h2>30 秒跑起来</h2>
+    <pre class="code-inline mono"><code>git clone https://github.com/uuzjw/wow-agent && cd wow-agent && uv sync && uv run wow</code></pre>
+  </div>
+  <a class="btn btn--primary" href="../guide/first-task/index.html">手把手第一个任务 →</a>
+</section>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

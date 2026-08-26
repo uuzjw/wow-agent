@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CLI Reference | wow-agent</title>
+    <meta name="description" content="The complete wow-agent command reference — every slash command, flag, shell escape and shortcut, with syntax, examples and expected output." />
+    <link rel="canonical" href="https://uuzjw.github.io/cli/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="CLI Reference | wow-agent" />
+    <meta property="og:description" content="The complete wow-agent command reference — every slash command, flag, shell escape and shortcut, with syntax, examples and expected output." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../index.html">
+    
+      <img class="brand-logo" src="../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../zh/cli/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Reference</p>
+    <h1 class="entry-title">CLI Reference</h1>
+    <div class="prose"><p>This is the exhaustive reference for everything you can type into wow-agent. For task-oriented learning, see the <a href="/wow-agent/guide/cookbook/">Cookbook</a> instead.</p>
+<h2>Launch-time options</h2>
+<pre><code class="language-bash">uv run wow [options]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(none)</em></td>
+<td>interactive session, confirmations on</td>
+</tr>
+<tr>
+<td><code>--auto</code></td>
+<td>auto mode: plan approved automatically (dangerous/egress still confirmed)</td>
+</tr>
+<tr>
+<td><code>--model &#x3C;id></code></td>
+<td>start with a specific model, e.g. <code>--model deepseek</code> or <code>--model ollama:llama3</code></td>
+</tr>
+<tr>
+<td><code>--language en|zh</code></td>
+<td>override UI language for this session</td>
+</tr>
+<tr>
+<td><code>--safe 0</code></td>
+<td>disable sandbox for this session (not recommended)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>Slash commands</h2>
+<h3><code>/help</code></h3>
+<p>List every available command with a one-line summary. Aliases: <code>/h</code>, <code>?</code>.</p>
+<h3><code>/model</code></h3>
+<p>The model control center.</p>
+<pre><code class="language-text">/model              interactive picker: provider → model
+/model deepseek     quick switch by provider id
+/model ollama:qwen2.5-coder:7b   provider:model syntax
+/model --list       show models for current provider
+/model --fetch      refresh list from provider API
+/model --info       current model, context size, capabilities
+</code></pre>
+<p>Switching models mid-task is safe — conversation context is preserved.</p>
+<h3><code>/status</code></h3>
+<p>The dashboard. Shows, at a glance:</p>
+<pre><code class="language-text">Session ─────────────────────────────
+ Context    38,412 / 128,000 (30%)
+ Task       fix-auth (EXECUTING, 3/5 subtasks)
+ Undoable   4 snapshots
+ Safety     sandbox ON · egress guard ON
+ Model      deepseek-coder (128k ctx)
+</code></pre>
+<h3><code>/compact [hint]</code></h3>
+<p>Compress conversation history to reclaim context.</p>
+<pre><code class="language-text">/compact                    # automatic summarization
+/compact keep the auth refactor details
+/compact --aggressive       # maximum compression
+</code></pre>
+<p>Auto-compact also triggers at <code>WOW_AUTO_COMPACT</code> tokens. Hints steer what the summary preserves.</p>
+<h3><code>/undo</code></h3>
+<p>Time travel for your working tree.</p>
+<pre><code class="language-text">/undo                # revert last change
+/undo 3              # revert last 3
+/undo --list         # history with snapshot ids
+/undo --to=snap_4f2a # restore to a specific point
+/undo --all          # revert everything this session
+/undo --dry-run      # preview without touching files
+</code></pre>
+<p>Snapshots persist across restarts (see <a href="/wow-agent/safety/rollback/">Rollback</a>).</p>
+<h3><code>/review [path] [--level=…]</code></h3>
+<p>Read-only code review by a review sub-agent. Never modifies files.</p>
+<pre><code class="language-text">/review                          # whole project, medium level
+/review src/auth/                # scoped
+/review --changed                # only uncommitted changes
+/review --level=high             # 🔴 security/correctness only
+/review --level=low --format=markdown --output=review.md
+</code></pre>
+<p>Levels: <code>high</code> 🔴 security &#x26; correctness · <code>medium</code> 🟡 best practices (default) · <code>low</code> 🟢 polish &#x26; performance.</p>
+<h3><code>/mem</code></h3>
+<p>Long-term memory across sessions.</p>
+<pre><code class="language-text">/mem save "project:auth" "JWT lives in src/auth/, refresh tokens in Redis"
+/mem use "project:auth"     # load into current context
+/mem list                   # everything, newest first
+/mem rm "project:old"       # delete
+</code></pre>
+<p>Keys are namespaced by convention: <code>project:*</code>, <code>team:*</code>, <code>research:*</code>.</p>
+<h3><code>/safe</code></h3>
+<pre><code class="language-text">/safe              # toggle master safety switch
+/safe status       # per-layer status
+/safe logs         # recent events: blocks, confirms, rollbacks
+/safe test         # self-test all four layers
+</code></pre>
+<h3><code>/resume</code></h3>
+<pre><code class="language-text">/resume            # pick a previous session interactively
+/resume --latest   # most recent, no menu
+</code></pre>
+<h3><code>/snapshot create &#x3C;label></code></h3>
+<p>Named checkpoint you can <code>/undo --to</code> later — do this before risky work.</p>
+<h3><code>/config [get|set|reset]</code></h3>
+<pre><code class="language-text">/config                     # dump effective config
+/config get WOW_MAX_ITER
+/config set WOW_MAX_ITER 60 # session-only override
+/config reset               # back to defaults
+</code></pre>
+<h3><code>/language [en|zh]</code></h3>
+<p>Switch UI language immediately. Without argument: interactive menu.</p>
+<h3><code>/clear</code> and <code>/exit</code></h3>
+<p><code>/clear</code> wipes conversation (files untouched, asks to confirm). <code>/exit</code> saves session and quits. Aliases: <code>/q</code>, Ctrl+D.</p>
+<hr>
+<h2>Shell escape <code>!</code></h2>
+<p>Anything starting with <code>!</code> runs in your shell <strong>without involving the model</strong>:</p>
+<pre><code class="language-text">!git status
+!pytest -x -q
+!docker compose logs -f api
+</code></pre>
+<ul>
+<li>Output streams into the session (truncated for context safety)</li>
+<li>Exit codes are shown; the agent can see them if you ask it to look</li>
+<li>Shell commands still pass the <strong>safety system</strong> (sandbox/egress/dangerous guards apply)</li>
+</ul>
+<h2>Keyboard shortcuts</h2>
+<table>
+<thead>
+<tr>
+<th>Keys</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Tab</code></td>
+<td>fuzzy-complete slash commands</td>
+</tr>
+<tr>
+<td><code>↑ / ↓</code></td>
+<td>prompt history</td>
+</tr>
+<tr>
+<td><code>Ctrl+C</code></td>
+<td>cancel current agent operation</td>
+</tr>
+<tr>
+<td><code>Ctrl+D</code></td>
+<td>exit</td>
+</tr>
+<tr>
+<td><code>Ctrl+L</code></td>
+<td>redraw screen</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>dismiss menu / suggestion</td>
+</tr>
+</tbody>
+</table>
+<h2>Exit codes (scripting)</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>clean exit</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>provider/config error</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>safety guard blocked a required operation</td>
+</tr>
+<tr>
+<td><code>130</code></td>
+<td>interrupted by user (Ctrl+C)</td>
+</tr>
+</tbody>
+</table></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Brain | wow-agent</title>
+    <meta name="description" content="Task planning, the planning→executing→verifying state machine and clean-context sub-agents." />
+    <link rel="canonical" href="https://uuzjw.github.io/guide/agent-brain/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Agent Brain | wow-agent" />
+    <meta property="og:description" content="Task planning, the planning→executing→verifying state machine and clean-context sub-agents." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/guide/agent-brain/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Core Concept</p>
+    <h1 class="entry-title">Agent Brain</h1>
+    <div class="prose"><h2>Task planning</h2>
+<p>High-level goals are decomposed automatically:</p>
+<pre><code>Goal: "Add JWT authentication"
+├── research existing auth patterns
+├── design token schema
+├── implement model + middleware
+├── add login/register endpoints
+└── write tests, update docs
+</code></pre>
+<p>The plan is shown for approval unless auto mode is on.</p>
+<h2>State machine</h2>
+<pre><code class="language-text">planning → executing → verifying → done
+                ↘            ↗
+                 failed ←────┘   (auto rollback)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>planning</td>
+<td>analyze repo via code index, build task tree</td>
+</tr>
+<tr>
+<td>executing</td>
+<td>call tools, snapshot before each write</td>
+</tr>
+<tr>
+<td>verifying</td>
+<td>run tests/lint/type-checks</td>
+</tr>
+<tr>
+<td>failed</td>
+<td>full-task rollback, error report</td>
+</tr>
+</tbody>
+</table>
+<h2>Sub-agents</h2>
+<ul>
+<li><strong>Research</strong> — clean context, read-only tools, returns a concise summary so the main context stays unpolluted</li>
+<li><strong>Review</strong> — powers <code>/review</code> with three severity levels (🔴 high risk · 🟡 suggestion · 🟢 polish)</li>
+</ul>
+<h2>Memory</h2>
+<p>Short-term history auto-compacts at <code>WOW_AUTO_COMPACT</code> tokens. Long-term knowledge persists across sessions:</p>
+<pre><code class="language-bash">/mem save "project:payment" "Stripe webhooks in payment/webhooks.py"
+</code></pre></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

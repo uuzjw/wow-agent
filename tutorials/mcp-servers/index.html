@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MCP Servers | wow-agent</title>
+    <meta name="description" content="Extend wow-agent with Model Context Protocol servers — filesystem, GitHub, databases, or your own — with zero agent code." />
+    <link rel="canonical" href="https://uuzjw.github.io/tutorials/mcp-servers/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="MCP Servers | wow-agent" />
+    <meta property="og:description" content="Extend wow-agent with Model Context Protocol servers — filesystem, GitHub, databases, or your own — with zero agent code." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/tutorials/mcp-servers/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Developer Tutorial</p>
+    <h1 class="entry-title">MCP Servers</h1>
+    <div class="prose"><p>MCP (Model Context Protocol) is a standard for exposing <strong>tools</strong> and <strong>resources</strong> to LLM agents. wow-agent speaks it natively: configure a server once, and its tools appear alongside built-ins.</p>
+<h2>Step 1 — Configure</h2>
+<p>Create <code>~/.wow-agent/mcp.json</code>:</p>
+<pre><code class="language-json">{
+  "servers": {
+    "fs": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/me/projects"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "ghp_xxx" }
+    }
+  }
+}
+</code></pre>
+<p>Each server = a process command + args + optional env. wow-agent starts them on launch.</p>
+<h2>Step 2 — Verify discovery</h2>
+<pre><code class="language-text">You > /debug mcp
+  fs      RUNNING   tools: read_file, write_file, list_directory, …
+  github  RUNNING   tools: create_issue, get_pull_request, …
+
+You > /debug tools          # mcp_fs__read_file etc. now listed
+</code></pre>
+<p>Tools are namespaced <code>mcp_&#x3C;server>__&#x3C;tool></code> so they never collide with built-ins.</p>
+<h2>Step 3 — Use it</h2>
+<p>Just ask naturally — the model sees the tool schemas:</p>
+<pre><code class="language-text">You > list open issues in uuzjw/wow-agent labeled "bug"
+You > read /home/me/projects/notes/roadmap.md and summarize
+</code></pre>
+<h2>Write your own MCP server (Python)</h2>
+<pre><code class="language-python"># my_server.py  —  pip install "mcp[cli]"
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("team-tools")
+
+@mcp.tool()
+def oncall_schedule() -> str:
+    """Return this week's on-call engineer."""
+    return "alice (Mon-Wed), bob (Thu-Fri)"
+
+@mcp.tool()
+def query_status(service: str) -> str:
+    """Query internal status page for a service."""
+    return f"{service}: all systems nominal"
+
+if __name__ == "__main__":
+    mcp.run()
+</code></pre>
+<p>Register it:</p>
+<pre><code class="language-json">{
+  "servers": {
+    "team": { "command": "python", "args": ["/path/to/my_server.py"] }
+  }
+}
+</code></pre>
+<h2>Security model</h2>
+<ul>
+<li>MCP servers <strong>inherit the agent's network sandbox</strong> — a malicious server can't phone home</li>
+<li>Filesystem servers only see paths you pass in <code>args</code> — mount narrowly</li>
+<li>Tool calls still pass the safety system (<code>destructive</code> confirmations included)</li>
+<li>Pin versions for supply-chain safety: <code>server-github@1.2.3</code></li>
+</ul>
+<h2>Operations</h2>
+<pre><code class="language-bash">/debug mcp          # status per server (running / failed + stderr)
+/mcp refresh        # restart servers &#x26; rediscover tools
+</code></pre>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>server FAILED at startup</td>
+<td>run its command manually; read stderr</td>
+</tr>
+<tr>
+<td>tools not appearing</td>
+<td><code>/mcp refresh</code>; check <code>npx</code> availability</td>
+</tr>
+<tr>
+<td>slow startup</td>
+<td>drop <code>-y</code> heavy packages you don't use; pin versions for cache</td>
+</tr>
+</tbody>
+</table></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

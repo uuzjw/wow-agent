@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>参与贡献 | wow-agent</title>
+    <meta name="description" content="搭建开发环境、读懂代码结构、跑通测试套件，提交你的第一个 wow-agent Pull Request。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/tutorials/contributing/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="参与贡献 | wow-agent" />
+    <meta property="og:description" content="搭建开发环境、读懂代码结构、跑通测试套件，提交你的第一个 wow-agent Pull Request。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../tutorials/contributing/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">开发者教程</p>
+    <h1 class="entry-title">参与贡献</h1>
+    <div class="prose"><h2>开发环境（2 分钟）</h2>
+<pre><code class="language-bash">git clone https://github.com/uuzjw/wow-agent.git
+cd wow-agent
+uv sync
+uv run wow          # 冒烟检查
+</code></pre>
+<h2>代码都在哪</h2>
+<pre><code>wow_agent/
+├── agent.py      # 核心循环 + 状态机（planning→executing→verifying）
+├── cli.py        # 入口、斜杠命令、REPL
+├── config.py     # PROVIDERS + 环境变量
+├── indexer.py    # AST 代码索引（符号/引用）
+├── tools.py      # TOOLS_SCHEMA + 执行器 + 安全检查
+├── subagent.py   # 隔离的调研/审查代理
+├── todo.py       # 任务树
+├── memory.py     # 长期 /mem 存储
+├── undo.py       # 快照与回滚
+├── mcp.py        # MCP 客户端
+├── session.py    # 会话持久化
+├── i18n.py       # 中英文案
+└── ui.py         # Rich 渲染
+</code></pre>
+<p><strong>经验法则</strong>：新能力 → <code>tools.py</code>；新斜杠命令 → <code>cli.py</code>；新模型厂商 → <code>config.py</code>；规划相关 → <code>agent.py</code>。</p>
+<h2>测试（全部离线，无需 API Key）</h2>
+<pre><code class="language-bash">uv run python tests_smoke.py   # 快：导入、Schema、单元逻辑
+uv run python tests_e2e.py     # 假 LLM 端到端任务
+</code></pre>
+<p>任何 PR 前两者都必须绿。秒级运行，绝不碰网。</p>
+<h2>写测试</h2>
+<ul>
+<li>用 monkeypatch 打桩 I/O 来单测工具执行器（见<a href="/wow-agent/zh/tutorials/custom-tools/">自定义工具</a>的 <code>tests/test_tool_deploy.py</code> 模式）</li>
+<li>E2E 测试用<strong>假 LLM</strong> —— 编排工具调用，断言状态机转换</li>
+<li>安全行为（外传模式、高危命令）每个都值得单独一个测试</li>
+</ul>
+<h2>PR 流程</h2>
+<pre><code class="language-bash">git checkout -b feat/my-feature
+# ...写代码 + 测试...
+uv run python tests_smoke.py &#x26;&#x26; uv run python tests_e2e.py
+git commit -m "feat(tools): add deploy tool with confirmation"
+git push -u origin feat/my-feature
+</code></pre>
+<p>约定：</p>
+<ul>
+<li>Conventional commits：<code>feat:</code>、<code>fix:</code>、<code>docs:</code>、<code>refactor:</code>、<code>test:</code></li>
+<li>范围明确时加括号：<code>feat(providers): …</code></li>
+<li>一个 PR 一个逻辑变更；保持 Diff 可审</li>
+<li>用户可见的变更同步更新文档站（内容在 <code>wow-agent-site/content/</code>）</li>
+</ul>
+<h2>Review 看什么</h2>
+<ol>
+<li>安全：新代码是否尊重沙盒/外传/确认层？</li>
+<li>离线：无强制联网；测试保持离线</li>
+<li>上下文纪律：输出有界，不扔 Token 炸弹</li>
+<li>国际化：用户可见文案走 <code>i18n.py</code>（中英双语）</li>
+</ol>
+<h2>Issue</h2>
+<p><code>good first issue</code> 标签适合上手。大想法先开 Discussion 讲<strong>问题</strong>（不是方案）—— 设计在公开讨论中打磨。</p>
+<h2>文档贡献</h2>
+<p>本站是纯静态文件：编辑 <code>wow-agent-site/content/pages/</code> 下的 Markdown，然后：</p>
+<pre><code class="language-bash">cd wow-agent-site &#x26;&#x26; bun run build   # 本地验证
+</code></pre>
+<p>改错别字不用开 Issue，直接 PR。</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

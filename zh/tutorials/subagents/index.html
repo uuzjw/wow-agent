@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>子代理开发 | wow-agent</title>
+    <meta name="description" content="wow-agent 隔离子代理的工作原理、生成时机，以及如何在提示词和代码里用好它们。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/tutorials/subagents/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="子代理开发 | wow-agent" />
+    <meta property="og:description" content="wow-agent 隔离子代理的工作原理、生成时机，以及如何在提示词和代码里用好它们。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../../guide/index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../tutorials/subagents/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../guide/index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../../guide/installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../../guide/first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../../guide/cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../../guide/commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="../../guide/faq/index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">开发者教程</p>
+    <h1 class="entry-title">子代理开发</h1>
+    <div class="prose"><p>子代理解决一个问题：<strong>调研烧上下文</strong>。子代理拿到全新上下文、只读工具，只回传结论。</p>
+<h2>模型</h2>
+<pre><code class="language-text">主代理（全上下文，全部工具）
+   │ spawn(query, scope)
+   ▼
+子代理（全新上下文，只读：read/grep/symbols/index）
+   │ 自由探索 —— 过程不进主上下文
+   ▼
+结构化结果: { summary, key_files[], findings[], recommendations[] }
+</code></pre>
+<h2>什么时候会生成</h2>
+<ul>
+<li>提示词里出现<strong>调研/研究/investigate</strong></li>
+<li>计划中的某一步是纯信息收集</li>
+<li>调用 <code>/review</code>（审查子代理，只读）
+转写里会看到：</li>
+</ul>
+<pre><code class="language-text">▸ 生成调研子代理（全新上下文）
+  … 14 次文件读取、6 次符号查询（对主上下文隐藏）
+◀ 调研完成 —— 摘要：3 个关键文件，2 条建议
+</code></pre>
+<h2>驱动子代理的技巧</h2>
+<pre><code class="language-text"># 好：有边界的问题 + 期望的输出形式
+> 调研：写入之后缓存失效是怎么触发的？
+  列出涉及的具体函数和调用位置。
+
+# 好：对比式调研
+> 调研：src/auth/ 的认证中间件和 examples/ 里的模式
+  有什么不同？用表格汇报差异。
+
+# 差：漫无目的
+> 调研一下代码库
+</code></pre>
+<h2>子代理不能做什么</h2>
+<ul>
+<li>写、改、删（只读工具集）</li>
+<li>执行 Shell 命令</li>
+<li>看到你的对话历史 —— <strong>所有上下文必须在查询里说明</strong></li>
+</ul>
+<h2>配置</h2>
+<pre><code class="language-bash">WOW_MAX_SUBAGENTS=3      # 并发上限
+WOW_SUBAGENT_TIMEOUT=120 # 每次生成超时（秒）
+WOW_SUBAGENT_MODEL=auto  # 同模型 | 调研用更快的模型
+</code></pre>
+<h2>扩展（代码层）</h2>
+<p><code>wow_agent/subagent.py</code> 暴露生成器：</p>
+<pre><code class="language-python">result = await subagent_manager.spawn(
+    type="research",            # research | review
+    query="feature flags 在哪里被读取？",
+    scope=Path("src/"),         # 限制探索范围
+    constraints=["忽略 tests/"],
+)
+result.summary        # 2–3 句答案
+result.key_files      # [FileRef(path, line)]
+result.recommendations
+</code></pre>
+<p>结果是 dataclass —— 可以安全地喂进规划提示词。</p>
+<h2>设计笔记</h2>
+<ul>
+<li>每次生成全新上下文：调研任务之间零污染</li>
+<li>Token 记账：子代理开销单独统计，<code>/status</code> 可见</li>
+<li>失败廉价：超时的子代理返回部分发现，绝不阻塞主任务</li>
+</ul></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

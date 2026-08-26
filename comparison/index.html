@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Comparison | wow-agent</title>
+    <meta name="description" content="An honest, criteria-by-criteria comparison of wow-agent with browser chatbots, IDE copilots and terminal agents." />
+    <link rel="canonical" href="https://uuzjw.github.io/comparison/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="Comparison | wow-agent" />
+    <meta property="og:description" content="An honest, criteria-by-criteria comparison of wow-agent with browser chatbots, IDE copilots and terminal agents." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../index.html">
+    
+      <img class="brand-logo" src="../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../guide/index.html">Guide</a>
+        <a class="top-nav__link" href="../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../zh/comparison/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../guide/index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../guide/installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../guide/first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../guide/cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../guide/commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="../guide/faq/index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">Product</p>
+    <h1 class="entry-title">Comparison</h1>
+    <div class="prose"><p>Four product categories solve "AI writes code" differently. This page maps the landscape honestly — including where wow-agent is <em>not</em> the best pick.</p>
+<h2>The landscape</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Examples</th>
+<th>Core loop</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Browser chatbot</td>
+<td>ChatGPT, Claude.ai</td>
+<td>paste code → chat → copy back</td>
+</tr>
+<tr>
+<td>IDE copilot</td>
+<td>Copilot, Cursor Tab</td>
+<td>inline autocomplete as you type</td>
+</tr>
+<tr>
+<td>IDE agent</td>
+<td>Cursor Agent, Windsurf</td>
+<td>multi-file edits inside an editor</td>
+</tr>
+<tr>
+<td><strong>Terminal agent</strong></td>
+<td><strong>wow-agent</strong>, Claude Code, Aider</td>
+<td><strong>goal → plan → tools → verified result</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>Criteria matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Criteria</th>
+<th>Browser chat</th>
+<th>IDE copilot</th>
+<th>IDE agent</th>
+<th>wow-agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Works in your real repo</td>
+<td>partial</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>Multi-file task execution</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>Runs tests &#x26; verifies</td>
+<td>✗</td>
+<td>✗</td>
+<td>partial</td>
+<td>✔ state machine</td>
+</tr>
+<tr>
+<td>Model freedom (BYO key/vendor)</td>
+<td>✗</td>
+<td>✗</td>
+<td>partial</td>
+<td>✔ 16+ + local</td>
+</tr>
+<tr>
+<td>Runs fully offline</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ Ollama/LM Studio</td>
+</tr>
+<tr>
+<td>Network-isolated execution</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ <code>unshare -n</code></td>
+</tr>
+<tr>
+<td>Egress guard (push/SCP block)</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>One-click rollback of agent edits</td>
+<td>✗</td>
+<td>✗</td>
+<td>partial</td>
+<td>✔ snapshots + auto-rollback</td>
+</tr>
+<tr>
+<td>ARM64 / edge devices</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ Jetson-tested</td>
+</tr>
+<tr>
+<td>Zero subscription (BYO keys)</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✔ MIT, free</td>
+</tr>
+<tr>
+<td>IDE integrations (hover, completions)</td>
+<td>—</td>
+<td>✔✔</td>
+<td>✔</td>
+<td>✗ terminal only</td>
+</tr>
+<tr>
+<td>GUI / visual diffs</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>terminal diffs</td>
+</tr>
+</tbody>
+</table>
+<h2>Where wow-agent wins</h2>
+<ol>
+<li><strong>Trust architecture.</strong> Sandbox + egress guard + confirmations + rollback is a defense-in-depth stack no IDE agent ships by default.</li>
+<li><strong>Sovereignty.</strong> Any provider, any key, or fully local — no vendor lock, no subscription, data stays home.</li>
+<li><strong>Environments.</strong> Pure terminal + ARM64 native means servers, containers, CI, Jetson boards — no IDE required.</li>
+</ol>
+<h2>Where others win</h2>
+<ol>
+<li><strong>Inline completion.</strong> If you want keystroke-level autocomplete in an editor, a copilot beats any agent — different tool layer.</li>
+<li><strong>Visual UX.</strong> Rich GUIs, image diffs, design previews — terminal output is powerful but not graphical.</li>
+<li><strong>Ecosystem maturity.</strong> Established products have larger plugin markets and support teams.</li>
+</ol>
+<h2>Decision guide</h2>
+<table>
+<thead>
+<tr>
+<th>You are…</th>
+<th>Best fit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Working in servers/SSH/containers daily</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>Privacy/compliance-sensitive, want local models</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>Automating multi-file tasks with verification</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>On an edge device / ARM64 SBC</td>
+<td><strong>wow-agent</strong></td>
+</tr>
+<tr>
+<td>Want autocomplete while typing</td>
+<td>IDE copilot</td>
+</tr>
+<tr>
+<td>Want a graphical agent inside VS Code</td>
+<td>IDE agent</td>
+</tr>
+</tbody>
+</table>
+<h2>Combining tools</h2>
+<p>They're not mutually exclusive. A common setup: copilot for inline completion, wow-agent for <strong>task-level work</strong> — "implement this feature, prove it works, clean up after yourself."</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

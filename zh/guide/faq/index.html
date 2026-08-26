@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>常见问题 | wow-agent</title>
+    <meta name="description" content="新用户最关心的问题 straight answers —— 模型、隐私、安全、成本与日常使用。" />
+    <link rel="canonical" href="https://uuzjw.github.io/zh/guide/faq/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="常见问题 | wow-agent" />
+    <meta property="og:description" content="新用户最关心的问题 straight answers —— 模型、隐私、安全、成本与日常使用。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../home/index.html">
+    
+      <img class="brand-logo" src="../../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">指南</a>
+        <a class="top-nav__link" href="../../architecture/index.html">架构</a>
+        <a class="top-nav__link" href="../../tools/index.html">工具</a>
+        <a class="top-nav__link" href="../../safety/index.html">安全</a>
+        <a class="top-nav__link" href="../../config/index.html">配置</a>
+        <a class="top-nav__link top-nav__lang" href="../../../guide/faq/index.html" title="Switch to English">EN</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">产品</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../home/index.html">首页</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">为什么选择</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">横向对比</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">更新日志</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">用户指南</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">从这里开始</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">安装</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">第一个任务</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">日常食谱</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">命令速查</a></li>
+          
+            <li><a class="side-link" href="index.html">常见问题</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">开发者教程</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">教程总览</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">自定义工具</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">添加服务商</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP 服务器</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">子代理开发</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">参与贡献</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">参考手册</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI 命令大全</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">配置参考</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">架构设计</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">工具系统</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">安全系统</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">用户指南</p>
+    <h1 class="entry-title">常见问题</h1>
+    <div class="prose"><h2>需要 API Key 吗？</h2>
+<p>不一定。安装时选 <strong>Ollama</strong> 或 <strong>LM Studio</strong>，全部本地运行，零 Key。云服务商需要各自的 Key。</p>
+<h2>我的代码会传到哪里？</h2>
+<p>不传，除非你选择云端模型。本地模型时推理发生在你机器上，什么都不外发。云端模型时只有你批准的上下文会发给该服务商。Agent 本体<strong>没有任何遥测</strong>。</p>
+<h2>让它执行命令安全吗？</h2>
+<p>默认有三层保护：</p>
+<ol>
+<li><strong>断网沙盒</strong> —— Agent 的 Shell 无法访问网络</li>
+<li><strong>外传拦截</strong> —— <code>git push</code>、<code>scp</code>、<code>curl POST</code>、<code>npm publish</code> 被拦截或需确认</li>
+<li><strong>高危命令确认</strong> —— <code>rm -rf /</code>、<code>dd</code>、fork bomb 必须手动输入 <code>YES</code>
+另外每次文件写入都有快照：<code>/undo</code> 随时撤销。</li>
+</ol>
+<h2>要花多少钱？</h2>
+<p>Agent 本身免费（MIT）。模型成本看服务商：</p>
+<ul>
+<li><strong>免费</strong>：Ollama / LM Studio（用自己的硬件）、OpenCode Zen 免费档</li>
+<li><strong>便宜</strong>：DeepSeek、Qwen 的免费/低价档足够日常编程</li>
+<li>按量付费 —— 没有订阅、没有按座位收费</li>
+</ul>
+<h2>第一次用选什么模型？</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>先试试</td>
+<td>OpenCode Zen 免费档</td>
+</tr>
+<tr>
+<td>隐私优先</td>
+<td>Ollama <code>deepseek-coder:6.7b</code></td>
+</tr>
+<tr>
+<td>质量最好</td>
+<td>DeepSeek <code>deepseek-coder</code> 或 GPT-4o</td>
+</tr>
+<tr>
+<td>机器配置低</td>
+<td>Qwen 小参数档（走 API）</td>
+</tr>
+</tbody>
+</table>
+<h2>和浏览器里的 ChatGPT/Claude 有什么区别？</h2>
+<p>它们是"聊"代码；wow-agent <strong>在你的仓库里干活</strong>：用代码索引读文件、带 Diff 改文件、跑测试、验证结果、失败回滚。它工作在代码所在的地方。</p>
+<h2>和 IDE 副驾驶有什么区别？</h2>
+<p>副驾驶在编辑器里补全代码。wow-agent 是<strong>任务 Agent</strong>：你给目标（"修这个 Bug"），它规划、改多个文件、跑验证、汇报结果。是不同层面的工具。</p>
+<h2>公司里能用吗？</h2>
+<p>可以 —— MIT 协议。安全默认（沙盒 + 外传拦截）适合专有代码。严格合规场景可用本地模型完全离线运行。</p>
+<h2>支持 Windows / ARM 吗？</h2>
+<ul>
+<li><strong>Windows</strong>：PowerShell，实验性</li>
+<li><strong>macOS</strong>：原生（含 Apple Silicon）</li>
+<li><strong>Linux</strong>：主力平台</li>
+<li><strong>ARM64</strong>：一等公民 —— Jetson Orin NX 实测</li>
+</ul>
+<h2>Agent "失败"了 —— 我的仓库坏了吗？</h2>
+<p>几乎不会。失败任务触发<strong>自动回滚</strong>：该任务的所有快照逆序恢复。查看 <code>/safe logs</code> 了解记录，<code>/undo --list</code> 随时可用。</p>
+<h2>上下文快满了怎么办？</h2>
+<pre><code class="language-text">/compact              # 立即压缩历史
+/compact 保留认证相关  # 压缩时保留指定内容
+</code></pre>
+<p>到达 <code>WOW_AUTO_COMPACT</code> Token 会自动压缩。长期知识用 <code>/mem save</code>。</p>
+<h2>怎么报 Bug / 提需求？</h2>
+<p><a href="https://github.com/uuzjw/wow-agent/issues">GitHub Issues</a> —— 欢迎 PR，见<a href="/wow-agent/zh/tutorials/contributing/">参与贡献</a>。</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../home/index.html">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>

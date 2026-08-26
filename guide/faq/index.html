@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAQ | wow-agent</title>
+    <meta name="description" content="Straight answers to the questions new wow-agent users ask most — models, privacy, safety, cost and daily workflow." />
+    <link rel="canonical" href="https://uuzjw.github.io/guide/faq/" />
+    <meta name="theme-color" content="#1d4ed8" />
+    
+      <link rel="icon" href="https://uuzjw.github.io/assets/favicon.png" />
+    
+    <meta property="og:title" content="FAQ | wow-agent" />
+    <meta property="og:description" content="Straight answers to the questions new wow-agent users ask most — models, privacy, safety, cost and daily workflow." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wow-agent" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    
+
+
+
+
+
+
+
+<header class="site-header">
+  <div class="shell header-inner">
+    
+      <a class="brand" href="../../index.html">
+    
+      <img class="brand-logo" src="../../assets/logo.png" alt="wow-agent logo" width="34" height="34" />
+      <span class="brand-name">wow-agent</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      
+        <a class="top-nav__link" href="../index.html">Guide</a>
+        <a class="top-nav__link" href="../../architecture/index.html">Architecture</a>
+        <a class="top-nav__link" href="../../tools/index.html">Tools</a>
+        <a class="top-nav__link" href="../../safety/index.html">Safety</a>
+        <a class="top-nav__link" href="../../config/index.html">Config</a>
+        <a class="top-nav__link top-nav__lang" href="../../zh/guide/faq/index.html" title="切换到中文">中文</a>
+      
+      <button class="theme-toggle" id="wow-theme-toggle" aria-label="Toggle theme">☾</button>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("wow-theme-toggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.textContent = root.dataset.theme === "dark" ? "☀" : "☾";
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("wow-theme", root.dataset.theme);
+      sync();
+    });
+  });
+</script>
+
+    <main>
+
+  
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    
+    
+    
+      <div class="side-group">
+        <p class="side-group__title">Product</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../index.html">Home</a></li>
+          
+            <li><a class="side-link" href="../../why/index.html">Why wow-agent</a></li>
+          
+            <li><a class="side-link" href="../../comparison/index.html">Comparison</a></li>
+          
+            <li><a class="side-link" href="../../changelog/index.html">Changelog</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">User Guide</p>
+        <ul>
+          
+            <li><a class="side-link" href="../index.html">Start Here</a></li>
+          
+            <li><a class="side-link" href="../installation/index.html">Installation</a></li>
+          
+            <li><a class="side-link" href="../first-task/index.html">Your First Task</a></li>
+          
+            <li><a class="side-link" href="../cookbook/index.html">Everyday Cookbook</a></li>
+          
+            <li><a class="side-link" href="../commands/index.html">Commands</a></li>
+          
+            <li><a class="side-link" href="index.html">FAQ</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Developer Tutorials</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../tutorials/index.html">Overview</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/custom-tools/index.html">Custom Tools</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/add-provider/index.html">Add a Provider</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/mcp-servers/index.html">MCP Servers</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/subagents/index.html">Sub-agents</a></li>
+          
+            <li><a class="side-link" href="../../tutorials/contributing/index.html">Contributing</a></li>
+          
+        </ul>
+      </div>
+    
+      <div class="side-group">
+        <p class="side-group__title">Reference</p>
+        <ul>
+          
+            <li><a class="side-link" href="../../cli/index.html">CLI Reference</a></li>
+          
+            <li><a class="side-link" href="../../config/index.html">Configuration</a></li>
+          
+            <li><a class="side-link" href="../../architecture/index.html">Architecture</a></li>
+          
+            <li><a class="side-link" href="../../tools/index.html">Tools</a></li>
+          
+            <li><a class="side-link" href="../../safety/index.html">Safety</a></li>
+          
+        </ul>
+      </div>
+    
+  </aside>
+
+  <article class="docs-main">
+    <p class="entry-eyebrow">User Guide</p>
+    <h1 class="entry-title">FAQ</h1>
+    <div class="prose"><h2>Do I need an API key?</h2>
+<p>Not necessarily. Choose <strong>Ollama</strong> or <strong>LM Studio</strong> during setup and everything runs on your machine with zero keys. Cloud providers need their own key.</p>
+<h2>Where does my code go?</h2>
+<p>Nowhere, unless you choose a cloud model. With local models, inference happens on your machine and nothing leaves it. With cloud models, only the context you approve is sent to that provider. The agent itself has <strong>no telemetry</strong>.</p>
+<h2>Is it safe to let it run commands?</h2>
+<p>By default, three layers protect you:</p>
+<ol>
+<li><strong>Network sandbox</strong> — the agent's shell has no internet access</li>
+<li><strong>Egress guard</strong> — <code>git push</code>, <code>scp</code>, <code>curl POST</code>, <code>npm publish</code> are blocked or confirmed</li>
+<li><strong>Dangerous-command guard</strong> — <code>rm -rf /</code>, <code>dd</code>, fork bombs require typing <code>YES</code></li>
+</ol>
+<p>Plus every file write is snapshotted: <code>/undo</code> reverts anything.</p>
+<h2>What does it cost?</h2>
+<p>The agent is free (MIT). Model costs depend on provider:</p>
+<ul>
+<li><strong>Free</strong>: Ollama / LM Studio (your hardware), OpenCode Zen free tier</li>
+<li><strong>Cheap</strong>: DeepSeek and Qwen free/low tiers cover most daily coding</li>
+<li>Pay only for what you use — no subscription, no per-seat fees</li>
+</ul>
+<h2>Which model should I start with?</h2>
+<table>
+<thead>
+<tr>
+<th>Your case</th>
+<th>Start with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Just trying out</td>
+<td>OpenCode Zen free tier</td>
+</tr>
+<tr>
+<td>Privacy first</td>
+<td>Ollama <code>deepseek-coder:6.7b</code></td>
+</tr>
+<tr>
+<td>Best quality</td>
+<td>DeepSeek <code>deepseek-coder</code> or GPT-4o</td>
+</tr>
+<tr>
+<td>Weak machine</td>
+<td>Qwen smaller tiers via API</td>
+</tr>
+</tbody>
+</table>
+<h2>How is this different from ChatGPT/Claude in a browser?</h2>
+<p>Those chat about code; wow-agent <strong>works in your repo</strong>: reads files via a code index, edits them with diffs, runs your tests, verifies results, rolls back failures. It operates where the code lives.</p>
+<h2>How is this different from IDE copilots?</h2>
+<p>Copilots autocomplete inside an editor. wow-agent is a <strong>task agent</strong>: you give a goal ("fix this bug"), it plans, edits multiple files, runs verification, and reports. Different tool for a different job layer.</p>
+<h2>Can I use it at work?</h2>
+<p>Yes — MIT licensed. Safety defaults (sandbox + egress guard) make it suitable for proprietary code. For strict compliance, run fully offline with local models.</p>
+<h2>Does it work on Windows / ARM?</h2>
+<ul>
+<li><strong>Windows</strong>: PowerShell, experimental</li>
+<li><strong>macOS</strong>: native (Apple Silicon included)</li>
+<li><strong>Linux</strong>: primary platform</li>
+<li><strong>ARM64</strong>: first-class — tested on Jetson Orin NX</li>
+</ul>
+<h2>The agent "failed" — did it break my repo?</h2>
+<p>Almost certainly not. Failed tasks trigger <strong>automatic rollback</strong>: every snapshot from the task is restored in reverse order. Check <code>/safe logs</code> for the record, and <code>/undo --list</code> anytime.</p>
+<h2>Context is filling up — what do I do?</h2>
+<pre><code class="language-text">/compact              # compress history now
+/compact keep auth    # compress, preserve auth-related context
+</code></pre>
+<p>Auto-compact triggers at <code>WOW_AUTO_COMPACT</code> tokens by itself. For long-running knowledge, use <code>/mem save</code>.</p>
+<h2>How do I report a bug or request a feature?</h2>
+<p><a href="https://github.com/uuzjw/wow-agent/issues">GitHub Issues</a> — PRs welcome, see <a href="/wow-agent/tutorials/contributing/">Contributing</a>.</p></div>
+    <nav class="doc-foot">
+      
+        <a class="btn btn--ghost" href="../../index.html">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      
+    </nav>
+  </article>
+</div>
+
+
+</main>
+    
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    
+    <p class="footer-meta">Copyright © 2026 <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a> · <a href="https://github.com/uuzjw/wow-agent/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+  </div>
+</footer>
+
+  </body>
+</html>
