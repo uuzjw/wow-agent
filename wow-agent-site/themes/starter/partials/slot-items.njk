@@ -1,0 +1,26 @@
+{% set slotItems = items or [] %}
+{% if slotItems.length %}
+  <div class="{{ className or 'slot-items' }}">
+    {% for item in slotItems %}
+      {% if item.kind == "button" %}
+        <a
+          class="{{ item.className or itemClassName or 'slot-items__button' }}"
+          href="{{ href(item.url or '#', currentUrlPath) }}"
+          {% if item.title %}title="{{ item.title }}"{% endif %}
+          {% if item.rel %}rel="{{ item.rel }}"{% endif %}
+          {% if item.target %}target="{{ item.target }}"{% endif %}
+        >{% if item.icon %}<span class="slot-items__icon">{{ item.icon }}</span>{% endif %}{{ item.text }}</a>
+      {% elif item.kind == "link" or item.url %}
+        <a
+          class="{{ item.className or itemClassName or 'slot-items__link' }}"
+          href="{{ href(item.url or '#', currentUrlPath) }}"
+          {% if item.title %}title="{{ item.title }}"{% endif %}
+          {% if item.rel %}rel="{{ item.rel }}"{% endif %}
+          {% if item.target %}target="{{ item.target }}"{% endif %}
+        >{% if item.icon %}<span class="slot-items__icon">{{ item.icon }}</span>{% endif %}{{ item.text }}</a>
+      {% else %}
+        <span class="{{ item.className or itemClassName or 'slot-items__text' }}">{% if item.icon %}<span class="slot-items__icon">{{ item.icon }}</span>{% endif %}{{ item.text }}</span>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}

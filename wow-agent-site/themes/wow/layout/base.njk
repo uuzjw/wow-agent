@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="{{ site.language }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ seo.title }}</title>
+    <meta name="description" content="{{ seo.description }}" />
+    <link rel="canonical" href="{{ seo.canonical }}" />
+    {% if seo.themeColor %}<meta name="theme-color" content="{{ seo.themeColor }}" />{% endif %}
+    {% for favicon in seo.favicons %}
+      <link rel="{{ favicon.rel }}" href="{{ favicon.url }}"{% if favicon.type %} type="{{ favicon.type }}"{% endif %} />
+    {% endfor %}
+    <meta property="og:title" content="{{ seo.openGraph.title }}" />
+    <meta property="og:description" content="{{ seo.openGraph.description }}" />
+    <meta property="og:type" content="{{ seo.openGraph.type }}" />
+    <meta property="og:site_name" content="{{ seo.openGraph.siteName }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ href('/assets/css/site.css', currentUrlPath) }}" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("wow-theme") || "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body class="wow-body">
+    {% include "header.njk" %}
+    <main>{% block content %}{% endblock %}</main>
+    {% include "footer.njk" %}
+  </body>
+</html>

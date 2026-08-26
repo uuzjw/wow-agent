@@ -1,0 +1,40 @@
+<div class="sidebar-panel">
+  <p class="sidebar-panel__eyebrow">Navigate</p>
+  <h2 class="sidebar-panel__title">Platform overview</h2>
+  <p class="sidebar-panel__text">{{ site.description }}</p>
+</div>
+
+{% if collections.categories.length %}
+  <section class="sidebar-section" aria-labelledby="sidebar-categories">
+    <h2 id="sidebar-categories" class="sidebar-section__title">Categories</h2>
+    <ul class="sidebar-list">
+      {% for category in collections.categories %}
+        <li><a href="{{ href(category.urlPath, currentUrlPath) }}">{{ category.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+
+{% if collections.tags.length %}
+  <section class="sidebar-section" aria-labelledby="sidebar-tags">
+    <h2 id="sidebar-tags" class="sidebar-section__title">Tags</h2>
+    <ul class="sidebar-list sidebar-list--tags">
+      {% for tag in collections.tags %}
+        <li><a href="{{ href(tag.urlPath, currentUrlPath) }}">{{ tag.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+
+{% if collections.posts.length %}
+  <section class="sidebar-section" aria-labelledby="sidebar-recent">
+    <h2 id="sidebar-recent" class="sidebar-section__title">Latest updates</h2>
+    <ul class="sidebar-list">
+      {% for post in collections.posts %}
+        {% if loop.index <= 5 %}
+          <li><a href="{{ href(post.urlPath, currentUrlPath) }}">{{ post.title }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}

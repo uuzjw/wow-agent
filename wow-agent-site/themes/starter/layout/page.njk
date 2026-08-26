@@ -1,0 +1,29 @@
+{% extends "base.njk" %}
+{% block content %}
+  <article class="entry entry--page">
+    <header class="entry__header">
+      <p class="entry__meta">Overview</p>
+      <h1 class="entry__title">{{ page.page.title }}</h1>
+    </header>
+
+    {% if (slots.page_above_content[page.page.id] or []).length %}
+      {% set items = slots.page_above_content[page.page.id] or [] %}
+      {% set className = "slot-items slot-items--inline" %}
+      {% include "slot-items.njk" %}
+    {% endif %}
+
+    <div class="entry__body">{{ renderTrusted(page.page.html) }}</div>
+
+    {% if (slots.page_below_content[page.page.id] or []).length %}
+      {% set items = slots.page_below_content[page.page.id] or [] %}
+      {% set className = "slot-items slot-items--stack" %}
+      {% include "slot-items.njk" %}
+    {% endif %}
+
+    {% if (slots.page_footer[page.page.id] or []).length %}
+      {% set items = slots.page_footer[page.page.id] or [] %}
+      {% set className = "slot-items slot-items--inline entry__footer-links" %}
+      {% include "slot-items.njk" %}
+    {% endif %}
+  </article>
+{% endblock %}

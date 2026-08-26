@@ -1,0 +1,32 @@
+{% set isZh = currentUrlPath.startsWith('/zh') %}
+<div class="shell docs-layout">
+  <aside class="docs-side" aria-label="Docs navigation">
+    {% set NAV = [] %}
+    {% if isZh %}{% set NAV = site.theme.navZh %}{% else %}{% set NAV = site.theme.nav %}{% endif %}
+    {% for group in NAV %}
+      <div class="side-group">
+        <p class="side-group__title">{{ group.title }}</p>
+        <ul>
+          {% for item in group.items %}
+            <li><a class="side-link" href="{{ href(item.url, currentUrlPath) }}">{{ item.text }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </aside>
+
+  <article class="docs-main">
+    {% if page.page.frontMatter.eyebrow %}<p class="entry-eyebrow">{{ page.page.frontMatter.eyebrow }}</p>{% endif %}
+    <h1 class="entry-title">{{ page.page.title }}</h1>
+    <div class="prose">{{ renderTrusted(page.page.html) }}</div>
+    <nav class="doc-foot">
+      {% if isZh %}
+        <a class="btn btn--ghost" href="{{ href('/zh/home/', currentUrlPath) }}">← 返回首页</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
+      {% else %}
+        <a class="btn btn--ghost" href="{{ href('/', currentUrlPath) }}">← Home</a>
+        <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent/issues" target="_blank" rel="noopener noreferrer">Report Issue</a>
+      {% endif %}
+    </nav>
+  </article>
+</div>

@@ -1,0 +1,9 @@
+{% extends "base.njk" %}
+{% block content %}
+  <section class="empty-state">
+    <p class="empty-state__eyebrow">404</p>
+    <h1 class="empty-state__title">Resource unavailable</h1>
+    <p class="empty-state__text">The requested page is not available at this address or is no longer published.</p>
+    <a class="empty-state__link" href="{{ href('/', currentUrlPath) }}">Return to home</a>
+  </section>
+{% endblock %}

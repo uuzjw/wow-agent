@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">BunPress favicon</title>
+  <rect width="64" height="64" rx="14" fill="#292524"/>
+  <path d="M18 14h16c9 0 15 5 15 13 0 5-2 9-7 11 6 2 9 6 9 12 0 9-7 14-18 14H18V14Zm12 20c6 0 10-3 10-8 0-4-3-7-9-7h-5v15h4Zm2 23c7 0 11-3 11-9 0-5-4-8-11-8h-6v17h6Z" fill="#ffffff"/>
+</svg>

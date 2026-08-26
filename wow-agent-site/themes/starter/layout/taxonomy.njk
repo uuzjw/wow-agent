@@ -1,0 +1,28 @@
+{% extends "base.njk" %}
+{% block content %}
+  <section class="page-intro page-intro--compact">
+    <p class="page-intro__eyebrow">{{ page.taxonomyType | upper }}</p>
+    <h1 class="page-intro__title">{{ page.entry.name }}</h1>
+  </section>
+  <section class="post-feed post-feed--compact" aria-label="{{ page.entry.name }}">
+    {% for post in page.entry.posts %}
+      <article class="post-card post-card--compact">
+        <a class="post-card__media" href="{{ href(post.urlPath, currentUrlPath) }}" aria-label="{{ post.title }}">
+          {% if post.frontMatter.image %}
+            <img src="{{ post.frontMatter.image }}" alt="{{ post.frontMatter.imageAlt or post.title }}" />
+          {% else %}
+            <span class="placeholder-media placeholder-media--{{ loop.index }}"></span>
+          {% endif %}
+        </a>
+        <div class="post-card__content">
+          {% set items = slots.post_meta[post.id] or [] %}
+          {% set className = "post-card__meta" %}
+          {% include "post-meta.njk" %}
+          <h2 class="post-card__title"><a href="{{ href(post.urlPath, currentUrlPath) }}">{{ post.title }}</a></h2>
+          <p class="post-card__excerpt">{{ post.excerpt }}</p>
+          <a class="post-card__link" href="{{ href(post.urlPath, currentUrlPath) }}">Read briefing</a>
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+{% endblock %}

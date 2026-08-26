@@ -1,0 +1,11 @@
+{% set isZh = currentUrlPath.startsWith('/zh') %}
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    {% if isZh %}
+      <p><strong>wow-agent</strong> — 面向所有人的终端编程助手</p>
+    {% else %}
+      <p><strong>wow-agent</strong> — Terminal Coding Agent for Everyone</p>
+    {% endif %}
+    <p class="footer-meta">MIT © 2024-present <a href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">uuzjw</a></p>
+  </div>
+</footer>

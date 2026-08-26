@@ -1,0 +1,29 @@
+{% set metaItems = items or [] %}
+{% if metaItems.length %}
+  <p class="{{ className or 'post-card__meta' }}">
+    {% for item in metaItems %}
+      {% if not loop.first %}
+        <span>&bull;</span>
+      {% endif %}
+      {% if item.kind == "button" %}
+        <a
+          class="{{ item.className or itemClassName or 'entry__tag' }}"
+          href="{{ href(item.url or '#', currentUrlPath) }}"
+          {% if item.title %}title="{{ item.title }}"{% endif %}
+          {% if item.rel %}rel="{{ item.rel }}"{% endif %}
+          {% if item.target %}target="{{ item.target }}"{% endif %}
+        >{% if item.icon %}<span class="slot-items__icon">{{ item.icon }}</span>{% endif %}{{ item.text }}</a>
+      {% elif item.kind == "link" or item.url %}
+        <a
+          class="{{ item.className or itemClassName or '' }}"
+          href="{{ href(item.url or '#', currentUrlPath) }}"
+          {% if item.title %}title="{{ item.title }}"{% endif %}
+          {% if item.rel %}rel="{{ item.rel }}"{% endif %}
+          {% if item.target %}target="{{ item.target }}"{% endif %}
+        >{% if item.icon %}<span class="slot-items__icon">{{ item.icon }}</span>{% endif %}{{ item.text }}</a>
+      {% else %}
+        <span class="{{ item.className or itemClassName or '' }}">{% if item.icon %}<span class="slot-items__icon">{{ item.icon }}</span>{% endif %}{{ item.text }}</span>
+      {% endif %}
+    {% endfor %}
+  </p>
+{% endif %}

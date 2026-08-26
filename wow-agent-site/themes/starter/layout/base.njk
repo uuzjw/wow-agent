@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="{{ site.language }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ seo.title }}</title>
+    <meta name="description" content="{{ seo.description }}" />
+    <link rel="canonical" href="{{ seo.canonical }}" />
+    <meta name="robots" content="{{ seo.robots }}" />
+    {% if seo.themeColor %}
+      <meta name="theme-color" content="{{ seo.themeColor }}" />
+    {% endif %}
+    {% for favicon in seo.favicons %}
+      <link rel="{{ favicon.rel }}" href="{{ favicon.url }}"{% if favicon.type %} type="{{ favicon.type }}"{% endif %}{% if favicon.sizes %} sizes="{{ favicon.sizes }}"{% endif %}{% if favicon.color %} color="{{ favicon.color }}"{% endif %} />
+    {% endfor %}
+    <meta property="og:title" content="{{ seo.openGraph.title }}" />
+    <meta property="og:description" content="{{ seo.openGraph.description }}" />
+    <meta property="og:type" content="{{ seo.openGraph.type }}" />
+    <meta property="og:url" content="{{ seo.openGraph.url }}" />
+    <meta property="og:site_name" content="{{ seo.openGraph.siteName }}" />
+    {% if seo.openGraph.image %}
+      <meta property="og:image" content="{{ seo.openGraph.image }}" />
+    {% endif %}
+    {% if seo.openGraph.imageAlt %}
+      <meta property="og:image:alt" content="{{ seo.openGraph.imageAlt }}" />
+    {% endif %}
+    <meta name="twitter:card" content="{{ seo.twitter.card }}" />
+    <meta name="twitter:title" content="{{ seo.twitter.title }}" />
+    <meta name="twitter:description" content="{{ seo.twitter.description }}" />
+    {% if seo.twitter.image %}
+      <meta name="twitter:image" content="{{ seo.twitter.image }}" />
+    {% endif %}
+    <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS" href="{{ href(feeds.rssPath, currentUrlPath) }}" />
+    <link rel="alternate" type="application/atom+xml" title="{{ site.title }} Atom" href="{{ href(feeds.atomPath, currentUrlPath) }}" />
+    {% if seo.verification.google %}
+      <meta name="google-site-verification" content="{{ seo.verification.google }}" />
+    {% endif %}
+    {% if seo.verification.bing %}
+      <meta name="msvalidate.01" content="{{ seo.verification.bing }}" />
+    {% endif %}
+    {% if seo.verification.yandex %}
+      <meta name="yandex-verification" content="{{ seo.verification.yandex }}" />
+    {% endif %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ href('/assets/css/site.css', currentUrlPath) }}" />
+    {% for schema in seo.jsonLd %}
+      <script type="application/ld+json">{{ renderTrusted(json(schema)) }}</script>
+    {% endfor %}
+  </head>
+  <body class="theme-body">
+    {% include "header.njk" %}
+    <main class="site-shell site-shell--page">
+      <div class="site-layout{% if seo.pageType != "404" %} site-layout--with-sidebar{% endif %}">
+        <div class="site-layout__content">
+          {% include "breadcrumbs.njk" %}
+          {% block content %}{% endblock %}
+        </div>
+        {% if seo.pageType != "404" %}
+          <aside class="site-layout__sidebar" aria-label="Sidebar">
+            {% include "sidebar.njk" %}
+          </aside>
+        {% endif %}
+      </div>
+    </main>
+    {% include "footer.njk" %}
+  </body>
+</html>

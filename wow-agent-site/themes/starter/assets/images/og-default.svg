@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">BunPress default social preview</title>
+  <desc id="desc">BunPress preview card with editorial typography and built-in SEO messaging.</desc>
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect x="56" y="56" width="1088" height="518" rx="24" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="96" y="180" fill="#9a3412" font-family="Arial, sans-serif" font-size="28" letter-spacing="8">BUNPRESS</text>
+  <text x="96" y="300" fill="#292524" font-family="Georgia, serif" font-size="72">Editorial publishing</text>
+  <text x="96" y="388" fill="#292524" font-family="Georgia, serif" font-size="72">with built-in SEO</text>
+  <text x="96" y="484" fill="#44403c" font-family="Arial, sans-serif" font-size="32">Canonical URLs, metadata, JSON-LD, sitemap.xml, and robots.txt.</text>
+</svg>

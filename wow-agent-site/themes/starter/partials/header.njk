@@ -1,0 +1,16 @@
+<header class="site-header">
+  <div class="site-shell site-header__inner">
+    <a class="site-brand" href="{{ href('/', currentUrlPath) }}">{{ site.title }}</a>
+    <nav class="site-nav" aria-label="Primary">
+      {% if site.menus and site.menus.primary and site.menus.primary.length %}
+        {% for item in site.menus.primary %}
+          <a class="site-nav__link" href="{{ href(item.url, currentUrlPath) }}">{{ item.text }}</a>
+        {% endfor %}
+      {% else %}
+        <a class="site-nav__link" href="{{ href('/', currentUrlPath) }}">Home</a>
+        <a class="site-nav__link" href="{{ href('/archives/', currentUrlPath) }}">Archives</a>
+        <a class="site-nav__link" href="{{ href('/about/', currentUrlPath) }}">About</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>

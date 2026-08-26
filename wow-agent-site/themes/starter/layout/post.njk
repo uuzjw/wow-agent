@@ -1,0 +1,64 @@
+{% extends "base.njk" %}
+{% block content %}
+  <article class="entry entry--post">
+    <header class="entry__header">
+      {% set items = slots.post_meta[page.post.id] or [] %}
+      {% set className = "entry__meta" %}
+      {% include "post-meta.njk" %}
+      <h1 class="entry__title">{{ page.post.title }}</h1>
+    </header>
+
+    <div class="entry__media">
+      {% if page.post.frontMatter.image %}
+        <img src="{{ page.post.frontMatter.image }}" alt="{{ page.post.frontMatter.imageAlt or page.post.title }}" />
+      {% else %}
+        <div class="placeholder-media placeholder-media--feature"></div>
+      {% endif %}
+    </div>
+
+    {% if (slots.post_above_content[page.post.id] or []).length %}
+      {% set items = slots.post_above_content[page.post.id] or [] %}
+      {% set className = "slot-items slot-items--inline" %}
+      {% include "slot-items.njk" %}
+    {% endif %}
+
+    {% if page.post.tags.length %}
+      <div class="entry__tags">
+        {% for tag in page.post.tags %}
+          <a class="entry__tag" href="{{ href('/tags/' + (tag | lower | replace(' ', '-')) + '/', currentUrlPath) }}">{{ tag }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="entry__body">{{ renderTrusted(page.post.html) }}</div>
+
+    {% if (slots.post_below_content[page.post.id] or []).length %}
+      {% set items = slots.post_below_content[page.post.id] or [] %}
+      {% set className = "slot-items slot-items--stack" %}
+      {% include "slot-items.njk" %}
+    {% endif %}
+
+    {% if (slots.post_footer[page.post.id] or []).length %}
+      {% set items = slots.post_footer[page.post.id] or [] %}
+      {% set className = "slot-items slot-items--inline entry__footer-links" %}
+      {% include "slot-items.njk" %}
+    {% endif %}
+
+    {% if page.adjacent and (page.adjacent.previous or page.adjacent.next) %}
+      <nav class="entry__adjacent" aria-label="Adjacent posts">
+        <div class="entry__adjacent-card entry__adjacent-card--previous">
+          {% if page.adjacent.previous %}
+            <p class="entry__adjacent-label">Previous post</p>
+            <a class="entry__adjacent-link" href="{{ href(page.adjacent.previous.urlPath, currentUrlPath) }}">{{ page.adjacent.previous.title }}</a>
+          {% endif %}
+        </div>
+        <div class="entry__adjacent-card entry__adjacent-card--next">
+          {% if page.adjacent.next %}
+            <p class="entry__adjacent-label">Next post</p>
+            <a class="entry__adjacent-link" href="{{ href(page.adjacent.next.urlPath, currentUrlPath) }}">{{ page.adjacent.next.title }}</a>
+          {% endif %}
+        </div>
+      </nav>
+    {% endif %}
+  </article>
+{% endblock %}

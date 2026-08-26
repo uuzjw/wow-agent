@@ -1,0 +1,148 @@
+{% set isZh = currentUrlPath.startsWith('/zh') %}
+{% if isZh %}
+{% set L_GUIDE = '/zh/guide/' %}
+{% set L_TUT = '/zh/tutorials/' %}
+{% set L_ARCH = '/zh/architecture/' %}
+{% set L_SAFETY = '/zh/safety/' %}
+{% set L_FIRST = '/zh/guide/first-task/' %}
+{% else %}
+{% set L_GUIDE = '/guide/' %}
+{% set L_TUT = '/tutorials/' %}
+{% set L_ARCH = '/architecture/' %}
+{% set L_SAFETY = '/safety/' %}
+{% set L_FIRST = '/guide/first-task/' %}
+{% endif %}
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+  <div class="shell hero-inner">
+    <span class="hero-badge anim-up">v0.6.0 · MIT · {% if isZh %}终端原生 · ARM64{% else %}Terminal Native · ARM64{% endif %}</span>
+    <h1 class="hero-title anim-up d1">{% if isZh %}终端里的 AI 编程伙伴<br /><span class="grad-text">属于每一个人</span>{% else %}The AI Coding Partner<br /><span class="grad-text">in Your Terminal</span>{% endif %}</h1>
+    <p class="hero-sub anim-up d2">{% if isZh %}给一个目标，wow-agent 规划、调用工具执行、跑测试验证、失败自动回滚。模型自由接入，数据永不离机。{% else %}Give it a goal — wow-agent plans, executes tools, runs your tests, and rolls back on failure. Any model. Your data never leaves the machine.{% endif %}</p>
+    <div class="hero-actions anim-up d3">
+      <a class="btn btn--primary" href="{{ href(L_GUIDE, currentUrlPath) }}">{{ '开始使用 →' if isZh else 'Get Started →' }}</a>
+      <a class="btn btn--ghost" href="https://github.com/uuzjw/wow-agent" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+    <pre class="hero-install anim-up d3 mono"><code>{% if isZh %}git clone https://github.com/uuzjw/wow-agent && cd wow-agent && uv sync && uv run wow{% else %}git clone https://github.com/uuzjw/wow-agent && cd wow-agent && uv sync && uv run wow{% endif %}</code></pre>
+  </div>
+</section>
+
+<section class="shell provider-strip reveal" aria-label="Supported providers">
+  <p class="provider-label">{% if isZh %}一个接口，接入全部主流模型{% else %}One interface, every major model{% endif %}</p>
+  <div class="provider-logos">
+    <span>DeepSeek</span><span>Qwen</span><span>Kimi</span><span>GLM</span><span>OpenAI</span><span>Gemini</span><span>Groq</span><span>OpenRouter</span><span>Ollama</span><span>LM Studio</span>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">{% if isZh %}选你的路线{% else %}Choose your path{% endif %}</h2>
+  <p class="section-sub reveal">{% if isZh %}只想用它干活，还是想在它之上构建？都有为你准备的文档。{% else %}Just want to get things done, or build on top of it? We wrote docs for both of you.{% endif %}</p>
+  <div class="grid-2">
+    <a class="path-card reveal" href="{{ href(L_GUIDE, currentUrlPath) }}">
+      <span class="path-icon">🚀</span>
+      <h3>{% if isZh %}我是用户{% else %}I just want to use it{% endif %}</h3>
+      <p>{% if isZh %}5 分钟安装，第一个任务手把手带跑，10 个日常配方即抄即用。{% else %}Install in 5 minutes, run your first task with a guided walkthrough, copy-paste from 10 everyday recipes.{% endif %}</p>
+      <span class="path-link">{{ '用户指南 →' if isZh else 'User Guide →' }}</span>
+    </a>
+    <a class="path-card reveal" href="{{ href(L_TUT, currentUrlPath) }}">
+      <span class="path-icon">🛠️</span>
+      <h3>{% if isZh %}我是开发者{% else %}I want to build on it{% endif %}</h3>
+      <p>{% if isZh %}30 行代码加一个自定义工具，任意 OpenAI 兼容端点变成一等服务商，MCP 零代码扩展。{% else %}Add a custom tool in ~30 lines, turn any OpenAI-compatible endpoint into a first-class provider, extend via MCP with zero agent code.{% endif %}</p>
+      <span class="path-link">{{ '开发者教程 →' if isZh else 'Developer Tutorials →' }}</span>
+    </a>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">{% if isZh %}四大支柱{% else %}Four pillars{% endif %}</h2>
+  <div class="grid-4">
+    <article class="card reveal">
+      <div class="card__icon card__icon--brand">🧠</div>
+      <h3>{% if isZh %}智能核心{% else %}Agent Brain{% endif %}</h3>
+      <p>{% if isZh %}任务树 + 状态机自动流转；子代理干净上下文调研；长期记忆跨会话。{% else %}Task tree + state machine; clean-context research sub-agents; long-term memory across sessions.{% endif %}</p>
+      <ul class="ticks">
+        <li>{% if isZh %}planning→executing→verifying{% else %}planning→executing→verifying{% endif %}</li>
+        <li>{% if isZh %}三级代码审查{% else %}Three-level review{% endif %}</li>
+        <li>/mem {% if isZh %}长期记忆{% else %}memory{% endif %}</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--accent">🛠️</div>
+      <h3>{% if isZh %}开发工具{% else %}Developer Tools{% endif %}</h3>
+      <p>{% if isZh %}文件 CRUD、彩色 Diff、AST 符号索引；每次写入前快照，随时 /undo。{% else %}File CRUD, colored diffs, AST symbol index; snapshot before every write, /undo anytime.{% endif %}</p>
+      <ul class="ticks">
+        <li>code_index {% if isZh %}增量索引{% else %}incremental index{% endif %}</li>
+        <li>{% if isZh %}Diff 可视化{% else %}Diff visualization{% endif %}</li>
+        <li>/undo</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--success">☁️</div>
+      <h3>{% if isZh %}模型生态{% else %}Model Ecosystem{% endif %}</h3>
+      <p>{% if isZh %}16+ 云端服务商与本地模型统一接入，/model 在线拉取列表，免费档开箱即用。{% else %}16+ cloud providers and local models behind one interface; /model fetches lists online; free tiers work out of the box.{% endif %}</p>
+      <ul class="ticks">
+        <li>/model --fetch</li>
+        <li>Ollama · LM Studio</li>
+        <li>{% if isZh %}离线可用{% else %}offline capable{% endif %}</li>
+      </ul>
+    </article>
+    <article class="card reveal">
+      <div class="card__icon card__icon--warn">🛡️</div>
+      <h3>{% if isZh %}安全系统{% else %}Safety System{% endif %}</h3>
+      <p>{% if isZh %}断网沙盒、外传拦截、高危二次确认、失败整轮回滚 —— 纵深防御四层。{% else %}Network sandbox, egress guard, double confirmation, full-task rollback — defense in depth, four layers.{% endif %}</p>
+      <ul class="ticks">
+        <li>unshare -n</li>
+        <li>{% if isZh %}外传拦截{% else %}egress guard{% endif %}</li>
+        <li>{% if isZh %}自动回滚{% else %}auto rollback{% endif %}</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">{% if isZh %}四层架构{% else %}Four-layer architecture{% endif %}</h2>
+  <p class="section-sub reveal">{% if isZh %}每一层职责单一，每一层都可扩展。<a href="{{ href(L_ARCH, currentUrlPath) }}">深入了解 →</a>{% else %}One responsibility per layer, every layer extensible. <a href="{{ href('/architecture/', currentUrlPath) }}">Deep dive →</a>{% endif %}</p>
+  <div class="arch">
+    <div class="arch-layer reveal"><span class="arch-num">1</span><div><h4>{% if isZh %}智能核心 Agent Brain{% else %}Agent Brain{% endif %}</h4><p>{% if isZh %}任务规划 · 状态机 · 子代理协作{% else %}task planning · state machine · sub-agents{% endif %}</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--accent reveal"><span class="arch-num">2</span><div><h4>{% if isZh %}开发工具 Developer Tools{% else %}Developer Tools{% endif %}</h4><p>{% if isZh %}文件 CRUD · Diff/Undo · 代码索引{% else %}file CRUD · diff/undo · code index{% endif %}</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--success reveal"><span class="arch-num">3</span><div><h4>{% if isZh %}模型生态 Model Ecosystem{% else %}Model Ecosystem{% endif %}</h4><p>{% if isZh %}云端 16+ 服务商 · 本地 Ollama/LM Studio{% else %}16+ cloud providers · local Ollama/LM Studio{% endif %}</p></div></div>
+    <div class="arch-arrow">↓</div>
+    <div class="arch-layer arch-layer--warn reveal"><span class="arch-num">4</span><div><h4>{% if isZh %}安全系统 Safety System{% else %}Safety System{% endif %}</h4><p>{% if isZh %}断网沙盒 · 外传拦截 · 高危确认 · 回滚{% else %}sandbox · egress guard · confirm · rollback{% endif %}</p></div></div>
+  </div>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">{% if isZh %}安全是默认项，不是选项{% else %}Safety is the default, not an option{% endif %}</h2>
+  <p class="section-sub reveal">{% if isZh %}Agent 能执行命令，所以执行环境必须被约束。四层防护开箱即用，每一层都可独立审计。{% else %}An agent that runs commands must have a constrained execution environment. Four layers ship on by default, each independently auditable.{% endif %}</p>
+  <div class="safety-band reveal">
+    <div class="safety-item"><span class="safety-n">1</span><div><h4>{% if isZh %}断网沙盒{% else %}Network sandbox{% endif %}</h4><p>unshare -n</p></div></div>
+    <div class="safety-item"><span class="safety-n">2</span><div><h4>{% if isZh %}外传拦截{% else %}Egress guard{% endif %}</h4><p>curl POST · scp · git push</p></div></div>
+    <div class="safety-item"><span class="safety-n">3</span><div><h4>{% if isZh %}高危确认{% else %}Dangerous confirm{% endif %}</h4><p>rm -rf · dd · fork bomb</p></div></div>
+    <div class="safety-item"><span class="safety-n">4</span><div><h4>{% if isZh %}回滚{% else %}Rollback{% endif %}</h4><p>/undo · {% if isZh %}失败自动回滚{% else %}auto task rollback{% endif %}</p></div></div>
+  </div>
+  <p class="section-sub reveal" style="margin-top:1.2rem"><a href="{{ href(L_SAFETY, currentUrlPath) }}">{{ '阅读安全白皮书 →' if isZh else 'Read the safety whitepaper →' }}</a></p>
+</section>
+
+<section class="shell section">
+  <h2 class="section-title reveal">{% if isZh %}数字说话{% else %}By the numbers{% endif %}</h2>
+  <div class="stats-band reveal">
+    <div class="stat"><span class="stat__num">16+</span><span class="stat__label">{% if isZh %}模型服务商{% else %}providers{% endif %}</span></div>
+    <div class="stat"><span class="stat__num">4</span><span class="stat__label">{% if isZh %}安全层级{% else %}safety layers{% endif %}</span></div>
+    <div class="stat"><span class="stat__num">&lt;1s</span><span class="stat__label">{% if isZh %}冷启动{% else %}cold start{% endif %}</span></div>
+    <div class="stat"><span class="stat__num">~50ms</span><span class="stat__label">{% if isZh %}索引增量更新{% else %}index update{% endif %}</span></div>
+    <div class="stat"><span class="stat__num">0</span><span class="stat__label">{% if isZh %}遥测数据{% else %}telemetry{% endif %}</span></div>
+  </div>
+</section>
+
+<section class="shell section cta-band reveal">
+  <div>
+    <h2>{% if isZh %}30 秒跑起来{% else %}Up and running in 30 seconds{% endif %}</h2>
+    <pre class="code-inline mono"><code>git clone https://github.com/uuzjw/wow-agent && cd wow-agent && uv sync && uv run wow</code></pre>
+  </div>
+  <a class="btn btn--primary" href="{{ href(L_FIRST, currentUrlPath) }}">{{ '手把手第一个任务 →' if isZh else 'Walk through your first task →' }}</a>
+</section>
