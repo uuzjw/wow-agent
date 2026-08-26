@@ -1,9 +1,23 @@
+<div align="center">
+
+<img src="docs/logo.png" alt="wow-agent logo" width="140" />
+
 # wow-agent
 
-> **面向所有人的终端编码 Agent**  
-> 一个简单、开放、可扩展的终端 AI 编程助手
+**面向所有人的终端编码 Agent**
 
-**中文** | **English**
+一个简单、开放、可扩展的终端 AI 编程助手
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-1d4ed8.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10+-1d4ed8.svg)](https://www.python.org/)
+[![Platform](https://img.shields.io/badge/Platform-x86%20%7C%20ARM64-1d4ed8.svg)]()
+[![Docs](https://img.shields.io/badge/文档-在线阅读-2563eb.svg)](https://uuzjw.github.io/wow-agent/zh/home/)
+
+[**English**](README.md) | **简体中文**
+
+[快速开始](#-快速开始) · [核心功能](#-核心功能一览) · [架构设计](#-架构概览四层设计) · [在线文档](https://uuzjw.github.io/wow-agent/zh/home/)
+
+</div>
 
 ---
 
@@ -73,7 +87,7 @@ wow-agent 改变这个循环，让 AI 直接参与真实的开发流程：
 
 ---
 
-## 快速开始
+## 🚀 快速开始
 
 ### 安装（需 [uv](https://docs.astral.sh/uv/)）
 
@@ -97,26 +111,26 @@ uv run wow        # 或 .venv/bin/wow
 
 ---
 
-## 核心功能一览
+## ✨ 核心功能一览
 
 ### 🤖 Agent Brain（智能核心）
 - **任务树 + 状态机**：自动拆解多步任务，`planning → executing → verifying → done/failed`
 - **子代理**：干净上下文调研代码，只回结论，不污染主上下文；`/review` 三级代码审查
 - **状态机**：`planning → executing → verifying → done/failed` 自动流转
 
-### 🛠 Developer Tools
+### 🛠 Developer Tools（开发工具）
 - **文件操作**：读/写/改/删/搜索，`code_index` 一次扫描生成 Python 符号表
 - **Diff & Undo**：彩色 Diff 可视化、单步 `/undo`、整轮失败整轮回滚、快照跨重启有效
 - **代码索引**：AST 解析 Python 符号表，增量更新，`code_index` 先查索引再精读
 
-### 🤝 Model Ecosystem
+### 🤝 Model Ecosystem（模型生态）
 | 类型 | 支持 |
 |------|------|
 | 云端 | DeepSeek / Qwen / Kimi / GLM / SiliconFlow / 豆包 / 混元 / MiniMax / OpenRouter / Groq / Mistral / Grok / OpenAI / Gemini / OpenCode Zen |
 | 本地 | Ollama / LM Studio（无需 Key）|
 | 免费档 | OpenCode Zen 免费档（含 ox alpha `x-preview-f-free`）|
 
-### 🛡 Safety System
+### 🛡 Safety System（安全系统）
 - **断网沙盒**：`unshare -n` 网络命名空间隔离，不可用时降级代理黑洞
 - **外传拦截**：`curl POST` / `scp` / `git push` / `npm publish` 等自动拦截
 - **高危二次确认**：`rm -rf /`、`mkfs`、`dd`、`fork bomb`、`shutdown`、`chmod -R 777 /` 等强制二次确认
@@ -124,7 +138,7 @@ uv run wow        # 或 .venv/bin/wow
 
 ---
 
-## 配置
+## ⚙️ 配置
 
 配置文件：`~/.wow-agent.env`（权限 600）
 
@@ -153,7 +167,7 @@ MCP Server 配置：`~/.wow-agent/mcp.json`
 
 ---
 
-## 快速上手
+## 💡 快速上手
 
 ```text
 $ wow
@@ -180,7 +194,19 @@ Enter auto mode? y/N    # y = 免逐步确认（高危/外传仍需批准）
 
 ---
 
-## 开发与测试
+## 📚 文档
+
+中英文双语文档站已上线：**[uuzjw.github.io/wow-agent](https://uuzjw.github.io/wow-agent/zh/home/)**
+
+- [指南](https://uuzjw.github.io/wow-agent/zh/guide/) — 项目介绍、快速开始、命令参考
+- [架构设计](https://uuzjw.github.io/wow-agent/zh/architecture/) — 状态机、子代理、代码索引器
+- [工具参考](https://uuzjw.github.io/wow-agent/zh/tools/) — 文件操作、Diff/Undo、MCP
+- [安全系统](https://uuzjw.github.io/wow-agent/zh/safety/) — 断网沙盒、外传拦截、回滚
+- [English Docs](https://uuzjw.github.io/wow-agent/)
+
+---
+
+## 🧪 开发与测试
 
 ```bash
 uv sync                      # 安装依赖
@@ -190,7 +216,7 @@ uv run python tests_e2e.py   # 端到端模拟（假 LLM，离线）
 
 ---
 
-## 参与贡献
+## 🤝 参与贡献
 
 欢迎任何形式的贡献！
 
@@ -214,3 +240,7 @@ uv run python tests_e2e.py
 
 > **独立开发**，与同名同姓的开源项目无关。  
 > 问题反馈请到 [GitHub Issues](https://github.com/uuzjw/wow-agent/issues)。
+
+<div align="center">
+<sub><a href="README.md">English</a> | 简体中文</sub>
+</div>
