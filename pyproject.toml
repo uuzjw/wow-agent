@@ -24,3 +24,8 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["wow_agent"]
+
+[dependency-groups]
+dev = [
+    "twine>=7.0.0",
+]
